@@ -1,5 +1,35 @@
 # Input files
 
+## Genetic data
+
+On DNAnexus, whole genome sequences data are saved in multiple formats: BGEN format (`.bgen` and `.sample`), PLINK format (`.bed`, `.bim` and `.fam`) or pVCF format (`.vcf.gz.tbi`), among others. For more information on the data available, you can run the following command:
+
+```bash
+dx ls "/Bulk/Whole genome sequences"
+```
+
+On DNAnexus, when a job is executed, a worker is spun up in the cloud, then the job's code and inputs are downloaded to that worker and exectued. This is the standard behavior, but inputs can also be mounted to avoid their downloading costs.
+
+### PLINK2
+
+PLINK2 can read both BGEN and PLINK format. Therefore, we have 4 ways of inputing genetic data:
+
+<center>
+
+| File format | Mounted |
+|-------------|---------|
+| BGEN        | No      |
+| BGEN        | Yes     |
+| PLINK       | No      |
+| PLINK       | Yes     |
+
+</center>
+
+After some trial and error, we have found that using the BGEN format without mounting it was the quickest way to perform a GWAS using PLINK2.
+Therefore, this is what we will do in this tutorial. The path to the genetic data is the following: `"/Bulk/Whole genome sequences/Population level genome variants, BGEN format - interim 200k release/"`.
+
+## Aditionnal data
+
 In order to run our GWAS, apart from the genetic and sample data, we need 3 additionnal files:
 
 * The phenotype (for instance, BMI)
@@ -8,7 +38,7 @@ In order to run our GWAS, apart from the genetic and sample data, we need 3 addi
 
 Theses files can either be uploaded directly to your projects using `dx upload`, or created using DNAnexus data. This tutorial will guide you through the second option.
 
-## Phenotype
+### Phenotype
 
 To extract the phenotype that we want, we first need to download all available data-fields in our dataset.
 You will need the `record-id`, which is the id of the `.dataset` file at the root of your DNAnexus project. On your project's web page, you can find the id by selecting the `.dataset` file and searching for the `ID` in the right panel prompted.
@@ -98,7 +128,7 @@ cmd = ["dx", "extract_dataset", DATASET, "--fields", FIELD_NAMES,
 subprocess.check_call(cmd)
 ```
 
-### PLINK formatting
+#### PLINK formatting
 
 PLINK needs a specific format for its phenotype, therefore we need to format the file correctly.
 We want to only keep the first instance for our phenotype, and duplicate the individuals id.
@@ -155,7 +185,7 @@ rm pheno_extract.csv
 
 </blockquote>
 
-## Individual ids
+### Individual ids
 
 To filter out individuals based on their ethnic background, we can use the [phenotype extraction script](#phenotype) and the data-field [21000](https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=21000).
 You simply need to replace `FIELD_ID = [21001]`to `FIELD_ID = [21000]`.
@@ -188,7 +218,7 @@ rm pheno_extract.csv
 
 </blockquote>
 
-## Covariates
+### Covariates
 
 The genetic principal components from the UKBB individuals are stored in the [22009](https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=22009) data field.
 We could use our phenotype extraction algorithm, but for some reason, it is not working. Therefore, we will use another script.

@@ -6,6 +6,8 @@ nav:
     - Home: index.md
     - Initial setup: setup.md
     - Input files: input.md
+    - Using PLINK2: plink.md
+    - Errors when running jobs: errors.md
 
 theme:
   name: readthedocs

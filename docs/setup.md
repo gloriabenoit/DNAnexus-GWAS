@@ -20,13 +20,17 @@ dx login
 
 Your authentication token and your current project settings have now been saved in a local configuration file, and you're ready to start accessing your project.
 
->By default, your information expires in 30 days, but this can be changed using the `--timeout` option.
->
->For instance, if you want your info to expire in **6 months**, use the following command. The `-help` option is useful if you want to know more about the `--timeout` input format.
->
->```bash
->dx login --timeout 6M
->```
+<blockquote>
+
+By default, your information expires in 30 days, but this can be changed using the <code>--timeout</code> option.
+
+For instance, if you want your info to expire in <b>6 months</b>, use the following command. The <code>-help</code> option is useful if you want to know more about the `--timeout` input format.
+
+```bash
+dx login --timeout 6M
+```
+
+</blockquote>
 
 By default, any job prompted here will output in your current DNAnexus repertory. Therefore, you can create a new folder and move into it, to help keep your poject tidy (especially if multiple people use it).
 

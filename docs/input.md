@@ -145,11 +145,15 @@ You can now upload the formated phenotype file.
 dx upload BMI.txt
 ```
 
-> Please note, since `extract_dataset` has no *overwite* option by design, we need to delete `pheno_extract.csv` to enable future phenotype extraction.
->
-> ```bash
-> rm pheno_extract.csv
-> ```
+<blockquote>
+
+Please note, since <code>extract_dataset</code> has no <i>overwite</i> option by design, we need to delete <code>pheno_extract.csv</code> to enable future phenotype extraction.
+
+```bash
+rm pheno_extract.csv
+```
+
+</blockquote>
 
 ## Individual ids
 
@@ -174,11 +178,15 @@ You can now upload the ids of your individuals.
 dx upload white_british
 ```
 
-> Once again, we remove `pheno_extract.csv` to enable future phenotype extraction.
->
-> ```bash
-> rm pheno_extract.csv
-> ```
+<blockquote>
+
+Once again, we remove <code>extract_dataset</code> to enable future phenotype extraction.
+
+```bash
+rm pheno_extract.csv
+```
+
+</blockquote>
 
 ## Covariates
 

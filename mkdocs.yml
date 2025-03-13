@@ -7,6 +7,7 @@ nav:
     - Initial setup: setup.md
     - Input files: input.md
     - Using PLINK2: plink.md
+    - Using regenie: regenie.md
     - Errors when running jobs: errors.md
 
 theme:

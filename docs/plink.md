@@ -19,7 +19,7 @@ Please refer to the [Input files section](input.md) if you don't have these file
 ## Running a GWAS
 
 On DNAnexus, PLINK2 is available as part of the Swiss Army Knife app.
-We choose to use the same instance for all GWASs, to simplify the code, but this can be changed to your liking. Same for the priority and the cost limit.
+We choose to use the same instance for all GWASs, to simplify the code, but this can be changed to your liking. Same for the priority and the cost limit. We also run the QC at the same time as our GWAS, please change the thresholds according to your preferences.
 
 ```bash
 pheno_path="/WKD_<your-name>/BMI.txt"
@@ -39,11 +39,6 @@ dx mkdir -p gwas_$pheno
 for chr_num in $(seq 1 22); do
     prefix="/Bulk/Whole genome sequences/Population level genome variants, BGEN format - interim 200k release//ukb24306_c${chr_num}_b0_v1"
     bgen=$(basename "$prefix")
-    file_ind=$(dx ls "$ind_path" --brief)
-    file_covar=$(dx ls "$cov_path" --brief)
-    file_pheno=$(dx ls "$pheno_path" --brief)
-    file_sample=$(dx ls "$prefix.sample" --brief)
-    file_bgen=$(dx ls "$prefix.bgen" --brief)
 
     plink_command="plink2 \
                 --threads $threads \
@@ -75,7 +70,9 @@ for chr_num in $(seq 1 22); do
 done
 ```
 
-This script will create a new directory named `gwas_<phenotype>` in the project on DNAnexus. In this folder, you will find 44 files named `sumstat_c<num>` (two per chromosome, the summary statistics and the log).
+This script will create a new directory named `gwas_<phenotype>` in the project on DNAnexus. In this folder, you will find a total of 44 files, named `sumstat_c<num>` (two per chromosome, the summary statistics and the log).
+
+## Computing the results
 
 Now that all of the summary statistics are computed, we can clean them up and combine them into one clean file. We will create a new directory named `gwas_<phenotype>`, locally this time, with inside another directory named `statistics` containing all of the summary statistics per chromosome. The combination of all of them will be located at the same level than `statistics`, making it easier to find.
 

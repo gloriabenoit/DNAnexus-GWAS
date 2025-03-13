@@ -83,6 +83,7 @@ It will ouptput `pheno_extract.csv` which contains individual ids and any phenot
 ```python
 """ Extract phenotype(s) from UKBB based on field ID(s). """
 
+import os
 import subprocess
 import pandas as pd
 
@@ -123,10 +124,15 @@ FIELD_NAMES = field_names_for_ids(FILENAME, FIELD_ID)
 FIELD_NAMES = ",".join(FIELD_NAMES)
 
 # Extract phenotype(s)
+if os.path.exists(OUTPUT):
+  os.remove(OUTPUT)
 cmd = ["dx", "extract_dataset", DATASET, "--fields", FIELD_NAMES,
         "--delimiter", ",", "--output", OUTPUT]
 subprocess.check_call(cmd)
 ```
+
+> Please be aware, since `extract_dataset` has no *overwite* option by design, we implemented ourselves.
+> Running the previous code will first delete `pheno_extract.csv` if it's present, allowing for the extraction to happen.
 
 #### PLINK formatting
 
@@ -175,16 +181,6 @@ You can now upload the formated phenotype file.
 dx upload BMI.txt
 ```
 
-<blockquote>
-
-Please note, since <code>extract_dataset</code> has no <i>overwite</i> option by design, we need to delete <code>pheno_extract.csv</code> to enable future phenotype extraction.
-
-```bash
-rm pheno_extract.csv
-```
-
-</blockquote>
-
 ### Individual ids
 
 To filter out individuals based on their ethnic background, we can use the [phenotype extraction script](#phenotype) and the data-field [21000](https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=21000).
@@ -208,16 +204,6 @@ You can now upload the ids of your individuals.
 dx upload white_british
 ```
 
-<blockquote>
-
-Once again, we remove <code>extract_dataset</code> to enable future phenotype extraction.
-
-```bash
-rm pheno_extract.csv
-```
-
-</blockquote>
-
 ### Covariates
 
 The genetic principal components from the UKBB individuals are stored in the [22009](https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=22009) data field.
@@ -239,7 +225,7 @@ field_names+="participant.p31,participant.p21003_i0" # Sex and age
 dx extract_dataset $record_id --fields $field_names --delimiter "\t" --output covariates.txt
 
 echo -e "FID\tIID\tPC1\tPC2\tPC3\tPC4\tPC5\tPC6\tPC7\tPC8\tPC9\tPC10\tPC11\tPC12\tPC13\tPC14\tPC15\tPC16\tPC17\tPC18\tSex\tAge" > file.tmp
-tail -n+2 covariates.txt >> .file.tmp
+tail -n+2 covariates.txt >> file.tmp
 mv file.tmp covariates.txt
 ```
 

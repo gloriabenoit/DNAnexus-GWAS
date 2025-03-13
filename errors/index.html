@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gloria BENOIT" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Initial setup - Basic tutorial for performing GWASs on DNAnexus</title>
+    <title>Errors when running jobs - Basic tutorial for performing GWASs on DNAnexus</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,8 +13,8 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Initial setup";
-        var mkdocs_page_input_path = "setup.md";
+        var mkdocs_page_name = "Errors when running jobs";
+        var mkdocs_page_input_path = "errors.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -44,10 +44,8 @@
                 <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
                 </li>
               </ul>
-              <ul class="current">
-                <li class="toctree-l1 current"><a class="reference internal current" href="#">Initial setup</a>
-    <ul class="current">
-    </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../setup/">Initial setup</a>
                 </li>
               </ul>
               <ul>
@@ -58,8 +56,16 @@
                 <li class="toctree-l1"><a class="reference internal" href="../plink/">Using PLINK2</a>
                 </li>
               </ul>
-              <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../errors/">Errors when running jobs</a>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Errors when running jobs</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#out-of-memory">Out of memory</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#low-disk-space">Low disk space</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#interruption-limit">Interruption limit</a>
+    </li>
+    </ul>
                 </li>
               </ul>
       </div>
@@ -76,9 +82,9 @@
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">Initial setup</li>
+      <li class="breadcrumb-item active">Errors when running jobs</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/gloriabenoit/DNAnexus-GWAS/edit/master/docs/setup.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/gloriabenoit/DNAnexus-GWAS/edit/master/docs/errors.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -86,42 +92,35 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="initial-setup">Initial setup</h1>
-<p>In order to connect to DNAnexus remotely, you first need to install the <code>dxpy</code> package.</p>
-<pre><code class="language-bash">pip3 install dxpy
+                <h1 id="errors-when-running-jobs">Errors when running jobs</h1>
+<p>A job running on DNAnexus has 4 outcomes:</p>
+<ul>
+<li>Done: The job was successful.</li>
+<li>Failed: Out of Memory</li>
+<li>Failed: Low disk space</li>
+<li>Failed: Terminated by the cloud provider (only for low priority jobs)</li>
+</ul>
+<p>We will take you through all 3 failed outcomes, and what you can do to avoid them.</p>
+<h2 id="out-of-memory">Out of memory</h2>
+<p>If the cause of failure is the following:</p>
+<pre><code class="language-text">Error while running the command (please refer to the job log for more information). Warning: Out of memory error occurred during this job.
 </code></pre>
-<p>To enable tab completion, enter the following command, or add it to your <code>.bashrc</code>:</p>
-<pre><code class="language-bash">eval &quot;$(register-python-argcomplete dx|sed 's/-o default//')&quot;
+<p>You need to choose an instance with a bigger memory. The memory infix in the instance is <code>mem</code>. For more information on instances, check the <a href="https://documentation.dnanexus.com/developer/api/running-analyses/instance-types">official doc on instance types</a>.</p>
+<h2 id="low-disk-space">Low disk space</h2>
+<p>If the cause of failure is the following:</p>
+<pre><code class="language-text">Error while running the command (please refer to the job log for more information). Warning: Low disk space during this job.
 </code></pre>
-<p>You can now enter your DNAnexus credentials to access your project remotely by using the following command:</p>
-<pre><code class="language-bash">dx login
+<p>You need to choose an instance with a bigger storage. The storage infix in the instance is <code>ssd</code> or <code>hdd</code>. For more information on instances, check the <a href="https://documentation.dnanexus.com/developer/api/running-analyses/instance-types">official doc on instance types</a>.</p>
+<h2 id="interruption-limit">Interruption limit</h2>
+<p>Jobs with a low priority can be interrupted if its ressources can be used for a high priority jobs. A low priority job can be interrupted at most 10 times, then it will result in the following error:</p>
+<pre><code class="language-text">The machine running the job was terminated by the cloud provider
 </code></pre>
-<p>Your authentication token and your current project settings have now been saved in a local configuration file, and you're ready to start accessing your project.</p>
-<blockquote>
-
-By default, your information expires in 30 days, but this can be changed using the <code>--timeout</code> option.
-
-For instance, if you want your info to expire in <b>6 months</b>, use the following command. The <code>-help</code> option is useful if you want to know more about the `--timeout` input format.
-
-
-<pre><code class="language-bash">dx login --timeout 6M
-</code></pre>
-
-
-</blockquote>
-
-<p>By default, any job prompted here will output in your current DNAnexus repertory. Therefore, you can create a new folder and move into it, to help keep your poject tidy (especially if multiple people use it).</p>
-<pre><code class="language-bash">dx mkdir WKD_&lt;your-name&gt;
-dx cd WKD_&lt;your-name&gt;
-</code></pre>
-<p>Now, all job will output in this repertory.</p>
-<p>You can find the documentation for all <code>dx</code> commands we will use <a href="https://documentation.dnanexus.com/user/helpstrings-of-sdk-command-line-utilities">here</a>.</p>
+<p>You simply need to restart your job, either on the same instance or another one, if the one used is too popular.</p>
               
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href=".." class="btn btn-neutral float-left" title="Home"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../input/" class="btn btn-neutral float-right" title="Input files">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../plink/" class="btn btn-neutral float-left" title="Using PLINK2"><span class="icon icon-circle-arrow-left"></span> Previous</a>
     </div>
 
   <hr/>
@@ -148,10 +147,8 @@ dx cd WKD_&lt;your-name&gt;
         </span>
     
     
-      <span><a href=".." style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../plink/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
-    
-      <span><a href="../input/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

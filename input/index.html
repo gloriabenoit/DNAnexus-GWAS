@@ -51,17 +51,35 @@
               <ul class="current">
                 <li class="toctree-l1 current"><a class="reference internal current" href="#">Input files</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#phenotype">Phenotype</a>
+    <li class="toctree-l2"><a class="reference internal" href="#genetic-data">Genetic data</a>
         <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#plink-formatting">PLINK formatting</a>
+    <li class="toctree-l3"><a class="reference internal" href="#plink2">PLINK2</a>
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#individual-ids">Individual ids</a>
+    <li class="toctree-l2"><a class="reference internal" href="#aditionnal-data">Aditionnal data</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#phenotype">Phenotype</a>
+        <ul>
+    <li class="toctree-l4"><a class="reference internal" href="#plink-formatting">PLINK formatting</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#covariates">Covariates</a>
+        </ul>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#individual-ids">Individual ids</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#covariates">Covariates</a>
+    </li>
+        </ul>
     </li>
     </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../plink/">Using PLINK2</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../errors/">Errors when running jobs</a>
                 </li>
               </ul>
       </div>
@@ -89,6 +107,44 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="input-files">Input files</h1>
+<h2 id="genetic-data">Genetic data</h2>
+<p>On DNAnexus, whole genome sequences data are saved in multiple formats: BGEN format (<code>.bgen</code> and <code>.sample</code>), PLINK format (<code>.bed</code>, <code>.bim</code> and <code>.fam</code>) or pVCF format (<code>.vcf.gz.tbi</code>), among others. For more information on the data available, you can run the following command:</p>
+<pre><code class="language-bash">dx ls &quot;/Bulk/Whole genome sequences&quot;
+</code></pre>
+<p>On DNAnexus, when a job is executed, a worker is spun up in the cloud, then the job's code and inputs are downloaded to that worker and exectued. This is the standard behavior, but inputs can also be mounted to avoid their downloading costs.</p>
+<h3 id="plink2">PLINK2</h3>
+<p>PLINK2 can read both BGEN and PLINK format. Therefore, we have 4 ways of inputing genetic data:</p>
+<p><center></p>
+<table>
+<thead>
+<tr>
+<th>File format</th>
+<th>Mounted</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BGEN</td>
+<td>No</td>
+</tr>
+<tr>
+<td>BGEN</td>
+<td>Yes</td>
+</tr>
+<tr>
+<td>PLINK</td>
+<td>No</td>
+</tr>
+<tr>
+<td>PLINK</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<p></center></p>
+<p>After some trial and error, we have found that using the BGEN format without mounting it was the quickest way to perform a GWAS using PLINK2.
+Therefore, this is what we will do in this tutorial. The path to the genetic data is the following: <code>"/Bulk/Whole genome sequences/Population level genome variants, BGEN format - interim 200k release/"</code>.</p>
+<h2 id="aditionnal-data">Aditionnal data</h2>
 <p>In order to run our GWAS, apart from the genetic and sample data, we need 3 additionnal files:</p>
 <ul>
 <li>The phenotype (for instance, BMI)</li>
@@ -96,7 +152,7 @@
 <li>The covariates to use</li>
 </ul>
 <p>Theses files can either be uploaded directly to your projects using <code>dx upload</code>, or created using DNAnexus data. This tutorial will guide you through the second option.</p>
-<h2 id="phenotype">Phenotype</h2>
+<h3 id="phenotype">Phenotype</h3>
 <p>To extract the phenotype that we want, we first need to download all available data-fields in our dataset.
 You will need the <code>record-id</code>, which is the id of the <code>.dataset</code> file at the root of your DNAnexus project. On your project's web page, you can find the id by selecting the <code>.dataset</code> file and searching for the <code>ID</code> in the right panel prompted.</p>
 <blockquote>
@@ -197,7 +253,7 @@ cmd = [&quot;dx&quot;, &quot;extract_dataset&quot;, DATASET, &quot;--fields&quot
         &quot;--delimiter&quot;, &quot;,&quot;, &quot;--output&quot;, OUTPUT]
 subprocess.check_call(cmd)
 </code></pre>
-<h3 id="plink-formatting">PLINK formatting</h3>
+<h4 id="plink-formatting">PLINK formatting</h4>
 <p>PLINK needs a specific format for its phenotype, therefore we need to format the file correctly.
 We want to only keep the first instance for our phenotype, and duplicate the individuals id.</p>
 <pre><code class="language-python">&quot;&quot;&quot; Format phenotype file to correspond to PLINK standard &quot;&quot;&quot;
@@ -249,7 +305,7 @@ Please note, since <code>extract_dataset</code> has no <i>overwite</i> option by
 
 </blockquote>
 
-<h2 id="individual-ids">Individual ids</h2>
+<h3 id="individual-ids">Individual ids</h3>
 <p>To filter out individuals based on their ethnic background, we can use the <a href="#phenotype">phenotype extraction script</a> and the data-field <a href="https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=21000">21000</a>.
 You simply need to replace <code>FIELD_ID = [21001]</code>to <code>FIELD_ID = [21000]</code>.</p>
 <p>This field uses the <a href="https://biobank.ndph.ox.ac.uk/ukb/coding.cgi?id=1001">1001 data encoding</a>. In this code, <em>1001</em> means <em>white british</em> which is the main ethnic group, and the one we want to select.</p>
@@ -274,7 +330,7 @@ Once again, we remove <code>extract_dataset</code> to enable future phenotype ex
 
 </blockquote>
 
-<h2 id="covariates">Covariates</h2>
+<h3 id="covariates">Covariates</h3>
 <p>The genetic principal components from the UKBB individuals are stored in the <a href="https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=22009">22009</a> data field.
 We could use our phenotype extraction algorithm, but for some reason, it is not working. Therefore, we will use another script.</p>
 <p>We will use 20 variables as covariates: the first 18 PCA components, the sex (<a href="https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=31">31</a>) and the age (<a href="https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=21003">21003</a>) of individuals. However, you can extract whatever you want as covariates.</p>
@@ -302,6 +358,7 @@ mv file.tmp covariates.txt
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../setup/" class="btn btn-neutral float-left" title="Initial setup"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../plink/" class="btn btn-neutral float-right" title="Using PLINK2">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -330,6 +387,8 @@ mv file.tmp covariates.txt
     
       <span><a href="../setup/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
+    
+      <span><a href="../plink/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

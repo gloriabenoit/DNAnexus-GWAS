@@ -58,6 +58,14 @@
                 <li class="toctree-l1"><a class="reference internal" href="input/">Input files</a>
                 </li>
               </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="plink/">Using PLINK2</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="errors/">Errors when running jobs</a>
+                </li>
+              </ul>
       </div>
     </div>
     </nav>
@@ -88,6 +96,8 @@
 We will run everything from the command line, but will monitor our jobs on the project's web page.</p>
 <p>This tutorial assumes that you already have a researcher account on the UKBiobank site, and have access to a DNAnexus project.
 If not, please create an account <a href="https://ams.ukbiobank.ac.uk/ams/signup">here</a>, and once it has been validated, create an account on <a href="https://ukbiobank.dnanexus.com/register">UKB-RAP</a> to access DNAnexus.</p>
+<p>We will see both the use of <a href="https://www.cog-genomics.org/plink/2.0/">PLINK2</a> and <a href="https://rgcgithub.github.io/regenie/">regenie</a> in order to perform a basic GWAS using whole genome sequences for chromosome 1 to 22.</p>
+<p>In order to parallelize the analyses, we will perform 22 different GWAS, one for each chromosome, and combine the results locally.</p>
 <h2 id="requirements">Requirements</h2>
 <p>To follow this tutorial, you will need <a href="https://www.python.org/downloads/">Python 3</a>.</p>
               
@@ -142,5 +152,5 @@ If not, please create an account <a href="https://ams.ukbiobank.ac.uk/ams/signup
 
 <!--
 MkDocs version : 1.6.1
-Build Date UTC : 2025-03-13 10:29:47.131835+00:00
+Build Date UTC : 2025-03-13 13:08:38.204981+00:00
 -->

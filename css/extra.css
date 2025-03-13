@@ -6,3 +6,12 @@ blockquote {
     border-radius: 5px;
     font-style: italic;
 }
+
+blockquote code {
+    background-color: #f5f5f5; /* Fond gris clair pour le code */
+    color: #d32f2f; /* Couleur rouge pour le texte du code */
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-size: 0.9em;
+    font-family: Consolas, 'Courier New', monospace;
+}

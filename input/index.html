@@ -79,6 +79,10 @@
                 </li>
               </ul>
               <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../regenie/">Using regenie</a>
+                </li>
+              </ul>
+              <ul>
                 <li class="toctree-l1"><a class="reference internal" href="../errors/">Errors when running jobs</a>
                 </li>
               </ul>
@@ -209,6 +213,7 @@ The following python script will extract the phenotype that you wish, and every 
 It will ouptput <code>pheno_extract.csv</code> which contains individual ids and any phenotype you chose to extract.</p>
 <pre><code class="language-python">&quot;&quot;&quot; Extract phenotype(s) from UKBB based on field ID(s). &quot;&quot;&quot;
 
+import os
 import subprocess
 import pandas as pd
 
@@ -249,10 +254,16 @@ FIELD_NAMES = field_names_for_ids(FILENAME, FIELD_ID)
 FIELD_NAMES = &quot;,&quot;.join(FIELD_NAMES)
 
 # Extract phenotype(s)
+if os.path.exists(OUTPUT):
+  os.remove(OUTPUT)
 cmd = [&quot;dx&quot;, &quot;extract_dataset&quot;, DATASET, &quot;--fields&quot;, FIELD_NAMES,
         &quot;--delimiter&quot;, &quot;,&quot;, &quot;--output&quot;, OUTPUT]
 subprocess.check_call(cmd)
 </code></pre>
+<blockquote>
+<p>Please be aware, since <code>extract_dataset</code> has no <em>overwite</em> option by design, we implemented ourselves.
+Running the previous code will first delete <code>pheno_extract.csv</code> if it's present, allowing for the extraction to happen.</p>
+</blockquote>
 <h4 id="plink-formatting">PLINK formatting</h4>
 <p>PLINK needs a specific format for its phenotype, therefore we need to format the file correctly.
 We want to only keep the first instance for our phenotype, and duplicate the individuals id.</p>
@@ -294,17 +305,6 @@ This is only a suggestion, and might not work for more specific phenotypes.</p>
 <p>You can now upload the formated phenotype file.</p>
 <pre><code class="language-bash">dx upload BMI.txt
 </code></pre>
-<blockquote>
-
-Please note, since <code>extract_dataset</code> has no <i>overwite</i> option by design, we need to delete <code>pheno_extract.csv</code> to enable future phenotype extraction.
-
-
-<pre><code class="language-bash">rm pheno_extract.csv
-</code></pre>
-
-
-</blockquote>
-
 <h3 id="individual-ids">Individual ids</h3>
 <p>To filter out individuals based on their ethnic background, we can use the <a href="#phenotype">phenotype extraction script</a> and the data-field <a href="https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=21000">21000</a>.
 You simply need to replace <code>FIELD_ID = [21001]</code>to <code>FIELD_ID = [21000]</code>.</p>
@@ -319,17 +319,6 @@ awk -F &quot;,&quot; -v var=&quot;$pop_code&quot; '$3~var{print $1}' $population
 <p>You can now upload the ids of your individuals.</p>
 <pre><code class="language-bash">dx upload white_british
 </code></pre>
-<blockquote>
-
-Once again, we remove <code>extract_dataset</code> to enable future phenotype extraction.
-
-
-<pre><code class="language-bash">rm pheno_extract.csv
-</code></pre>
-
-
-</blockquote>
-
 <h3 id="covariates">Covariates</h3>
 <p>The genetic principal components from the UKBB individuals are stored in the <a href="https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=22009">22009</a> data field.
 We could use our phenotype extraction algorithm, but for some reason, it is not working. Therefore, we will use another script.</p>
@@ -347,7 +336,7 @@ field_names+=&quot;participant.p31,participant.p21003_i0&quot; # Sex and age
 dx extract_dataset $record_id --fields $field_names --delimiter &quot;\t&quot; --output covariates.txt
 
 echo -e &quot;FID\tIID\tPC1\tPC2\tPC3\tPC4\tPC5\tPC6\tPC7\tPC8\tPC9\tPC10\tPC11\tPC12\tPC13\tPC14\tPC15\tPC16\tPC17\tPC18\tSex\tAge&quot; &gt; file.tmp
-tail -n+2 covariates.txt &gt;&gt; .file.tmp
+tail -n+2 covariates.txt &gt;&gt; file.tmp
 mv file.tmp covariates.txt
 </code></pre>
 <p>You can now upload the covariates file.</p>

@@ -59,7 +59,13 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#running-a-gwas">Running a GWAS</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#computing-the-results">Computing the results</a>
+    </li>
     </ul>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../regenie/">Using regenie</a>
                 </li>
               </ul>
               <ul>
@@ -104,7 +110,7 @@
 <p>Please refer to the <a href="../input/">Input files section</a> if you don't have these files.</p>
 <h2 id="running-a-gwas">Running a GWAS</h2>
 <p>On DNAnexus, PLINK2 is available as part of the Swiss Army Knife app.
-We choose to use the same instance for all GWASs, to simplify the code, but this can be changed to your liking. Same for the priority and the cost limit.</p>
+We choose to use the same instance for all GWASs, to simplify the code, but this can be changed to your liking. Same for the priority and the cost limit. We also run the QC at the same time as our GWAS, please change the thresholds according to your preferences.</p>
 <pre><code class="language-bash">pheno_path=&quot;/WKD_&lt;your-name&gt;/BMI.txt&quot;
 pheno=$(basename &quot;$pheno_path&quot; .txt)
 ind_path=&quot;/WKD_&lt;your-name&gt;/white_british&quot;
@@ -122,11 +128,6 @@ dx mkdir -p gwas_$pheno
 for chr_num in $(seq 1 22); do
     prefix=&quot;/Bulk/Whole genome sequences/Population level genome variants, BGEN format - interim 200k release//ukb24306_c${chr_num}_b0_v1&quot;
     bgen=$(basename &quot;$prefix&quot;)
-    file_ind=$(dx ls &quot;$ind_path&quot; --brief)
-    file_covar=$(dx ls &quot;$cov_path&quot; --brief)
-    file_pheno=$(dx ls &quot;$pheno_path&quot; --brief)
-    file_sample=$(dx ls &quot;$prefix.sample&quot; --brief)
-    file_bgen=$(dx ls &quot;$prefix.bgen&quot; --brief)
 
     plink_command=&quot;plink2 \
                 --threads $threads \
@@ -157,7 +158,8 @@ for chr_num in $(seq 1 22); do
         -y
 done
 </code></pre>
-<p>This script will create a new directory named <code>gwas_&lt;phenotype&gt;</code> in the project on DNAnexus. In this folder, you will find 44 files named <code>sumstat_c&lt;num&gt;</code> (two per chromosome, the summary statistics and the log).</p>
+<p>This script will create a new directory named <code>gwas_&lt;phenotype&gt;</code> in the project on DNAnexus. In this folder, you will find a total of 44 files, named <code>sumstat_c&lt;num&gt;</code> (two per chromosome, the summary statistics and the log).</p>
+<h2 id="computing-the-results">Computing the results</h2>
 <p>Now that all of the summary statistics are computed, we can clean them up and combine them into one clean file. We will create a new directory named <code>gwas_&lt;phenotype&gt;</code>, locally this time, with inside another directory named <code>statistics</code> containing all of the summary statistics per chromosome. The combination of all of them will be located at the same level than <code>statistics</code>, making it easier to find.</p>
 <pre><code class="language-bash">pheno=&quot;BMI&quot;
 type=&quot;linear&quot; # to change accordingly
@@ -184,7 +186,7 @@ done
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
         <a href="../input/" class="btn btn-neutral float-left" title="Input files"><span class="icon icon-circle-arrow-left"></span> Previous</a>
-        <a href="../errors/" class="btn btn-neutral float-right" title="Errors when running jobs">Next <span class="icon icon-circle-arrow-right"></span></a>
+        <a href="../regenie/" class="btn btn-neutral float-right" title="Using regenie">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -214,7 +216,7 @@ done
       <span><a href="../input/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
-      <span><a href="../errors/" style="color: #fcfcfc">Next &raquo;</a></span>
+      <span><a href="../regenie/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

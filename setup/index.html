@@ -90,11 +90,18 @@
 </code></pre>
 <p>Your authentication token and your current project settings have now been saved in a local configuration file, and you're ready to start accessing your project.</p>
 <blockquote>
-<p>By default, your information expires in 30 days, but this can be changed using the <code>--timeout</code> option.</p>
-<p>For instance, if you want your info to expire in <strong>6 months</strong>, use the following command. The <code>-help</code> option is useful if you want to know more about the <code>--timeout</code> input format.</p>
-<p><code>bash
-dx login --timeout 6M</code></p>
+
+By default, your information expires in 30 days, but this can be changed using the <code>--timeout</code> option.
+
+For instance, if you want your info to expire in <b>6 months</b>, use the following command. The <code>-help</code> option is useful if you want to know more about the `--timeout` input format.
+
+
+<pre><code class="language-bash">dx login --timeout 6M
+</code></pre>
+
+
 </blockquote>
+
 <p>By default, any job prompted here will output in your current DNAnexus repertory. Therefore, you can create a new folder and move into it, to help keep your poject tidy (especially if multiple people use it).</p>
 <pre><code class="language-bash">dx mkdir WKD_&lt;your-name&gt;
 dx cd WKD_&lt;your-name&gt;

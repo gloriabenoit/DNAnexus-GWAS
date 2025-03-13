@@ -239,10 +239,16 @@ This is only a suggestion, and might not work for more specific phenotypes.</p>
 <pre><code class="language-bash">dx upload BMI.txt
 </code></pre>
 <blockquote>
-<p>Please note, since <code>extract_dataset</code> has no <em>overwite</em> option by design, we need to delete <code>pheno_extract.csv</code> to enable future phenotype extraction.</p>
-<p><code>bash
-rm pheno_extract.csv</code></p>
+
+Please note, since <code>extract_dataset</code> has no <i>overwite</i> option by design, we need to delete <code>pheno_extract.csv</code> to enable future phenotype extraction.
+
+
+<pre><code class="language-bash">rm pheno_extract.csv
+</code></pre>
+
+
 </blockquote>
+
 <h2 id="individual-ids">Individual ids</h2>
 <p>To filter out individuals based on their ethnic background, we can use the <a href="#phenotype">phenotype extraction script</a> and the data-field <a href="https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=21000">21000</a>.
 You simply need to replace <code>FIELD_ID = [21001]</code>to <code>FIELD_ID = [21000]</code>.</p>
@@ -258,10 +264,16 @@ awk -F &quot;,&quot; -v var=&quot;$pop_code&quot; '$3~var{print $1}' $population
 <pre><code class="language-bash">dx upload white_british
 </code></pre>
 <blockquote>
-<p>Once again, we remove <code>pheno_extract.csv</code> to enable future phenotype extraction.</p>
-<p><code>bash
-rm pheno_extract.csv</code></p>
+
+Once again, we remove <code>extract_dataset</code> to enable future phenotype extraction.
+
+
+<pre><code class="language-bash">rm pheno_extract.csv
+</code></pre>
+
+
 </blockquote>
+
 <h2 id="covariates">Covariates</h2>
 <p>The genetic principal components from the UKBB individuals are stored in the <a href="https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=22009">22009</a> data field.
 We could use our phenotype extraction algorithm, but for some reason, it is not working. Therefore, we will use another script.</p>

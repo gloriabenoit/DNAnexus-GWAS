@@ -1,6 +1,16 @@
+code {
+    color: #1a84a5 !important;
+}
+
+pre code {
+    color: black !important;
+}
+
 blockquote {
-    background-color:    #e7f5f0   ; /* Couleur rose pâle */
-    border: 10px solid  #aed3c6 ; /* Bordure gauche rose plus foncée */
+    background-color: #e7f5f0   ; /* Couleur rose pâle */
+    border-top: 2px solid  #aed3c6 ; /* Bordure gauche rose plus foncée */
+    border-bottom: 2px solid #aed3c6 ; /* Bordure gauche rose plus foncée */
+    padding: 15px 10px 0px;
+    margin-right: 30px;
     border-radius: 5px;
-    font-style: italic;
 }

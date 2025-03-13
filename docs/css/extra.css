@@ -15,3 +15,17 @@ blockquote code {
     font-size: 0.9em;
     font-family: Consolas, 'Courier New', monospace;
 }
+
+blockquote pre {
+    background-color: #424242; /* Fond sombre pour les blocs de code */
+    color: #ffffff; /* Texte en blanc */
+    padding: 10px;
+    border-radius: 5px;
+    font-family: Consolas, 'Courier New', monospace;
+    overflow-x: auto; /* Si le code est trop large, il défile horizontalement */
+}
+
+blockquote pre code {
+    background: none; /* Enlever le fond du code à l'intérieur du <pre> */
+    color: inherit; /* Utiliser la couleur du texte par défaut */
+}

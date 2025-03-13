@@ -1,7 +1,6 @@
 blockquote {
-    background-color:   #fad8e2  ; /* Couleur rose pâle */
-    border: 10px solid #ec407a; /* Bordure gauche rose plus foncée */
-    padding: 10px;
+    background-color:    #e7f5f0   ; /* Couleur rose pâle */
+    border: 10px solid  #aed3c6 ; /* Bordure gauche rose plus foncée */
     border-radius: 5px;
     font-style: italic;
 }

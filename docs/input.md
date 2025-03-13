@@ -13,7 +13,9 @@ Theses files can either be uploaded directly to your projects using `dx upload`,
 To extract the phenotype that we want, we first need to download all available data-fields in our dataset.
 You will need the `record-id`, which is the id of the `.dataset` file at the root of your DNAnexus project. On your project's web page, you can find the id by selecting the `.dataset` file and searching for the `ID` in the right panel prompted.
 
-> Please note, when running the `extract_dataset` command you might encounter a `('Invalid JSON received from server', 200)` error. If this happens, you simply need to rerun the code.
+!!! note
+
+    Please note, when running the `extract_dataset` command you might encounter a `('Invalid JSON received from server', 200)` error. If this happens, you simply need to rerun the code.
 
 ```bash
 dx extract_dataset <record-id> -ddd --delimiter ","

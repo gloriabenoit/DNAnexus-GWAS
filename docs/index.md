@@ -1,21 +1,13 @@
-# Welcome to MkDocs
+# Home
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+## Overview
 
-## Commands
+This tutorial provides a step-by-step guide on the use of DNAnexus to performe a GWAS on the UKBiobank data.
+We will run everything from the command line, but will monitor our jobs on the project's web page.
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
+This tutorial assumes that you already have a researcher account on the UKBiobank site, and have access to a DNAnexus project.
+If not, please create an account [here](https://ams.ukbiobank.ac.uk/ams/signup), and once it has been validated, create an account on [UKB-RAP](https://ukbiobank.dnanexus.com/register) to access DNAnexus.
 
-## Project layout
+## Requirements
 
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
-
-## Test d'un ajout
-
-J'ajoute des trucs
+To follow this tutorial, you will need [Python 3](https://www.python.org/downloads/).

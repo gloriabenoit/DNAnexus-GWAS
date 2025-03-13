@@ -1,5 +1,9 @@
-site_name: My Docs
+site_name: Basic tutorial for performing GWASs on DNAnexus
+repo_url: https://github.com/gloriabenoit/DNAnexus-GWAS
+site_author: Gloria BENOIT
 nav:
     - Home: index.md
+    - Initial setup: setup.md
+    - Input files: input.md
 theme:
   name: readthedocs

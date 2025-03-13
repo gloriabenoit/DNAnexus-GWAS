@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gloria BENOIT" />
+      <link rel="shortcut icon" href="../img/favicon.ico" />
+    <title>Input files - Basic tutorial for performing GWASs on DNAnexus</title>
+    <link rel="stylesheet" href="../css/theme.css" />
+    <link rel="stylesheet" href="../css/theme_extra.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
+    
+      <script>
+        // Current page data
+        var mkdocs_page_name = "Input files";
+        var mkdocs_page_input_path = "input.md";
+        var mkdocs_page_url = null;
+      </script>
+    
+    <!--[if lt IE 9]>
+      <script src="../js/html5shiv.min.js"></script>
+    <![endif]-->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
+      <script>hljs.highlightAll();</script> 
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+    <div class="wy-side-scroll">
+      <div class="wy-side-nav-search">
+          <a href=".." class="icon icon-home"> Basic tutorial for performing GWASs on DNAnexus
+        </a><div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+      <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="..">Home</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../setup/">Initial setup</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">Input files</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#phenotype">Phenotype</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#plink-formatting">PLINK formatting</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#individual-ids">Individual ids</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#covariates">Covariates</a>
+    </li>
+    </ul>
+                </li>
+              </ul>
+      </div>
+    </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+      <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="..">Basic tutorial for performing GWASs on DNAnexus</a>
+        
+      </nav>
+      <div class="wy-nav-content">
+        <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
+      <li class="breadcrumb-item active">Input files</li>
+    <li class="wy-breadcrumbs-aside">
+          <a href="https://github.com/gloriabenoit/DNAnexus-GWAS/edit/master/docs/input.md" class="icon icon-github"> Edit on GitHub</a>
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+            <div class="section" itemprop="articleBody">
+              
+                <h1 id="input-files">Input files</h1>
+<p>In order to run our GWAS, apart from the genetic and sample data, we need 3 additionnal files:</p>
+<ul>
+<li>The phenotype (for instance, BMI)</li>
+<li>The ids of individuals we wish to keep (for instance, white british)</li>
+<li>The covariates to use</li>
+</ul>
+<p>Theses files can either be uploaded directly to your projects using <code>dx upload</code>, or created using DNAnexus data. This tutorial will guide you through the second option.</p>
+<h2 id="phenotype">Phenotype</h2>
+<p>To extract the phenotype that we want, we first need to download all available data-fields in our dataset.
+You will need the <code>record-id</code>, which is the id of the <code>.dataset</code> file at the root of your DNAnexus project. On your project's web page, you can find the id by selecting the <code>.dataset</code> file and searching for the <code>ID</code> in the right panel prompted.</p>
+<blockquote>
+<p>Please note, when running the <code>extract_dataset</code> command you might encounter a <code>('Invalid JSON received from server', 200)</code> error. If this happens, you simply need to rerun the code.</p>
+</blockquote>
+<pre><code class="language-bash">dx extract_dataset &lt;record-id&gt; -ddd --delimiter &quot;,&quot;
+</code></pre>
+<p>This command will output 3 files:</p>
+<ul>
+<li><code>&lt;app-id&gt;.data_dictionary.csv</code> contains a table with participants as the rows and metadata along the columns, including field names (see table below for naming convention).</li>
+<li><code>&lt;app-id&gt;.codings.csv</code> contains a lookup table for the different medical codes, including ICD-10 codes that will be displayed in the diagnosis field column (p41270).</li>
+<li><code>&lt;app-id&gt;.entity_dictionary.csv</code> contains the different entities that can be queried, where participant is the main entity that corresponds to most phenotype fields.</li>
+</ul>
+<p>To make it easier, you can rename theses files to a shorter name like <code>ukbb</code>.</p>
+<pre><code class="language-bash">rename &lt;app-id&gt; ukbb app*
+</code></pre>
+<p>We first need to get the field name of the phenotype(s) we want to extract. As an example, we will extract the BMI index (<a href="https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=21001">21001</a>), but you can extract any number of phenotypes.</p>
+<p>For the main participant phenotype entity, the Research Analysis Platform uses field names with the following convention:</p>
+<p><center></p>
+<table>
+<thead>
+<tr>
+<th>Type of field</th>
+<th>Syntax for field name</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Neither instanced nor arrayed</td>
+<td><code>p&lt;FIELD&gt;</code></td>
+<td><code>p31</code></td>
+</tr>
+<tr>
+<td>Instanced but not arrayed</td>
+<td><code>p&lt;FIELD&gt;_i&lt;INSTANCE&gt;</code></td>
+<td><code>p40005_i0</code></td>
+</tr>
+<tr>
+<td>Arrayed but not instanced</td>
+<td><code>p&lt;FIELD&gt;_a&lt;ARRAY&gt;</code></td>
+<td><code>p41262_a0</code></td>
+</tr>
+<tr>
+<td>Instanced and arrayed</td>
+<td><code>p&lt;FIELD&gt;_i&lt;INSTANCE&gt;_a&lt;ARRAY&gt;</code></td>
+<td><code>p93_i0_a0</code></td>
+</tr>
+</tbody>
+</table>
+<p></center></p>
+<p>Therefore, one phenotype ID can actually have multiple data field. For instance, BMI has four instances.
+The following python script will extract the phenotype that you wish, and every array or instance associated.
+It will ouptput <code>pheno_extract.csv</code> which contains individual ids and any phenotype you chose to extract.</p>
+<pre><code class="language-python">&quot;&quot;&quot; Extract phenotype(s) from UKBB based on field ID(s). &quot;&quot;&quot;
+
+import subprocess
+import pandas as pd
+
+# Input
+FILENAME = &quot;ukbb.dataset.data_dictionary.csv&quot;
+OUTPUT = &quot;pheno_extract.csv&quot;
+DATASET = &quot;&lt;record-id&gt;&quot;
+FIELD_ID = [21001] # BMI id
+
+def field_names_for_ids(filename, field_ids):
+    &quot;&quot;&quot; Converts data-field id to corresponding field name.
+
+    Parameters
+    ----------
+    filename : str
+        Path to the '.dataset.data_dictionary.csv' file.
+    field_ids : list
+        All field ids.
+    data.frame (pandas)
+        Projects's .data_dictionary.csv file.
+
+    Returns
+    -------
+    list
+        All corresponding field names.
+    &quot;&quot;&quot;
+    data = pd.read_csv(filename, sep=',')
+    field_names = [&quot;eid&quot;]
+    for _id in field_ids:
+        select = list(data[data.name.str.match(r'^p{}(_i\d+)?(_a\d+)?$'.format(_id))].name.values)
+        field_names += select
+
+    field_names = [f&quot;participant.{f}&quot; for f in field_names]
+    return field_names
+
+# Convert id to names
+FIELD_NAMES = field_names_for_ids(FILENAME, FIELD_ID)
+FIELD_NAMES = &quot;,&quot;.join(FIELD_NAMES)
+
+# Extract phenotype(s)
+cmd = [&quot;dx&quot;, &quot;extract_dataset&quot;, DATASET, &quot;--fields&quot;, FIELD_NAMES,
+        &quot;--delimiter&quot;, &quot;,&quot;, &quot;--output&quot;, OUTPUT]
+subprocess.check_call(cmd)
+</code></pre>
+<h3 id="plink-formatting">PLINK formatting</h3>
+<p>PLINK needs a specific format for its phenotype, therefore we need to format the file correctly.
+We want to only keep the first instance for our phenotype, and duplicate the individuals id.</p>
+<pre><code class="language-python">&quot;&quot;&quot; Format phenotype file to correspond to PLINK standard &quot;&quot;&quot;
+
+import pandas as pd
+
+# Input
+FILENAME = &quot;pheno_extract.csv&quot;
+PHENOTYPE = &quot;BMI&quot;
+OUTPUT = f&quot;{PHENOTYPE}.txt&quot;
+
+def format_phenotype(filename, output):
+    &quot;&quot;&quot; Save phenotype according to PLINK format.
+
+    Parameters
+    ----------
+    filename : str
+        Phenotype file to format.
+    output : str
+        Output file.
+    &quot;&quot;&quot;
+    data = pd.read_csv(filename, sep=',')
+
+    # To be changed accordingly
+    data = data.iloc[:,[0,1]]
+    data = pd.concat([data.iloc[:, 0], data], axis=1)
+
+    # Save output
+    data.to_csv(output, sep='\t', index=False, header=False, na_rep=-9)
+
+# Save phenotype
+format_phenotype(FILENAME, OUTPUT)
+</code></pre>
+<blockquote>
+<p>You can modify the <code>format_phenotype</code> function to your heart's desire, depending on what you wish to do with the phenotypes.
+This is only a suggestion, and might not work for more specific phenotypes.</p>
+</blockquote>
+<p>You can now upload the formated phenotype file.</p>
+<pre><code class="language-bash">dx upload BMI.txt
+</code></pre>
+<blockquote>
+<p>Please note, since <code>extract_dataset</code> has no <em>overwite</em> option by design, we need to delete <code>pheno_extract.csv</code> to enable future phenotype extraction.</p>
+<p><code>bash
+rm pheno_extract.csv</code></p>
+</blockquote>
+<h2 id="individual-ids">Individual ids</h2>
+<p>To filter out individuals based on their ethnic background, we can use the <a href="#phenotype">phenotype extraction script</a> and the data-field <a href="https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=21000">21000</a>.
+You simply need to replace <code>FIELD_ID = [21001]</code>to <code>FIELD_ID = [21000]</code>.</p>
+<p>This field uses the <a href="https://biobank.ndph.ox.ac.uk/ukb/coding.cgi?id=1001">1001 data encoding</a>. In this code, <em>1001</em> means <em>white british</em> which is the main ethnic group, and the one we want to select.</p>
+<pre><code class="language-bash">pop_code=1001
+pop_name=&quot;white_british&quot;
+population=&quot;pheno_extract.csv&quot;
+
+awk -F &quot;,&quot; -v var=&quot;$pop_code&quot; '$3~var{print $1}' $population &gt; $pop_name
+</code></pre>
+<p>This code will output the file <code>white_british</code>, containing the ids of the individuals of the white british ethnic background.</p>
+<p>You can now upload the ids of your individuals.</p>
+<pre><code class="language-bash">dx upload white_british
+</code></pre>
+<blockquote>
+<p>Once again, we remove <code>pheno_extract.csv</code> to enable future phenotype extraction.</p>
+<p><code>bash
+rm pheno_extract.csv</code></p>
+</blockquote>
+<h2 id="covariates">Covariates</h2>
+<p>The genetic principal components from the UKBB individuals are stored in the <a href="https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=22009">22009</a> data field.
+We could use our phenotype extraction algorithm, but for some reason, it is not working. Therefore, we will use another script.</p>
+<p>We will use 20 variables as covariates: the first 18 PCA components, the sex (<a href="https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=31">31</a>) and the age (<a href="https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=21003">21003</a>) of individuals. However, you can extract whatever you want as covariates.</p>
+<pre><code class="language-bash">record_id=&quot;&lt;record-id&gt;&quot;
+field_names=&quot;participant.eid,participant.eid,&quot;
+
+for i in {1..18}
+do
+  field_names+=&quot;participant.p22009_a$i,&quot;
+done
+
+field_names+=&quot;participant.p31,participant.p21003_i0&quot; # Sex and age
+
+dx extract_dataset $record_id --fields $field_names --delimiter &quot;\t&quot; --output covariates.txt
+
+echo -e &quot;FID\tIID\tPC1\tPC2\tPC3\tPC4\tPC5\tPC6\tPC7\tPC8\tPC9\tPC10\tPC11\tPC12\tPC13\tPC14\tPC15\tPC16\tPC17\tPC18\tSex\tAge&quot; &gt; file.tmp
+tail -n+2 covariates.txt &gt;&gt; .file.tmp
+mv file.tmp covariates.txt
+</code></pre>
+<p>You can now upload the covariates file.</p>
+<pre><code class="language-bash">dx upload covariates.txt
+</code></pre>
+              
+            </div>
+          </div><footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
+        <a href="../setup/" class="btn btn-neutral float-left" title="Initial setup"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+  </div>
+
+  Built with <a href="https://www.mkdocs.org/">MkDocs</a> using a <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+          
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" aria-label="Versions">
+  <span class="rst-current-version" data-toggle="rst-current-version">
+    
+        <span>
+          <a href="https://github.com/gloriabenoit/DNAnexus-GWAS" class="fa fa-github" style="color: #fcfcfc"> GitHub</a>
+        </span>
+    
+    
+      <span><a href="../setup/" style="color: #fcfcfc">&laquo; Previous</a></span>
+    
+    
+  </span>
+</div>
+    <script src="../js/jquery-3.6.0.min.js"></script>
+    <script>var base_url = "..";</script>
+    <script src="../js/theme_extra.js"></script>
+    <script src="../js/theme.js"></script>
+      <script src="../search/main.js"></script>
+    <script>
+        jQuery(function () {
+            SphinxRtdTheme.Navigation.enable(true);
+        });
+    </script>
+
+</body>
+</html>

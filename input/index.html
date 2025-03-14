@@ -158,7 +158,7 @@
 <p>Theses files can either be uploaded directly to your projects using <code>dx upload</code>, or created using DNAnexus data. This tutorial will guide you through the second option.</p>
 <h3 id="phenotype">Phenotype</h3>
 <p>To extract the phenotype that we want, we first need to download all available data-fields in our dataset.
-You will need the <code>record-id</code>, which is the id of the <code>.dataset</code> file at the root of your DNAnexus project. On your project's web page, you can find the id by selecting the <code>.dataset</code> file and searching for the <code>ID</code> in the right panel that appears.</p>
+You will need the <code>record-id</code>, which is the id of the <code>.dataset</code> file at the root of your DNAnexus project. On your project's web page, you can find the id by selecting the <code>.dataset</code> file and searching for the <code>ID</code> in the info panel that appears on the right.</p>
 <blockquote>
 <p>Please note, when running the <code>extract_dataset</code> command you might encounter a <code>('Invalid JSON received from server', 200)</code> error. If this happens, you simply need to rerun the code.</p>
 </blockquote>
@@ -336,10 +336,12 @@ done
 
 field_names+=&quot;participant.p31,participant.p21003_i0&quot; # Sex and age
 
-dx extract_dataset $record_id --fields $field_names --delimiter &quot;\t&quot; --output covariates.txt
+dx extract_dataset $record_id --fields $field_names --delimiter &quot;,&quot; --output covariates.txt
 
-echo -e &quot;FID\tIID\tPC1\tPC2\tPC3\tPC4\tPC5\tPC6\tPC7\tPC8\tPC9\tPC10\tPC11\tPC12\tPC13\tPC14\tPC15\tPC16\tPC17\tPC18\tSex\tAge&quot; &gt; file.tmp
+echo -e &quot;FID,IID,PC1,PC2,PC3,PC4,PC5,PC6,PC7,PC8,PC9,PC10,PC11,PC12,PC13,PC14,PC15,PC16,PC17,PC18,Sex,Age&quot; &gt; file.tmp
 tail -n+2 covariates.txt &gt;&gt; file.tmp
+awk -F , '$3!=&quot;&quot;' file.tmp &gt; covariates.txt # Remove ind with no PC data
+sed 's/,/\t/g' covariates.txt &gt; file.tmp
 mv file.tmp covariates.txt
 </code></pre>
 <p>You can now upload the covariates file.</p>

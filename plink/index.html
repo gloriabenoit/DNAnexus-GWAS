@@ -101,7 +101,7 @@
 <p>Before running a GWAS on DNAnexus using PLINK2, you need to make sure you have these 3 files uploaded to DNAnexus:</p>
 <ul>
 <li>The phenotype (BMI.txt)</li>
-<li>The ids of individuals we wish to keep (white british)</li>
+<li>The ids of individuals we wish to keep (white british.txt)</li>
 <li>The covariates to use (covariates.txt)</li>
 </ul>
 <p>You can check their presence with the following command:</p>
@@ -113,7 +113,7 @@
 We choose to use the same instance for all GWASs, to simplify the code, but this can be changed to your liking. Same for the priority and the cost limit. We also run the QC at the same time as our GWAS, please change the thresholds according to your preferences.</p>
 <pre><code class="language-bash">pheno_path=&quot;/WKD_&lt;your-name&gt;/BMI.txt&quot;
 pheno=$(basename &quot;$pheno_path&quot; .txt)
-ind_path=&quot;/WKD_&lt;your-name&gt;/white_british&quot;
+ind_path=&quot;/WKD_&lt;your-name&gt;/white_british.txt&quot;
 ind=$(basename &quot;$ind_path&quot;)
 cov_path=&quot;/WKD_&lt;your-name&gt;/covariates.txt&quot;
 cov=$(basename &quot;$cov_path&quot;)

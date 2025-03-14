@@ -94,7 +94,7 @@
 <p>In order to connect to DNAnexus remotely, you first need to install the <code>dxpy</code> package.</p>
 <pre><code class="language-bash">pip3 install dxpy
 </code></pre>
-<p>To enable tab completion, enter the following command, or add it to your <code>.bashrc</code>:</p>
+<p>To enable tab completion, run the following command, or add it to your <code>.bashrc</code>:</p>
 <pre><code class="language-bash">eval &quot;$(register-python-argcomplete dx|sed 's/-o default//')&quot;
 </code></pre>
 <p>You can now enter your DNAnexus credentials to access your project remotely by using the following command:</p>
@@ -105,7 +105,7 @@
 
 By default, your information expires in 30 days, but this can be changed using the <code>--timeout</code> option.
 
-For instance, if you want your info to expire in <b>6 months</b>, use the following command. The <code>-help</code> option is useful if you want to know more about the `--timeout` input format.
+For instance, if you want your info to expire in <b>6 months</b>, use the following command. The <code>-help</code> option is useful if you want to know more about the <code>--timeout</code> input format.
 
 
 <pre><code class="language-bash">dx login --timeout 6M
@@ -114,10 +114,13 @@ For instance, if you want your info to expire in <b>6 months</b>, use the follow
 
 </blockquote>
 
-<p>By default, any job prompted here will output in your current DNAnexus repertory. Therefore, you can create a new folder and move into it, to help keep your poject tidy (especially if multiple people use it).</p>
+<p>By default, any job prompted here will output in your current DNAnexus repertory. Therefore, you can create a new folder and move into it, to help keep your project tidy (especially if multiple people use it).</p>
 <pre><code class="language-bash">dx mkdir WKD_&lt;your-name&gt;
 dx cd WKD_&lt;your-name&gt;
 </code></pre>
+<blockquote>
+<p>It goes without saying that you can name this repertory however you want.</p>
+</blockquote>
 <p>Now, all job will output in this repertory.</p>
 <p>You can find the documentation for all <code>dx</code> commands we will use <a href="https://documentation.dnanexus.com/user/helpstrings-of-sdk-command-line-utilities">here</a>.</p>
               

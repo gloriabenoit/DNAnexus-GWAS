@@ -42,7 +42,7 @@ Theses files can either be uploaded directly to your projects using `dx upload`,
 ### Phenotype
 
 To extract the phenotype that we want, we first need to download all available data-fields in our dataset.
-You will need the `record-id`, which is the id of the `.dataset` file at the root of your DNAnexus project. On your project's web page, you can find the id by selecting the `.dataset` file and searching for the `ID` in the right panel that appears.
+You will need the `record-id`, which is the id of the `.dataset` file at the root of your DNAnexus project. On your project's web page, you can find the id by selecting the `.dataset` file and searching for the `ID` in the info panel that appears on the right.
 
 > Please note, when running the `extract_dataset` command you might encounter a `('Invalid JSON received from server', 200)` error. If this happens, you simply need to rerun the code.
 
@@ -228,10 +228,12 @@ done
 
 field_names+="participant.p31,participant.p21003_i0" # Sex and age
 
-dx extract_dataset $record_id --fields $field_names --delimiter "\t" --output covariates.txt
+dx extract_dataset $record_id --fields $field_names --delimiter "," --output covariates.txt
 
-echo -e "FID\tIID\tPC1\tPC2\tPC3\tPC4\tPC5\tPC6\tPC7\tPC8\tPC9\tPC10\tPC11\tPC12\tPC13\tPC14\tPC15\tPC16\tPC17\tPC18\tSex\tAge" > file.tmp
+echo -e "FID,IID,PC1,PC2,PC3,PC4,PC5,PC6,PC7,PC8,PC9,PC10,PC11,PC12,PC13,PC14,PC15,PC16,PC17,PC18,Sex,Age" > file.tmp
 tail -n+2 covariates.txt >> file.tmp
+awk -F , '$3!=""' file.tmp > covariates.txt # Remove ind with no PC data
+sed 's/,/\t/g' covariates.txt > file.tmp
 mv file.tmp covariates.txt
 ```
 

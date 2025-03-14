@@ -8,7 +8,7 @@ On DNAnexus, whole genome sequences data are saved in multiple formats: BGEN for
 dx ls "/Bulk/Whole genome sequences"
 ```
 
-On DNAnexus, when a job is executed, a worker is spun up in the cloud, then the job's code and inputs are downloaded to that worker and exectued. This is the standard behavior, but inputs can also be mounted to avoid their downloading costs.
+On DNAnexus, when a job is executed, a worker is spun up in the cloud, then the job's code and inputs are downloaded to that worker and exectuted. This is the standard behavior, but inputs can also be mounted to avoid their downloading costs.
 
 ### PLINK2
 
@@ -25,8 +25,9 @@ PLINK2 can read both BGEN and PLINK format. Therefore, we have 4 ways of inputin
 
 </center>
 
-After some trial and error, we have found that using the BGEN format without mounting it was the quickest way to perform a GWAS using PLINK2.
-Therefore, this is what we will do in this tutorial. The path to the genetic data is the following: `"/Bulk/Whole genome sequences/Population level genome variants, BGEN format - interim 200k release/"`.
+After some trial and error, we have found that using the BGEN format without mounting it was the quickest way to perform a GWAS using PLINK2. Downloading and translating BGEN files locally was quicker than downloading or mounting the PLINK files.
+
+Therefore, in this tutorial, we will input BGEN files directly. The path to the genetic data is the following: `"/Bulk/Whole genome sequences/Population level genome variants, BGEN format - interim 200k release/"`.
 
 ## Aditionnal data
 
@@ -34,14 +35,14 @@ In order to run our GWAS, apart from the genetic and sample data, we need 3 addi
 
 * The phenotype (for instance, BMI)
 * The ids of individuals we wish to keep (for instance, white british)
-* The covariates to use
+* The covariates to use (for instance, 18 genetic principal components, the sex and the age)
 
 Theses files can either be uploaded directly to your projects using `dx upload`, or created using DNAnexus data. This tutorial will guide you through the second option.
 
 ### Phenotype
 
 To extract the phenotype that we want, we first need to download all available data-fields in our dataset.
-You will need the `record-id`, which is the id of the `.dataset` file at the root of your DNAnexus project. On your project's web page, you can find the id by selecting the `.dataset` file and searching for the `ID` in the right panel prompted.
+You will need the `record-id`, which is the id of the `.dataset` file at the root of your DNAnexus project. On your project's web page, you can find the id by selecting the `.dataset` file and searching for the `ID` in the right panel that appears.
 
 > Please note, when running the `extract_dataset` command you might encounter a `('Invalid JSON received from server', 200)` error. If this happens, you simply need to rerun the code.
 
@@ -51,9 +52,9 @@ dx extract_dataset <record-id> -ddd --delimiter ","
 
 This command will output 3 files:
 
-* `<app-id>.data_dictionary.csv` contains a table with participants as the rows and metadata along the columns, including field names (see table below for naming convention).
-* `<app-id>.codings.csv` contains a lookup table for the different medical codes, including ICD-10 codes that will be displayed in the diagnosis field column (p41270).
-* `<app-id>.entity_dictionary.csv` contains the different entities that can be queried, where participant is the main entity that corresponds to most phenotype fields.
+* `<app-id>.data_dictionary.csv` contains a table with participants as the rows and metadata along the columns, including field names (see table below for naming convention)
+* `<app-id>.codings.csv` contains a lookup table for the different medical codes, including ICD-10 codes that will be displayed in the diagnosis field column (p41270)
+* `<app-id>.entity_dictionary.csv` contains the different entities that can be queried, where participant is the main entity that corresponds to most phenotype fields
 
 To make it easier, you can rename theses files to a shorter name like `ukbb`.
 
@@ -63,7 +64,7 @@ rename <app-id> ukbb app*
 
 We first need to get the field name of the phenotype(s) we want to extract. As an example, we will extract the BMI index ([21001](https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=21001)), but you can extract any number of phenotypes.
 
-For the main participant phenotype entity, the Research Analysis Platform uses field names with the following convention:
+For the main participant phenotype entity, the Research Analysis Platform (UKB-RAP) uses field names with the following convention:
 
 <center>
 
@@ -76,7 +77,7 @@ For the main participant phenotype entity, the Research Analysis Platform uses f
 
 </center>
 
-Therefore, one phenotype ID can actually have multiple data field. For instance, BMI has four instances.
+This means one phenotype ID can actually have multiple data field. For example, BMI has four instances.
 The following python script will extract the phenotype that you wish, and every array or instance associated.
 It will ouptput `pheno_extract.csv` which contains individual ids and any phenotype you chose to extract.
 
@@ -137,7 +138,8 @@ subprocess.check_call(cmd)
 #### PLINK formatting
 
 PLINK needs a specific format for its phenotype, therefore we need to format the file correctly.
-We want to only keep the first instance for our phenotype, and duplicate the individuals id.
+We want to duplicate the individuals ids and only keep the first instance for our phenotype.
+The following python script will do exactly that.
 
 ```python
 """ Format phenotype file to correspond to PLINK standard """
@@ -183,8 +185,12 @@ dx upload BMI.txt
 
 ### Individual ids
 
-To filter out individuals based on their ethnic background, we can use the [phenotype extraction script](#phenotype) and the data-field [21000](https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=21000).
-You simply need to replace `FIELD_ID = [21001]`to `FIELD_ID = [21000]`.
+To filter out individuals based on their ethnic background, we can use the [*phenotype extraction script*](#phenotype) and the data-field [21000](https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=21000).
+You simply need to replace the following line:
+
+```python
+FIELD_ID = [21000] # ethnic background id
+```
 
 This field uses the [1001 data encoding](https://biobank.ndph.ox.ac.uk/ukb/coding.cgi?id=1001). In this code, *1001* means *white british* which is the main ethnic group, and the one we want to select.
 
@@ -193,15 +199,15 @@ pop_code=1001
 pop_name="white_british"
 population="pheno_extract.csv"
 
-awk -F "," -v var="$pop_code" '$3~var{print $1}' $population > $pop_name
+awk -F "," -v var="$pop_code" '$2~var{print $1,$1}' $population > $pop_name.txt
 ```
 
-This code will output the file `white_british`, containing the ids of the individuals of the white british ethnic background.
+This code will output the file `white_british.txt`, containing the ids of the individuals of the white british ethnic background.
 
 You can now upload the ids of your individuals.
 
 ```bash
-dx upload white_british
+dx upload white_british.txt
 ```
 
 ### Covariates

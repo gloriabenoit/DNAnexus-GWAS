@@ -6,7 +6,7 @@ In order to connect to DNAnexus remotely, you first need to install the `dxpy` p
 pip3 install dxpy
 ```
 
-To enable tab completion, enter the following command, or add it to your `.bashrc`:
+To enable tab completion, run the following command, or add it to your `.bashrc`:
 
 ```bash
 eval "$(register-python-argcomplete dx|sed 's/-o default//')"
@@ -24,7 +24,7 @@ Your authentication token and your current project settings have now been saved 
 
 By default, your information expires in 30 days, but this can be changed using the <code>--timeout</code> option.
 
-For instance, if you want your info to expire in <b>6 months</b>, use the following command. The <code>-help</code> option is useful if you want to know more about the `--timeout` input format.
+For instance, if you want your info to expire in <b>6 months</b>, use the following command. The <code>-help</code> option is useful if you want to know more about the <code>--timeout</code> input format.
 
 ```bash
 dx login --timeout 6M
@@ -32,12 +32,14 @@ dx login --timeout 6M
 
 </blockquote>
 
-By default, any job prompted here will output in your current DNAnexus repertory. Therefore, you can create a new folder and move into it, to help keep your poject tidy (especially if multiple people use it).
+By default, any job prompted here will output in your current DNAnexus repertory. Therefore, you can create a new folder and move into it, to help keep your project tidy (especially if multiple people use it).
 
 ```bash
 dx mkdir WKD_<your-name>
 dx cd WKD_<your-name>
 ```
+
+> It goes without saying that you can name this repertory however you want.
 
 Now, all job will output in this repertory.
 

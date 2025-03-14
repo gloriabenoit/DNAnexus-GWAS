@@ -5,7 +5,7 @@
 Before running a GWAS on DNAnexus using PLINK2, you need to make sure you have these 3 files uploaded to DNAnexus:
 
 * The phenotype (BMI.txt)
-* The ids of individuals we wish to keep (white british)
+* The ids of individuals we wish to keep (white british.txt)
 * The covariates to use (covariates.txt)
 
 You can check their presence with the following command:
@@ -24,7 +24,7 @@ We choose to use the same instance for all GWASs, to simplify the code, but this
 ```bash
 pheno_path="/WKD_<your-name>/BMI.txt"
 pheno=$(basename "$pheno_path" .txt)
-ind_path="/WKD_<your-name>/white_british"
+ind_path="/WKD_<your-name>/white_british.txt"
 ind=$(basename "$ind_path")
 cov_path="/WKD_<your-name>/covariates.txt"
 cov=$(basename "$cov_path")

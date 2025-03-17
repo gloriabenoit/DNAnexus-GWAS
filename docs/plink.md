@@ -4,9 +4,9 @@
 
 Before running a GWAS on DNAnexus using PLINK2, you need to make sure you have these 3 files uploaded to DNAnexus:
 
-* The phenotype (BMI.txt)
-* The ids of individuals we wish to keep (white british.txt)
-* The covariates to use (covariates.txt)
+* The phenotype: `plink_BMI.txt`
+* The ids of individuals we wish to keep: `white british.txt`
+* The covariates to use: `covariates.txt`
 
 You can check their presence with the following command:
 
@@ -18,12 +18,24 @@ Please refer to the [Input files section](input.md) if you don't have these file
 
 ## Running a GWAS
 
-On DNAnexus, PLINK2 is available as part of the Swiss Army Knife app.
-We choose to use the same instance for all GWASs, to simplify the code, but this can be changed to your liking. Same for the priority and the cost limit. We also run the QC at the same time as our GWAS, please change the thresholds according to your preferences.
+On DNAnexus, PLINK2 is available as part of the [Swiss Army Knife app](https://ukbiobank.dnanexus.com/app/swiss-army-knife).
+We choose to use the same instance for all GWASs, to simplify the code, but this can be changed to your liking. Same for the priority and the cost limit. 
+
+### Quality control
+
+We perform the QC at the same time as our GWAS. The variants are filtered using following options:
+
+```text
+--maf 0.0001 --hwe 1e-50 --geno 0.1 --mind 0.1
+```
+
+> Please change the thresholds according to your preferences.
+
+### Linear or logistic regression
 
 ```bash
-pheno_path="/WKD_<your-name>/BMI.txt"
-pheno=$(basename "$pheno_path" .txt)
+pheno="BMI"
+pheno_path="/WKD_<your-name>/plink_$pheno.txt"
 ind_path="/WKD_<your-name>/white_british.txt"
 ind=$(basename "$ind_path")
 cov_path="/WKD_<your-name>/covariates.txt"
@@ -34,7 +46,7 @@ threads=16
 priority="low"
 cost_limit=3
 
-dx mkdir -p gwas_$pheno
+dx mkdir -p plink_gwas_$pheno
 
 for chr_num in $(seq 1 22); do
     prefix="/Bulk/Whole genome sequences/Population level genome variants, BGEN format - interim 200k release//ukb24306_c${chr_num}_b0_v1"
@@ -50,7 +62,7 @@ for chr_num in $(seq 1 22); do
                 --keep $ind \
                 --covar $cov \
                 --covar-name PC1,PC2,PC3,PC4,PC5,PC6,PC7,PC8,PC9,PC10,PC11,PC12,PC13,PC14,PC15,PC16,PC17,PC18,Age,Sex \
-                --pheno $pheno.txt \
+                --pheno plink_$pheno.txt \
                 --bgen $bgen.bgen ref-first \
                 --sample $bgen.sample \
                 --no-psam-pheno \
@@ -60,7 +72,7 @@ for chr_num in $(seq 1 22); do
         --priority "$priority" --cost-limit "$cost_limit" \
         -icmd="$plink_command" \
         --instance-type "$instance" \
-        --name="gwas_${pheno}_c${chr_num}" \
+        --name="p_gwas_${pheno}_c${chr_num}" \
         -iin="$ind_path" \
         -iin="$cov_path" \
         -iin="$pheno_path" \
@@ -68,25 +80,27 @@ for chr_num in $(seq 1 22); do
         -iin="$prefix.bgen" \
         -y
 done
+
+dx cd ../
 ```
 
-This script will create a new directory named `gwas_<phenotype>` in the project on DNAnexus. In this folder, you will find a total of 44 files, named `sumstat_c<num>` (two per chromosome, the summary statistics and the log).
+This script will create a new directory named `plink_gwas_<phenotype>` in the project on DNAnexus. In this folder, you will find a total of 44 files, named `sumstat_c<num>` (two per chromosome, the summary statistics and the log).
 
 ## Computing the results
 
-Now that all of the summary statistics are computed, we can clean them up and combine them into one clean file. We will create a new directory named `gwas_<phenotype>`, locally this time, with inside another directory named `statistics` containing all of the summary statistics per chromosome. The combination of all of them will be located at the same level than `statistics`, making it easier to find.
+Now that all of the summary statistics are computed, we can clean them up and combine them into one clean file. We will create a new directory named `plink_gwas_<phenotype>`, locally this time, with inside another directory named `statistics` containing all of the summary statistics per chromosome. The combination of all of them will be located at the same level than `statistics`, making it easier to find.
 
 ```bash
 pheno="BMI"
 type="linear" # to change accordingly
-output_path="gwas_$pheno"
+output_path="plink_gwas_$pheno"
 stat_path="$output_path/statistics"
 
 mkdir -p $output_path
 mkdir -p $stat_path
 
 for chr_num in $(seq 1 22); do
-    result="sumstat_c${chr_num}.PHENO1.glm.$type"
+    result="sumstat_c${chr_num}.$pheno.glm.$type"
     dx download "gwas_$pheno/$result" -o $stat_path
     if [ $chr_num -eq 1 ]; then
         head -n1 "$stat_path/$result" > "$output_path/sumstat_${pheno}.ADD"

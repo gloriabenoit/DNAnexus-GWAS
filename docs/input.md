@@ -29,7 +29,7 @@ After some trial and error, we have found that using the BGEN format without mou
 
 Therefore, in this tutorial, we will input BGEN files directly. The path to the genetic data is the following: `"/Bulk/Whole genome sequences/Population level genome variants, BGEN format - interim 200k release/"`.
 
-## Aditionnal data
+## Additionnal data
 
 In order to run our GWAS, apart from the genetic and sample data, we need 3 additionnal files:
 
@@ -38,6 +38,9 @@ In order to run our GWAS, apart from the genetic and sample data, we need 3 addi
 * The covariates to use (for instance, 18 genetic principal components, the sex and the age)
 
 Theses files can either be uploaded directly to your projects using `dx upload`, or created using DNAnexus data. This tutorial will guide you through the second option.
+
+> All three files will be uploaded to your current `dx` repertory (`WKD_<your-name>` if you are closely following this tutorial).
+> If you want to upload them somewhere else, you can either move directory with `dx cd` before uploading, or use the `--path` or `--destination` option to specify the DNAnexus path to upload the files.
 
 ### Phenotype
 
@@ -135,43 +138,56 @@ subprocess.check_call(cmd)
 > Please be aware, since `extract_dataset` has no *overwite* option by design, we implemented ourselves.
 > Running the previous code will first delete `pheno_extract.csv` if it's present, allowing for the extraction to happen.
 
-#### PLINK formatting
+PLINK and regenie use the same formatting for the phenotype file, with a single exception : the code for missing values.
+Apart from this, both need to duplicate the individuals ids and only keep the first instance for our phenotype.
 
-PLINK needs a specific format for its phenotype, therefore we need to format the file correctly.
-We want to duplicate the individuals ids and only keep the first instance for our phenotype.
-The following python script will do exactly that.
+More information on phenotype files formatting can be found [here](https://www.cog-genomics.org/plink/2.0/input#pheno) for PLINK2 and [here](https://rgcgithub.github.io/regenie/options/#phenotype-file-format) for regenie.
 
 ```python
-""" Format phenotype file to correspond to PLINK standard """
+""" Format phenotype file. """
 
 import pandas as pd
 
 # Input
 FILENAME = "pheno_extract.csv"
 PHENOTYPE = "BMI"
-OUTPUT = f"{PHENOTYPE}.txt"
+SOFTWARE = 'p' # for PLINK2 or 'r' for regenie.
 
-def format_phenotype(filename, output):
-    """ Save phenotype according to PLINK format.
+def format_phenotype(filename, phenotype, software):
+    """ Save phenotype according to software format.
 
     Parameters
     ----------
     filename : str
         Phenotype file to format.
-    output : str
-        Output file.
+    phenotype : str
+        Phenotype name.
+    format : str { 'p', 'r'}
+        Either 'p' for PLINK2 or 'r' for regenie,
+        to correctly format the file.
     """
+    # Software specific format.
+    if software == 'p':
+        na_val = -9
+        output = f"plink_{phenotype}.txt"
+    elif software == 'r':
+        na_val = 'NA'
+        output = f"regenie_{phenotype}.txt"
+
+    # Data
     data = pd.read_csv(filename, sep=',')
-    
+
     # To be changed accordingly
-    data = data.iloc[:,[0,1]]
-    data = pd.concat([data.iloc[:, 0], data], axis=1)
-    
+    pheno = data.iloc[:,[0,1]]
+    pheno = pheno.rename(columns={pheno.columns[0]: "IID", pheno.columns[1]: phenotype})
+    data = data.rename(columns={data.columns[0]: "FID"})
+    merged = pd.concat([data.iloc[:, 0], pheno], axis=1)
+
     # Save output
-    data.to_csv(output, sep='\t', index=False, header=False, na_rep=-9)
+    merged.to_csv(output, sep='\t', index=False, header=True, na_rep=na_val)
 
 # Save phenotype
-format_phenotype(FILENAME, OUTPUT)
+format_phenotype(FILENAME, PHENOTYPE, SOFTWARE)
 ```
 
 > You can modify the `format_phenotype` function to your heart's desire, depending on what you wish to do with the phenotypes.
@@ -180,13 +196,17 @@ format_phenotype(FILENAME, OUTPUT)
 You can now upload the formated phenotype file.
 
 ```bash
-dx upload BMI.txt
+dx upload plink_BMI.txt
+dx upload regenie_BMI.txt
 ```
+
+> For the sake of this tutorial, we upload two files: one for each type of formatting.
 
 ### Individual ids
 
-To filter out individuals based on their ethnic background, we can use the [*phenotype extraction script*](#phenotype) and the data-field [21000](https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=21000).
-You simply need to replace the following line:
+Running a GWAS on a specific population helps reduce the bias caused by population stratification. It is therefore an important step.
+
+To filter out individuals based on their ethnic background, we can use the [*phenotype extraction script*](#phenotype) and the data-field [21000](https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=21000). You simply need to replace the following line:
 
 ```python
 FIELD_ID = [21000] # ethnic background id
@@ -216,6 +236,8 @@ The genetic principal components from the UKBB individuals are stored in the [22
 We could use our phenotype extraction algorithm, but for some reason, it is not working. Therefore, we will use another script.
 
 We will use 20 variables as covariates: the first 18 PCA components, the sex ([31](https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=31)) and the age ([21003](https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=21003)) of individuals. However, you can extract whatever you want as covariates.
+
+More information on covariates files formatting can be found [here](https://www.cog-genomics.org/plink/2.0/input#covar) for PLINK2 and [here](https://rgcgithub.github.io/regenie/options/#covariate-file-format) for regenie.
 
 ```bash
 record_id="<record-id>"

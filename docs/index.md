@@ -15,3 +15,26 @@ In order to parallelize the analyses, we will perform 22 different GWAS, one for
 ## Requirements
 
 To follow this tutorial, you will need [Python 3](https://www.python.org/downloads/).
+
+## Final architecture
+
+At the end of this tutorial, your DNAnexus project's architecture should look like this:
+
+```text
+├── app-id
+├── app-id.dataset
+├── Bulk
+├── metadata
+├── Showcase
+└── WKD_<your-name>
+    ├── covariates.txt
+    ├── plink_BMI.txt
+    ├── plink_gwas_BMI
+    ├── regenie_BMI.txt
+    ├── regenie_gwas_BMI
+    │   ├── merge
+    │   └── QC_lists
+    └── white_british.txt
+```
+
+> This will vary based on whether you use both PLINK2 and regenie, or only one, and if you have changed files/repertory names. Please note, if modified, files and repertory names have to be the same across all commands.

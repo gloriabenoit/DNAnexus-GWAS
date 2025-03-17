@@ -47,6 +47,8 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#final-architecture">Final architecture</a>
+    </li>
     </ul>
                 </li>
               </ul>
@@ -104,6 +106,26 @@ If not, please create an account <a href="https://ams.ukbiobank.ac.uk/ams/signup
 <p>In order to parallelize the analyses, we will perform 22 different GWAS, one for each chromosome, and combine the results locally.</p>
 <h2 id="requirements">Requirements</h2>
 <p>To follow this tutorial, you will need <a href="https://www.python.org/downloads/">Python 3</a>.</p>
+<h2 id="final-architecture">Final architecture</h2>
+<p>At the end of this tutorial, your DNAnexus project's architecture should look like this:</p>
+<pre><code class="language-text">├── app-id
+├── app-id.dataset
+├── Bulk
+├── metadata
+├── Showcase
+└── WKD_&lt;your-name&gt;
+    ├── covariates.txt
+    ├── plink_BMI.txt
+    ├── plink_gwas_BMI
+    ├── regenie_BMI.txt
+    ├── regenie_gwas_BMI
+    │   ├── merge
+    │   └── QC_lists
+    └── white_british.txt
+</code></pre>
+<blockquote>
+<p>This will vary based on whether you use both PLINK2 and regenie, or only one, and if you have changed files/repertory names. Please note, if modified, files and repertory names have to be the same across all commands.</p>
+</blockquote>
               
             </div>
           </div><footer>
@@ -156,5 +178,5 @@ If not, please create an account <a href="https://ams.ukbiobank.ac.uk/ams/signup
 
 <!--
 MkDocs version : 1.6.1
-Build Date UTC : 2025-03-14 14:53:47.780493+00:00
+Build Date UTC : 2025-03-17 14:56:53.795254+00:00
 -->

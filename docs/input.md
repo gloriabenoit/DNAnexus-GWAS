@@ -8,8 +8,6 @@ On DNAnexus, whole genome sequences data are saved in multiple formats: BGEN for
 dx ls "/Bulk/Whole genome sequences"
 ```
 
-On DNAnexus, when a job is executed, a worker is spun up in the cloud, then the job's code and inputs are downloaded to that worker and exectuted. This is the standard behavior, but inputs can also be mounted to avoid their downloading costs.
-
 ### PLINK2
 
 PLINK2 can read both BGEN and PLINK format. Therefore, we have 4 ways of inputing genetic data:
@@ -29,7 +27,7 @@ After some trial and error, we have found that using the BGEN format without mou
 
 Therefore, in this tutorial, we will input BGEN files directly. The path to the genetic data is the following: `"/Bulk/Whole genome sequences/Population level genome variants, BGEN format - interim 200k release/"`.
 
-## Additionnal data
+## Additional data
 
 In order to run our GWAS, apart from the genetic and sample data, we need 3 additionnal files:
 
@@ -138,7 +136,7 @@ This command outputs 1 file:
 
 * `pheno_extract.csv` contains the values for participant IDs and every single instance of all phenotypes extracted
 
-> Please be aware, since `extract_dataset` has no *overwite* option by design, we implemented ourselves.
+> Please be aware, since `extract_dataset` has no *overwrite* option by design, we implemented ourselves.
 > Running the previous code will first delete `pheno_extract.csv` if it's present, allowing for the extraction to happen.
 
 PLINK and regenie use the same formatting for the phenotype file, with a single exception : the code for missing values.

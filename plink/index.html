@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gloria BENOIT" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Using PLINK2 - Basic tutorial for performing GWASs on DNAnexus</title>
+    <title>Using PLINK2 - Basic tutorial for performing a GWAS on DNAnexus</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -31,7 +31,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
     <div class="wy-side-scroll">
       <div class="wy-side-nav-search">
-          <a href=".." class="icon icon-home"> Basic tutorial for performing GWASs on DNAnexus
+          <a href=".." class="icon icon-home"> Basic tutorial for performing a GWAS on DNAnexus
         </a><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
       <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
@@ -45,7 +45,11 @@
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../setup/">Initial setup</a>
+                <li class="toctree-l1"><a class="reference internal" href="../setup/">First setup</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../jobs/">About jobs</a>
                 </li>
               </ul>
               <ul>
@@ -61,7 +65,7 @@
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#quality-control">Quality control</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#linear-or-logistic-regression">Linear or logistic regression</a>
+    <li class="toctree-l3"><a class="reference internal" href="#linear-regression">Linear regression</a>
     </li>
         </ul>
     </li>
@@ -75,7 +79,7 @@
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../errors/">Errors when running jobs</a>
+                <li class="toctree-l1"><a class="reference internal" href="../results/">Visualizing results</a>
                 </li>
               </ul>
       </div>
@@ -85,7 +89,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
       <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="..">Basic tutorial for performing GWASs on DNAnexus</a>
+          <a href="..">Basic tutorial for performing a GWAS on DNAnexus</a>
         
       </nav>
       <div class="wy-nav-content">
@@ -103,6 +107,7 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="using-plink2">Using PLINK2</h1>
+<p>Every file created during this analysis will be stored in a main directory called <code>plink_gwas_BMI</code>.</p>
 <h2 id="input-files">Input files</h2>
 <p>Before running a GWAS on DNAnexus using PLINK2, you need to make sure you have these 3 files uploaded to DNAnexus:</p>
 <ul>
@@ -124,7 +129,7 @@ We choose to use the same instance for all GWASs, to simplify the code, but this
 <blockquote>
 <p>Please change the thresholds according to your preferences.</p>
 </blockquote>
-<h3 id="linear-or-logistic-regression">Linear or logistic regression</h3>
+<h3 id="linear-regression">Linear regression</h3>
 <pre><code class="language-bash">pheno=&quot;BMI&quot;
 pheno_path=&quot;/WKD_&lt;your-name&gt;/plink_$pheno.txt&quot;
 ind_path=&quot;/WKD_&lt;your-name&gt;/white_british.txt&quot;
@@ -163,7 +168,11 @@ for chr_num in $(seq 1 22); do
         --priority &quot;$priority&quot; --cost-limit &quot;$cost_limit&quot; \
         -icmd=&quot;$plink_command&quot; \
         --instance-type &quot;$instance&quot; \
-        --name=&quot;p_gwas_${pheno}_c${chr_num}&quot; \
+        --name=&quot;plink_gwas_${pheno}_c${chr_num}&quot; \
+        --tag=&quot;plink&quot; \
+        --tag=&quot;GWAS&quot; \
+        --tag=&quot;$pheno&quot; \
+        --tag=&quot;c${chr_num}&quot; \
         -iin=&quot;$ind_path&quot; \
         -iin=&quot;$cov_path&quot; \
         -iin=&quot;$pheno_path&quot; \
@@ -174,20 +183,30 @@ done
 
 dx cd ../
 </code></pre>
-<p>This script will create a new directory named <code>plink_gwas_&lt;phenotype&gt;</code> in the project on DNAnexus. In this folder, you will find a total of 44 files, named <code>sumstat_c&lt;num&gt;</code> (two per chromosome, the summary statistics and the log).</p>
+<p>This command outputs 22 files:</p>
+<ul>
+<li><code>sumstat_c&lt;chrom-number&gt;.BMI.glm.linear</code> contains the values for the regression <em>per chromosome</em></li>
+</ul>
+<p>The files will be stored in the main directory, <code>plink_gwas_BMI</code>.</p>
+<blockquote>
+<p>Please note, the commands are the same whether your phenotype is quantitative or binary. Only the name of the output file will change (<code>.glm.linear</code> or <code>.glm.logistic.hybrid</code> for linear and logistic regression respectively).</p>
+</blockquote>
 <h2 id="computing-the-results">Computing the results</h2>
-<p>Now that all of the summary statistics are computed, we can clean them up and combine them into one clean file. We will create a new directory named <code>plink_gwas_&lt;phenotype&gt;</code>, locally this time, with inside another directory named <code>statistics</code> containing all of the summary statistics per chromosome. The combination of all of them will be located at the same level than <code>statistics</code>, making it easier to find.</p>
+<p>Now that all of the summary statistics are computed, we can download them, clean them up and combine them into one clean file.</p>
+<p>PLINK outputs a value for each of the covariates, in addition to the global p-value. However, these do not interest us, we only want to keep the global p-value. The following scripts helps clean up the p-values, and concatenates them into a single file.</p>
+<blockquote>
+<p>Please change the value of <code>type</code> based on the regression performed: <em>"linear"</em> or <em>"logistic.hybrid"</em>.</p>
+</blockquote>
 <pre><code class="language-bash">pheno=&quot;BMI&quot;
 type=&quot;linear&quot; # to change accordingly
 output_path=&quot;plink_gwas_$pheno&quot;
 stat_path=&quot;$output_path/statistics&quot;
 
-mkdir -p $output_path
 mkdir -p $stat_path
 
 for chr_num in $(seq 1 22); do
     result=&quot;sumstat_c${chr_num}.$pheno.glm.$type&quot;
-    dx download &quot;gwas_$pheno/$result&quot; -o $stat_path
+    dx download &quot;$output_path/$result&quot; -o $stat_path
     if [ $chr_num -eq 1 ]; then
         head -n1 &quot;$stat_path/$result&quot; &gt; &quot;$output_path/sumstat_${pheno}.ADD&quot;
     fi
@@ -196,6 +215,12 @@ for chr_num in $(seq 1 22); do
     grep &quot;ADD&quot; &quot;$stat_path/$result&quot; &gt;&gt; &quot;$output_path/sumstat_${pheno}.ADD&quot;
 done
 </code></pre>
+<p>This command outputs 23 files:</p>
+<ul>
+<li><code>sumstat_c&lt;chrom-number&gt;.ADD</code> contains the cleaned up values for the regression <em>per chromosome</em></li>
+<li><code>sumstat_BMI.ADD</code> contains the concatenated cleaned up values for the regression</li>
+</ul>
+<p>The files will be stored in a new directory named <code>plink_gwas_BMI</code>, locally this time, with inside another directory named <code>statistics</code> containing all of the summary statistics per chromosome. The combination of all of them will be located at the same level than <code>statistics</code>, making it easier to find.</p>
 <p>Congratulations, you have successfully completed a GWAS using PLINK2 on DNAnexus!</p>
               
             </div>

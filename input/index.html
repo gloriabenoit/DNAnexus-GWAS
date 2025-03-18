@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gloria BENOIT" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Input files - Basic tutorial for performing GWASs on DNAnexus</title>
+    <title>Input files - Basic tutorial for performing a GWAS on DNAnexus</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -31,7 +31,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
     <div class="wy-side-scroll">
       <div class="wy-side-nav-search">
-          <a href=".." class="icon icon-home"> Basic tutorial for performing GWASs on DNAnexus
+          <a href=".." class="icon icon-home"> Basic tutorial for performing a GWAS on DNAnexus
         </a><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
       <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
@@ -45,7 +45,11 @@
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../setup/">Initial setup</a>
+                <li class="toctree-l1"><a class="reference internal" href="../setup/">First setup</a>
+                </li>
+              </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../jobs/">About jobs</a>
                 </li>
               </ul>
               <ul class="current">
@@ -79,7 +83,7 @@
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../errors/">Errors when running jobs</a>
+                <li class="toctree-l1"><a class="reference internal" href="../results/">Visualizing results</a>
                 </li>
               </ul>
       </div>
@@ -89,7 +93,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
       <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="..">Basic tutorial for performing GWASs on DNAnexus</a>
+          <a href="..">Basic tutorial for performing a GWAS on DNAnexus</a>
         
       </nav>
       <div class="wy-nav-content">
@@ -164,7 +168,7 @@ You will need the <code>record-id</code>, which is the id of the <code>.dataset<
 </blockquote>
 <pre><code class="language-bash">dx extract_dataset &lt;record-id&gt; -ddd --delimiter &quot;,&quot;
 </code></pre>
-<p>This command will output 3 files:</p>
+<p>This command outputs 3 files:</p>
 <ul>
 <li><code>&lt;app-id&gt;.data_dictionary.csv</code> contains a table with participants as the rows and metadata along the columns, including field names (see table below for naming convention)</li>
 <li><code>&lt;app-id&gt;.codings.csv</code> contains a lookup table for the different medical codes, including ICD-10 codes that will be displayed in the diagnosis field column (p41270)</li>
@@ -209,8 +213,7 @@ You will need the <code>record-id</code>, which is the id of the <code>.dataset<
 </table>
 <p></center></p>
 <p>This means one phenotype ID can actually have multiple data field. For example, BMI has four instances.
-The following python script will extract the phenotype that you wish, and every array or instance associated.
-It will ouptput <code>pheno_extract.csv</code> which contains individual ids and any phenotype you chose to extract.</p>
+The following python script will extract the phenotype that you wish, and every array or instance associated.</p>
 <pre><code class="language-python">&quot;&quot;&quot; Extract phenotype(s) from UKBB based on field ID(s). &quot;&quot;&quot;
 
 import os
@@ -260,6 +263,10 @@ cmd = [&quot;dx&quot;, &quot;extract_dataset&quot;, DATASET, &quot;--fields&quot
         &quot;--delimiter&quot;, &quot;,&quot;, &quot;--output&quot;, OUTPUT]
 subprocess.check_call(cmd)
 </code></pre>
+<p>This command outputs 1 file:</p>
+<ul>
+<li><code>pheno_extract.csv</code> contains the values for participant IDs and every single instance of all phenotypes extracted</li>
+</ul>
 <blockquote>
 <p>Please be aware, since <code>extract_dataset</code> has no <em>overwite</em> option by design, we implemented ourselves.
 Running the previous code will first delete <code>pheno_extract.csv</code> if it's present, allowing for the extraction to happen.</p>
@@ -312,6 +319,10 @@ def format_phenotype(filename, phenotype, software):
 # Save phenotype
 format_phenotype(FILENAME, PHENOTYPE, SOFTWARE)
 </code></pre>
+<p>This command outputs 1 file:</p>
+<ul>
+<li><code>&lt;software&gt;_BMI.csv</code> contains the formatted phenotype values</li>
+</ul>
 <blockquote>
 <p>You can modify the <code>format_phenotype</code> function to your heart's desire, depending on what you wish to do with the phenotypes.
 This is only a suggestion, and might not work for more specific phenotypes.</p>
@@ -335,7 +346,10 @@ population=&quot;pheno_extract.csv&quot;
 
 awk -F &quot;,&quot; -v var=&quot;$pop_code&quot; '$2~var{print $1,$1}' $population &gt; $pop_name.txt
 </code></pre>
-<p>This code will output the file <code>white_british.txt</code>, containing the ids of the individuals of the white british ethnic background.</p>
+<p>This command outputs 1 file:</p>
+<ul>
+<li><code>white_british.txt</code> contains the participants IDs of the white british ethnic background</li>
+</ul>
 <p>You can now upload the ids of your individuals.</p>
 <pre><code class="language-bash">dx upload white_british.txt
 </code></pre>
@@ -362,6 +376,10 @@ awk -F , '$3!=&quot;&quot;' file.tmp &gt; covariates.txt # Remove ind with no PC
 sed 's/,/\t/g' covariates.txt &gt; file.tmp
 mv file.tmp covariates.txt
 </code></pre>
+<p>This command outputs 1 file:</p>
+<ul>
+<li><code>covariates.txt</code> contains the first 18 PCA components, the sex and the age of all participants</li>
+</ul>
 <p>You can now upload the covariates file.</p>
 <pre><code class="language-bash">dx upload covariates.txt
 </code></pre>
@@ -369,7 +387,7 @@ mv file.tmp covariates.txt
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../setup/" class="btn btn-neutral float-left" title="Initial setup"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../jobs/" class="btn btn-neutral float-left" title="About jobs"><span class="icon icon-circle-arrow-left"></span> Previous</a>
         <a href="../plink/" class="btn btn-neutral float-right" title="Using PLINK2">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
@@ -397,7 +415,7 @@ mv file.tmp covariates.txt
         </span>
     
     
-      <span><a href="../setup/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../jobs/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
       <span><a href="../plink/" style="color: #fcfcfc">Next &raquo;</a></span>

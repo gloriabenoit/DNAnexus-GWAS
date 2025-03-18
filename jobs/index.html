@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="author" content="Gloria BENOIT" />
       <link rel="shortcut icon" href="../img/favicon.ico" />
-    <title>Errors when running jobs - Basic tutorial for performing GWASs on DNAnexus</title>
+    <title>About jobs - Basic tutorial for performing a GWAS on DNAnexus</title>
     <link rel="stylesheet" href="../css/theme.css" />
     <link rel="stylesheet" href="../css/theme_extra.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/github.min.css" />
@@ -13,8 +13,8 @@
     
       <script>
         // Current page data
-        var mkdocs_page_name = "Errors when running jobs";
-        var mkdocs_page_input_path = "errors.md";
+        var mkdocs_page_name = "About jobs";
+        var mkdocs_page_input_path = "jobs.md";
         var mkdocs_page_url = null;
       </script>
     
@@ -31,7 +31,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
     <div class="wy-side-scroll">
       <div class="wy-side-nav-search">
-          <a href=".." class="icon icon-home"> Basic tutorial for performing GWASs on DNAnexus
+          <a href=".." class="icon icon-home"> Basic tutorial for performing a GWAS on DNAnexus
         </a><div role="search">
   <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
       <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" title="Type search term here" />
@@ -45,7 +45,23 @@
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../setup/">Initial setup</a>
+                <li class="toctree-l1"><a class="reference internal" href="../setup/">First setup</a>
+                </li>
+              </ul>
+              <ul class="current">
+                <li class="toctree-l1 current"><a class="reference internal current" href="#">About jobs</a>
+    <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#errors-when-running-jobs">Errors when running jobs</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#out-of-memory">Out of memory</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#low-disk-space">Low disk space</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#interruption-limit">Interruption limit</a>
+    </li>
+        </ul>
+    </li>
+    </ul>
                 </li>
               </ul>
               <ul>
@@ -60,16 +76,8 @@
                 <li class="toctree-l1"><a class="reference internal" href="../regenie/">Using regenie</a>
                 </li>
               </ul>
-              <ul class="current">
-                <li class="toctree-l1 current"><a class="reference internal current" href="#">Errors when running jobs</a>
-    <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#out-of-memory">Out of memory</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#low-disk-space">Low disk space</a>
-    </li>
-    <li class="toctree-l2"><a class="reference internal" href="#interruption-limit">Interruption limit</a>
-    </li>
-    </ul>
+              <ul>
+                <li class="toctree-l1"><a class="reference internal" href="../results/">Visualizing results</a>
                 </li>
               </ul>
       </div>
@@ -79,16 +87,16 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
       <nav class="wy-nav-top" role="navigation" aria-label="Mobile navigation menu">
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="..">Basic tutorial for performing GWASs on DNAnexus</a>
+          <a href="..">Basic tutorial for performing a GWAS on DNAnexus</a>
         
       </nav>
       <div class="wy-nav-content">
         <div class="rst-content"><div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href=".." class="icon icon-home" aria-label="Docs"></a></li>
-      <li class="breadcrumb-item active">Errors when running jobs</li>
+      <li class="breadcrumb-item active">About jobs</li>
     <li class="wy-breadcrumbs-aside">
-          <a href="https://github.com/gloriabenoit/DNAnexus-GWAS/edit/master/docs/errors.md" class="icon icon-github"> Edit on GitHub</a>
+          <a href="https://github.com/gloriabenoit/DNAnexus-GWAS/edit/master/docs/jobs.md" class="icon icon-github"> Edit on GitHub</a>
     </li>
   </ul>
   <hr/>
@@ -96,7 +104,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="errors-when-running-jobs">Errors when running jobs</h1>
+                <h1 id="about-jobs">About jobs</h1>
+<h2 id="errors-when-running-jobs">Errors when running jobs</h2>
 <p>A job running on DNAnexus has 4 outcomes:</p>
 <ul>
 <li>Done: The job was successful.</li>
@@ -105,17 +114,17 @@
 <li>Failed: Terminated by the cloud provider (only for low priority jobs)</li>
 </ul>
 <p>We will take you through all 3 failed outcomes, and what you can do to avoid them.</p>
-<h2 id="out-of-memory">Out of memory</h2>
+<h3 id="out-of-memory">Out of memory</h3>
 <p>If the cause of failure is the following:</p>
 <pre><code class="language-text">Error while running the command (please refer to the job log for more information). Warning: Out of memory error occurred during this job.
 </code></pre>
 <p>You need to choose an instance with a bigger memory. The memory infix in the instance is <code>mem</code>. For more information on instances, check the <a href="https://documentation.dnanexus.com/developer/api/running-analyses/instance-types">official doc on instance types</a>.</p>
-<h2 id="low-disk-space">Low disk space</h2>
+<h3 id="low-disk-space">Low disk space</h3>
 <p>If the cause of failure is the following:</p>
 <pre><code class="language-text">Error while running the command (please refer to the job log for more information). Warning: Low disk space during this job.
 </code></pre>
 <p>You need to choose an instance with a bigger storage. The storage infix in the instance is <code>ssd</code> or <code>hdd</code>. For more information on instances, check the <a href="https://documentation.dnanexus.com/developer/api/running-analyses/instance-types">official doc on instance types</a>.</p>
-<h2 id="interruption-limit">Interruption limit</h2>
+<h3 id="interruption-limit">Interruption limit</h3>
 <p>Jobs with a low priority can be interrupted if its ressources can be used for a high priority jobs. A low priority job can be interrupted at most 10 times, then it will result in the following error:</p>
 <pre><code class="language-text">The machine running the job was terminated by the cloud provider
 </code></pre>
@@ -124,7 +133,8 @@
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../regenie/" class="btn btn-neutral float-left" title="Using regenie"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../setup/" class="btn btn-neutral float-left" title="First setup"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../input/" class="btn btn-neutral float-right" title="Input files">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
   <hr/>
@@ -151,8 +161,10 @@
         </span>
     
     
-      <span><a href="../regenie/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../setup/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
+    
+      <span><a href="../input/" style="color: #fcfcfc">Next &raquo;</a></span>
     
   </span>
 </div>

@@ -1,4 +1,6 @@
-# Errors when running jobs
+# About jobs
+
+## Errors when running jobs
 
 A job running on DNAnexus has 4 outcomes:
 
@@ -9,7 +11,7 @@ A job running on DNAnexus has 4 outcomes:
 
 We will take you through all 3 failed outcomes, and what you can do to avoid them.
 
-## Out of memory
+### Out of memory
 
 If the cause of failure is the following:
 
@@ -19,7 +21,7 @@ Error while running the command (please refer to the job log for more informatio
 
 You need to choose an instance with a bigger memory. The memory infix in the instance is `mem`. For more information on instances, check the [official doc on instance types](https://documentation.dnanexus.com/developer/api/running-analyses/instance-types).
 
-## Low disk space
+### Low disk space
 
 If the cause of failure is the following:
 
@@ -29,7 +31,7 @@ Error while running the command (please refer to the job log for more informatio
 
 You need to choose an instance with a bigger storage. The storage infix in the instance is `ssd` or `hdd`. For more information on instances, check the [official doc on instance types](https://documentation.dnanexus.com/developer/api/running-analyses/instance-types).
 
-## Interruption limit
+### Interruption limit
 
 Jobs with a low priority can be interrupted if its ressources can be used for a high priority jobs. A low priority job can be interrupted at most 10 times, then it will result in the following error:
 

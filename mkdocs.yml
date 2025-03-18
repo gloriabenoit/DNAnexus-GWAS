@@ -1,14 +1,15 @@
-site_name: Basic tutorial for performing GWASs on DNAnexus
+site_name: Basic tutorial for performing a GWAS on DNAnexus
 repo_url: https://github.com/gloriabenoit/DNAnexus-GWAS
 site_author: Gloria BENOIT
 
 nav:
     - Home: index.md
-    - Initial setup: setup.md
+    - First setup: setup.md
+    - About jobs: jobs.md
     - Input files: input.md
     - Using PLINK2: plink.md
     - Using regenie: regenie.md
-    - Errors when running jobs: errors.md
+    - Visualizing results: results.md
 
 theme:
   name: readthedocs

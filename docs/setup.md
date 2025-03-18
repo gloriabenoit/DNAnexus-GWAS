@@ -1,4 +1,4 @@
-# Initial setup
+# First setup
 
 In order to connect to DNAnexus remotely, you first need to install the `dxpy` package.
 

@@ -1,5 +1,7 @@
 # Using PLINK2
 
+Every file created during this analysis will be stored in a main directory called `plink_gwas_BMI`.
+
 ## Input files
 
 Before running a GWAS on DNAnexus using PLINK2, you need to make sure you have these 3 files uploaded to DNAnexus:
@@ -31,7 +33,7 @@ We perform the QC at the same time as our GWAS. The variants are filtered using 
 
 > Please change the thresholds according to your preferences.
 
-### Linear or logistic regression
+### Linear regression
 
 ```bash
 pheno="BMI"
@@ -72,7 +74,11 @@ for chr_num in $(seq 1 22); do
         --priority "$priority" --cost-limit "$cost_limit" \
         -icmd="$plink_command" \
         --instance-type "$instance" \
-        --name="p_gwas_${pheno}_c${chr_num}" \
+        --name="plink_gwas_${pheno}_c${chr_num}" \
+        --tag="plink" \
+        --tag="GWAS" \
+        --tag="$pheno" \
+        --tag="c${chr_num}" \
         -iin="$ind_path" \
         -iin="$cov_path" \
         -iin="$pheno_path" \
@@ -84,11 +90,21 @@ done
 dx cd ../
 ```
 
-This script will create a new directory named `plink_gwas_<phenotype>` in the project on DNAnexus. In this folder, you will find a total of 44 files, named `sumstat_c<num>` (two per chromosome, the summary statistics and the log).
+This command outputs 22 files:
+
+* `sumstat_c<chrom-number>.BMI.glm.linear` contains the values for the regression *per chromosome*
+
+The files will be stored in the main directory, `plink_gwas_BMI`.
+
+> Please note, the commands are the same whether your phenotype is quantitative or binary. Only the name of the output file will change (`.glm.linear` or `.glm.logistic.hybrid` for linear and logistic regression respectively).
 
 ## Computing the results
 
-Now that all of the summary statistics are computed, we can clean them up and combine them into one clean file. We will create a new directory named `plink_gwas_<phenotype>`, locally this time, with inside another directory named `statistics` containing all of the summary statistics per chromosome. The combination of all of them will be located at the same level than `statistics`, making it easier to find.
+Now that all of the summary statistics are computed, we can download them, clean them up and combine them into one clean file.
+
+PLINK outputs a value for each of the covariates, in addition to the global p-value. However, these do not interest us, we only want to keep the global p-value. The following scripts helps clean up the p-values, and concatenates them into a single file.
+
+> Please change the value of `type` based on the regression performed: *"linear"* or *"logistic.hybrid"*.
 
 ```bash
 pheno="BMI"
@@ -96,12 +112,11 @@ type="linear" # to change accordingly
 output_path="plink_gwas_$pheno"
 stat_path="$output_path/statistics"
 
-mkdir -p $output_path
 mkdir -p $stat_path
 
 for chr_num in $(seq 1 22); do
     result="sumstat_c${chr_num}.$pheno.glm.$type"
-    dx download "gwas_$pheno/$result" -o $stat_path
+    dx download "$output_path/$result" -o $stat_path
     if [ $chr_num -eq 1 ]; then
         head -n1 "$stat_path/$result" > "$output_path/sumstat_${pheno}.ADD"
     fi
@@ -110,5 +125,12 @@ for chr_num in $(seq 1 22); do
     grep "ADD" "$stat_path/$result" >> "$output_path/sumstat_${pheno}.ADD"
 done
 ```
+
+This command outputs 23 files:
+
+* `sumstat_c<chrom-number>.ADD` contains the cleaned up values for the regression *per chromosome*
+* `sumstat_BMI.ADD` contains the concatenated cleaned up values for the regression
+
+The files will be stored in a new directory named `plink_gwas_BMI`, locally this time, with inside another directory named `statistics` containing all of the summary statistics per chromosome. The combination of all of them will be located at the same level than `statistics`, making it easier to find.
 
 Congratulations, you have successfully completed a GWAS using PLINK2 on DNAnexus!

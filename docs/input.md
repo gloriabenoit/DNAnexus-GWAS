@@ -53,7 +53,7 @@ You will need the `record-id`, which is the id of the `.dataset` file at the roo
 dx extract_dataset <record-id> -ddd --delimiter ","
 ```
 
-This command will output 3 files:
+This command outputs 3 files:
 
 * `<app-id>.data_dictionary.csv` contains a table with participants as the rows and metadata along the columns, including field names (see table below for naming convention)
 * `<app-id>.codings.csv` contains a lookup table for the different medical codes, including ICD-10 codes that will be displayed in the diagnosis field column (p41270)
@@ -82,7 +82,6 @@ For the main participant phenotype entity, the Research Analysis Platform (UKB-R
 
 This means one phenotype ID can actually have multiple data field. For example, BMI has four instances.
 The following python script will extract the phenotype that you wish, and every array or instance associated.
-It will ouptput `pheno_extract.csv` which contains individual ids and any phenotype you chose to extract.
 
 ```python
 """ Extract phenotype(s) from UKBB based on field ID(s). """
@@ -134,6 +133,10 @@ cmd = ["dx", "extract_dataset", DATASET, "--fields", FIELD_NAMES,
         "--delimiter", ",", "--output", OUTPUT]
 subprocess.check_call(cmd)
 ```
+
+This command outputs 1 file:
+
+* `pheno_extract.csv` contains the values for participant IDs and every single instance of all phenotypes extracted
 
 > Please be aware, since `extract_dataset` has no *overwite* option by design, we implemented ourselves.
 > Running the previous code will first delete `pheno_extract.csv` if it's present, allowing for the extraction to happen.
@@ -190,6 +193,10 @@ def format_phenotype(filename, phenotype, software):
 format_phenotype(FILENAME, PHENOTYPE, SOFTWARE)
 ```
 
+This command outputs 1 file:
+
+* `<software>_BMI.csv` contains the formatted phenotype values
+
 > You can modify the `format_phenotype` function to your heart's desire, depending on what you wish to do with the phenotypes.
 > This is only a suggestion, and might not work for more specific phenotypes.
 
@@ -222,7 +229,9 @@ population="pheno_extract.csv"
 awk -F "," -v var="$pop_code" '$2~var{print $1,$1}' $population > $pop_name.txt
 ```
 
-This code will output the file `white_british.txt`, containing the ids of the individuals of the white british ethnic background.
+This command outputs 1 file:
+
+* `white_british.txt` contains the participants IDs of the white british ethnic background
 
 You can now upload the ids of your individuals.
 
@@ -258,6 +267,10 @@ awk -F , '$3!=""' file.tmp > covariates.txt # Remove ind with no PC data
 sed 's/,/\t/g' covariates.txt > file.tmp
 mv file.tmp covariates.txt
 ```
+
+This command outputs 1 file:
+
+* `covariates.txt` contains the first 18 PCA components, the sex and the age of all participants
 
 You can now upload the covariates file.
 

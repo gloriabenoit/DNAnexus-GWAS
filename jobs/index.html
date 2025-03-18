@@ -51,13 +51,33 @@
               <ul class="current">
                 <li class="toctree-l1 current"><a class="reference internal current" href="#">About jobs</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#errors-when-running-jobs">Errors when running jobs</a>
+    <li class="toctree-l2"><a class="reference internal" href="#execution">Execution</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#inputs">Inputs</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#instances">Instances</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#priority">Priority</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#tags">Tags</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#monitoring">Monitoring</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#filtering-jobs">Filtering jobs</a>
+    </li>
+        </ul>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#errors-when-running">Errors when running</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#out-of-memory">Out of memory</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#low-disk-space">Low disk space</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#interruption-limit">Interruption limit</a>
+    <li class="toctree-l3"><a class="reference internal" href="#interruption-limit-only-for-low-priority">Interruption limit (only for low priority)</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#others">Others</a>
     </li>
         </ul>
     </li>
@@ -105,30 +125,88 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="about-jobs">About jobs</h1>
-<h2 id="errors-when-running-jobs">Errors when running jobs</h2>
-<p>A job running on DNAnexus has 4 outcomes:</p>
+<p>This page aims to go through the basics of jobs on DNAnexus. You do not need to read it to complete the tutorial, but it can help if this is your first time using DNAnexus, or if you are unsure about how some things work.</p>
+<h2 id="execution">Execution</h2>
+<p>On DNAnexus, when a job is executed, a worker is spun up in the cloud, then the job's code and inputs are downloaded to that worker and executed. This is the standard behavior, but inputs can also be mounted to the worker (accessed dynamically) to avoid their downloading costs.</p>
+<h3 id="inputs">Inputs</h3>
+<p>Since jobs are run on workers, you need to manually specify every file used as input.</p>
+<p>To add a file as input, you need to use the <code>-iin</code> option to your <code>dx run</code> command. The path to your file needs to be absolute so that there is no confusion as to where it is located.</p>
+<p>When mounting your files, you don't need to input them manually anymore. You simply need to add <code>/mnt/project/</code> before your absolute path.</p>
+<h3 id="instances">Instances</h3>
+<p>To choose an instance for your job is to choose a specific worker on which your code will be executed.
+Instances have 3 main metrics:</p>
 <ul>
-<li>Done: The job was successful.</li>
-<li>Failed: Out of Memory</li>
-<li>Failed: Low disk space</li>
-<li>Failed: Terminated by the cloud provider (only for low priority jobs)</li>
+<li>The number of cores (individual processing units)</li>
+<li>The memory capacity (components used for short-term data retention)</li>
+<li>The storage capacity (components used for long-term data retention)</li>
 </ul>
-<p>We will take you through all 3 failed outcomes, and what you can do to avoid them.</p>
+<p>You might have no clue on what ressources your job need to run properly, the simplest course of action is to start with a small instance and increase its capacities if you encounter any errors. Please check the <a href="#errors-when-running">Errors when running section</a> if you don't know how to interpret your error message.</p>
+<blockquote>
+<p>Please note, this tutorial uses the same instance for every job. Depending on the data you want to use, you might need a bigger instance. If your goal is full optimization, then you might prefer a smaller one. All of this is up to you.</p>
+</blockquote>
+<p>To specify the instance you chose, you need to add the <code>--instance-type</code> option to your <code>dx run</code> command.</p>
+<p>For more information on instances, check the <a href="https://documentation.dnanexus.com/developer/api/running-analyses/instance-types">official doc on instance types</a>.</p>
+<h3 id="priority">Priority</h3>
+<p>Jobs can have three types of priority:</p>
+<ul>
+<li><code>high</code> means your job will be completed once the ressources are available</li>
+<li><code>low</code> means your job will start once the ressources are available, but may be interrupted if <code>high</code> priority jobs need them</li>
+<li><code>normal</code> means your job will wait for 15min to run in a <code>low</code> priority, and if no ressources are availables by then, will run in a <code>high</code> priority</li>
+</ul>
+<p>Although a <code>high</code> priority assures for job completion, it is also pricier than a <code>low</code> priority one.</p>
+<blockquote>
+<p>Please note, this tutorial will only run <code>low</code> priority jobs to reduce costs.</p>
+</blockquote>
+<p>To specify the instance you chose, you need to add the <code>--priority</code> option to your <code>dx run</code> command.</p>
+<p>For more information on priorities, check the <a href="https://dnanexus.gitbook.io/uk-biobank-rap/working-on-the-research-analysis-platform/managing-jobs/managing-job-priority">official doc on job priority</a>.</p>
+<h3 id="tags">Tags</h3>
+<p>Tags, although optional, are very pratical when using DNAnexus regularly.
+They act as keywords associated to a job, and help if you need to navigate the <em>MONITOR</em> tab. You can find more information in the <a href="#monitoring">Monitoring section</a>.</p>
+<p>To add a tag to your job, you need to add the <code>--tag</code> option to your <code>dx run</code> command.</p>
+<h2 id="monitoring">Monitoring</h2>
+<p>You can monitor your jobs directly on your project's web page in the <em>MONITOR</em> tab.
+On this page, they are sorted in ascending order of departure date (the latest comes first).</p>
+<p>Basic information about the job is displayed, like its name, duration, cost, <em>etc</em>...</p>
+<p>A job has 3 possible states:</p>
+<ul>
+<li><code>Done</code> indicates that the job has completed successfully</li>
+<li><code>Waiting</code> indicates that the ressources needed to run this job are not available yet, it will start once they are</li>
+<li><code>Failed</code> indicates the job has failed due to an error</li>
+</ul>
+<p>Once a job is completed (either <code>Done</code> or <code>Failed</code>), you will receive an email updating you of said completion.
+It will also appear in the <code>Notifications</code> tab (bell icon in the top right corner).</p>
+<h3 id="filtering-jobs">Filtering jobs</h3>
+<p>After running a lot of jobs, you might find your <em>MONITOR</em> page to be quite crowded. This is especially true with this tutorial where some jobs are run for each of the 22 chromosomes. To find a specific job, you can filter out the <em>MONITOR</em> page.</p>
+<p>In this tutorial, all jobs have specific <a href="#tags">tags</a> which help with filtering.
+By default, tags are not used in filtering on the <em>MONITOR</em> page, you need to add them in the <code>Filter settings</code> tab (three bars in the top right corner).</p>
+<blockquote>
+<p>Please note, in this tutorial, jobs are tagged with the software used (plink or regenie), the phenotype (BMI), the step of the analysis (QC, GWAS, Step 0 to 2) and lastly the chromosome number (c1 to 22) if jobs are separated per chromosome.</p>
+</blockquote>
+<h2 id="errors-when-running">Errors when running</h2>
+<p>A failed job running on DNAnexus has only 3 errors (apart from errors in the code):</p>
+<ul>
+<li>Warning: Out of memory error occurred during this job.</li>
+<li>Warning: Low disk space during this job.</li>
+<li>The machine running the job was terminated by the cloud provider</li>
+</ul>
+<p>This tutorial will explain the reason for those errors, and what you can do to avoid them.</p>
 <h3 id="out-of-memory">Out of memory</h3>
 <p>If the cause of failure is the following:</p>
 <pre><code class="language-text">Error while running the command (please refer to the job log for more information). Warning: Out of memory error occurred during this job.
 </code></pre>
-<p>You need to choose an instance with a bigger memory. The memory infix in the instance is <code>mem</code>. For more information on instances, check the <a href="https://documentation.dnanexus.com/developer/api/running-analyses/instance-types">official doc on instance types</a>.</p>
+<p>You need to choose an instance with a bigger memory. The memory infix in the instance is <code>mem</code>. For more information on instances, refer to the <a href="#instances">Instances section</a>.</p>
 <h3 id="low-disk-space">Low disk space</h3>
 <p>If the cause of failure is the following:</p>
 <pre><code class="language-text">Error while running the command (please refer to the job log for more information). Warning: Low disk space during this job.
 </code></pre>
-<p>You need to choose an instance with a bigger storage. The storage infix in the instance is <code>ssd</code> or <code>hdd</code>. For more information on instances, check the <a href="https://documentation.dnanexus.com/developer/api/running-analyses/instance-types">official doc on instance types</a>.</p>
-<h3 id="interruption-limit">Interruption limit</h3>
+<p>You need to choose an instance with a bigger storage. The storage infix in the instance is <code>ssd</code> or <code>hdd</code>. For more information on instances, refer to the <a href="#instances">Instances section</a>.</p>
+<h3 id="interruption-limit-only-for-low-priority">Interruption limit (only for <em>low</em> priority)</h3>
 <p>Jobs with a low priority can be interrupted if its ressources can be used for a high priority jobs. A low priority job can be interrupted at most 10 times, then it will result in the following error:</p>
 <pre><code class="language-text">The machine running the job was terminated by the cloud provider
 </code></pre>
 <p>You simply need to restart your job, either on the same instance or another one, if the one used is too popular.</p>
+<h3 id="others">Others</h3>
+<p>If the error is unclear to you, check the log of your job. You will most likely get an answer there.</p>
               
             </div>
           </div><footer>

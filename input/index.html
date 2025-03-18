@@ -61,7 +61,7 @@
     </li>
         </ul>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#additionnal-data">Additionnal data</a>
+    <li class="toctree-l2"><a class="reference internal" href="#additional-data">Additional data</a>
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#phenotype">Phenotype</a>
     </li>
@@ -115,7 +115,6 @@
 <p>On DNAnexus, whole genome sequences data are saved in multiple formats: BGEN format (<code>.bgen</code> and <code>.sample</code>), PLINK format (<code>.bed</code>, <code>.bim</code> and <code>.fam</code>) or pVCF format (<code>.vcf.gz.tbi</code>), among others. For more information on the data available, you can run the following command:</p>
 <pre><code class="language-bash">dx ls &quot;/Bulk/Whole genome sequences&quot;
 </code></pre>
-<p>On DNAnexus, when a job is executed, a worker is spun up in the cloud, then the job's code and inputs are downloaded to that worker and exectuted. This is the standard behavior, but inputs can also be mounted to avoid their downloading costs.</p>
 <h3 id="plink2">PLINK2</h3>
 <p>PLINK2 can read both BGEN and PLINK format. Therefore, we have 4 ways of inputing genetic data:</p>
 <p><center></p>
@@ -148,7 +147,7 @@
 <p></center></p>
 <p>After some trial and error, we have found that using the BGEN format without mounting it was the quickest way to perform a GWAS using PLINK2. Downloading and translating BGEN files locally was quicker than downloading or mounting the PLINK files.</p>
 <p>Therefore, in this tutorial, we will input BGEN files directly. The path to the genetic data is the following: <code>"/Bulk/Whole genome sequences/Population level genome variants, BGEN format - interim 200k release/"</code>.</p>
-<h2 id="additionnal-data">Additionnal data</h2>
+<h2 id="additional-data">Additional data</h2>
 <p>In order to run our GWAS, apart from the genetic and sample data, we need 3 additionnal files:</p>
 <ul>
 <li>The phenotype (for instance, BMI)</li>
@@ -268,7 +267,7 @@ subprocess.check_call(cmd)
 <li><code>pheno_extract.csv</code> contains the values for participant IDs and every single instance of all phenotypes extracted</li>
 </ul>
 <blockquote>
-<p>Please be aware, since <code>extract_dataset</code> has no <em>overwite</em> option by design, we implemented ourselves.
+<p>Please be aware, since <code>extract_dataset</code> has no <em>overwrite</em> option by design, we implemented ourselves.
 Running the previous code will first delete <code>pheno_extract.csv</code> if it's present, allowing for the extraction to happen.</p>
 </blockquote>
 <p>PLINK and regenie use the same formatting for the phenotype file, with a single exception : the code for missing values.

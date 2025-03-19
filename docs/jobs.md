@@ -33,7 +33,7 @@ You might have no clue on what ressources your job need to run properly, the sim
 
 To specify the instance you chose, you need to add the `--instance-type` option to your `dx run` command.
 
-For more information on instances, check the official documentation on [instance types](https://documentation.dnanexus.com/developer/api/running-analyses/instance-types).
+For more information on instances, check the official documentation on [instance types](https://documentation.dnanexus.com/developer/api/running-analyses/instance-types). Instances costs can be found on the [UKB RAP Rate Card](https://20779781.fs1.hubspotusercontent-na1.net/hubfs/20779781/Product%20Team%20Folder/Rate%20Cards/BiobankResearchAnalysisPlatform_Rate%20Card_Current.pdf).
 
 ### Priority
 
@@ -49,7 +49,7 @@ Although a `high` priority assures for job completion, it is also pricier than a
 
 To specify the instance you chose, you need to add the `--priority` option to your `dx run` command.
 
-For more information on priorities, check the official documentation on [job priority](https://dnanexus.gitbook.io/uk-biobank-rap/working-on-the-research-analysis-platform/managing-jobs/managing-job-priority).
+For more information on priorities, check the official documentation on [job priority](https://dnanexus.gitbook.io/uk-biobank-rap/working-on-the-research-analysis-platform/managing-jobs/managing-job-priority). Priority costs can be found on the [UKB RAP Rate Card](https://20779781.fs1.hubspotusercontent-na1.net/hubfs/20779781/Product%20Team%20Folder/Rate%20Cards/BiobankResearchAnalysisPlatform_Rate%20Card_Current.pdf) (where `high` refers to *On-demand* prices while `low` refers to *Spot* prices).
 
 ### Tags
 

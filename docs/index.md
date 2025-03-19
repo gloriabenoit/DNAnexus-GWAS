@@ -14,6 +14,10 @@ As an example, we will perform a linear regression on the **BMI index** ([21001]
 
 > This tutorial is written for Linux operating systems. Commands may vary accross operating systems.
 
+The [official GWAS guide using Alzheimer's disease](https://dnanexus.gitbook.io/uk-biobank-rap/science-corner/gwas-using-alzheimers-disease) and the [official github page for a GWAS on the Research Analysis Platform using regenie](https://github.com/dnanexus/UKB_RAP/tree/main/GWAS) were useful material when writing the [regenie section](regenie.md).
+
+If you want to try other tools on DNAnexus, we recommend the following github page: [ukb-rap-tools](https://github.com/pjgreer/ukb-rap-tools) by [Phil Greer](https://github.com/pjgreer).
+
 ## Durations and costs
 
 The tutorial has three main sections: [Input files](input.md), [Using PLINK2](plink.md) and [Using regenie](regenie.md).
@@ -25,7 +29,7 @@ The tutorial has three main sections: [Input files](input.md), [Using PLINK2](pl
 
 The [first section](input.md) is done locally and does not cost anything.
 
-> Please be aware that storing files onto DNAnexus will result in a monthly cost. You may check its value in the *SETTINGS* tab on your project's web page.
+> Please be aware that storing files onto DNAnexus will result in a monthly cost. You may check its current value in the *SETTINGS* tab on your project's web page, or compute it using the [UKB RAP Rate Card](https://20779781.fs1.hubspotusercontent-na1.net/hubfs/20779781/Product%20Team%20Folder/Rate%20Cards/BiobankResearchAnalysisPlatform_Rate%20Card_Current.pdf).
 
 ### Using PLINK2
 

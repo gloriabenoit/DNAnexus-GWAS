@@ -131,10 +131,10 @@ We choose to use the same instance for all GWASs, to simplify the code, but this
 </blockquote>
 <h3 id="linear-regression">Linear regression</h3>
 <pre><code class="language-bash">pheno=&quot;BMI&quot;
-pheno_path=&quot;/WKD_&lt;your-name&gt;/plink_$pheno.txt&quot;
-ind_path=&quot;/WKD_&lt;your-name&gt;/white_british.txt&quot;
+pheno_path=&quot;/gwas_tutorial/plink_$pheno.txt&quot;
+ind_path=&quot;/gwas_tutorial/white_british.txt&quot;
 ind=$(basename &quot;$ind_path&quot;)
-cov_path=&quot;/WKD_&lt;your-name&gt;/covariates.txt&quot;
+cov_path=&quot;/gwas_tutorial/covariates.txt&quot;
 cov=$(basename &quot;$cov_path&quot;)
 
 instance=&quot;mem2_ssd1_v2_x16&quot;

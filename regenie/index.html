@@ -127,17 +127,17 @@
 <p>On DNAnexus, regenie is available either as part of the <a href="https://ukbiobank.dnanexus.com/app/swiss-army-knife">Swiss Army Knife app</a> (<code>swiss-army-knife</code>) or as its <a href="https://ukbiobank.dnanexus.com/app/regenie">own app</a> called <code>app-regenie</code>.
 We choose to use the same instance for all GWASs, to simplify the code, but this can be changed to your liking. Same for the priority and the cost limit.</p>
 <h3 id="quality-control">Quality control</h3>
-<p>Unlike with PLINK2, we cannot perform the QC at the same time as our GWAS, we must do it before hand, in preparation for running <a href="#step-2-linear-or-logistic-regression">Step 2</a>. The variants are filtered using following options:</p>
+<p>Unlike with PLINK2, we cannot perform the QC at the same time as our GWAS, we must do it before hand, in preparation for running <a href="#step-2-linear-regression">Step 2</a>. The variants are filtered using following options:</p>
 <pre><code class="language-text">--maf 0.0001 --hwe 1e-50 --geno 0.1 --mind 0.1
 </code></pre>
 <blockquote>
 <p>Please change the thresholds according to your preferences.</p>
 </blockquote>
 <pre><code class="language-bash">pheno=&quot;BMI&quot;
-pheno_path=&quot;/WKD_&lt;your-name&gt;/regenie_$pheno.txt&quot;
-ind_path=&quot;/WKD_&lt;your-name&gt;/white_british.txt&quot;
+pheno_path=&quot;/gwas_tutorial/regenie_$pheno.txt&quot;
+ind_path=&quot;/gwas_tutorial/white_british.txt&quot;
 ind=$(basename &quot;$ind_path&quot;)
-cov_path=&quot;/WKD_&lt;your-name&gt;/covariates.txt&quot;
+cov_path=&quot;/gwas_tutorial/covariates.txt&quot;
 cov=$(basename &quot;$cov_path&quot;)
 
 instance=&quot;mem1_ssd1_v2_x16&quot;
@@ -196,7 +196,7 @@ dx cd ../../
 <h3 id="step-0-merging-files">Step 0: Merging files</h3>
 <p>Before running our GWAS using regenie, we first need to merge all of the genotype call files (chromosome 1 to 22) into one file. This is in preparation for running <a href="#step-1-estimate-snps-contribution">Step 1</a>.</p>
 <pre><code class="language-bash">pheno=&quot;BMI&quot;
-pheno_path=&quot;/WKD_&lt;your-name&gt;/regenie_$pheno.txt&quot; # not strictly needed, but swiss-army-knife needs at least one input
+pheno_path=&quot;/gwas_tutorial/regenie_$pheno.txt&quot; # not strictly needed, but swiss-army-knife needs at least one input
 geno_array=&quot;/mnt/project/Bulk/Genotype\ Results/Genotype\ calls/ukb22418_c[1-9]*&quot;
 
 instance=&quot;mem1_ssd1_v2_x16&quot;
@@ -234,10 +234,10 @@ dx cd ../../
 </ul>
 <p>The files will be stored in a new directory named <code>merge</code>.</p>
 <pre><code class="language-bash">pheno=&quot;BMI&quot;
-pheno_path=&quot;/WKD_&lt;your-name&gt;/regenie_$pheno.txt&quot;
-ind_path=&quot;/WKD_&lt;your-name&gt;/white_british.txt&quot;
+pheno_path=&quot;/gwas_tutorial/regenie_$pheno.txt&quot;
+ind_path=&quot;/gwas_tutorial/white_british.txt&quot;
 ind=$(basename &quot;$ind_path&quot;)
-merge_path=&quot;/WKD_&lt;your-name&gt;/regenie_gwas_$pheno/merge/c1_c22_merged&quot;
+merge_path=&quot;/gwas_tutorial/regenie_gwas_$pheno/merge/c1_c22_merged&quot;
 merge=$(basename &quot;$merge_path&quot;)
 
 instance=&quot;mem1_ssd1_v2_x16&quot;
@@ -292,12 +292,12 @@ They are stored in the <code>merge</code> directory.</p>
 <h3 id="step-1-estimate-snps-contribution">Step 1: Estimate SNPs contribution</h3>
 <p>The first step of a regenie GWAS is the estimation of how background SNPs contribute to the phenotype. During this step, a subset of genetic markers are used to fit a whole genome regression model that captures a good fraction of the phenotype variance attributable to genetic effects (<a href="https://rgcgithub.github.io/regenie/overview/">regenie official documentation</a>).</p>
 <pre><code class="language-bash">pheno=&quot;BMI&quot;
-pheno_path=&quot;/WKD_&lt;your-name&gt;/regenie_$pheno.txt&quot;
-cov_path=&quot;/WKD_&lt;your-name&gt;/covariates.txt&quot;
+pheno_path=&quot;/gwas_tutorial/regenie_$pheno.txt&quot;
+cov_path=&quot;/gwas_tutorial/covariates.txt&quot;
 cov=$(basename &quot;$cov_path&quot;)
-merge_path=&quot;/WKD_&lt;your-name&gt;/regenie_gwas_$pheno/merge/c1_c22_merged&quot;
+merge_path=&quot;/gwas_tutorial/regenie_gwas_$pheno/merge/c1_c22_merged&quot;
 merge=$(basename &quot;$merge_path&quot;)
-QC_path=&quot;/WKD_&lt;your-name&gt;/regenie_gwas_$pheno/merge/QC_pass_geno_array&quot;
+QC_path=&quot;/gwas_tutorial/regenie_gwas_$pheno/merge/QC_pass_geno_array&quot;
 QC=$(basename &quot;$QC_path&quot;)
 
 instance=&quot;mem1_ssd1_v2_x16&quot;
@@ -345,7 +345,7 @@ dx cd ../../
 </code></pre>
 <p>This command outputs 2 files:</p>
 <ul>
-<li><code>BMI_merged_pred.list</code> contains a list of blup files needed for <a href="#step-2-linear-or-logistic-regression">Step 2</a></li>
+<li><code>BMI_merged_pred.list</code> contains a list of blup files needed for <a href="#step-2-linear-regression">Step 2</a></li>
 <li><code>BMI_merged_1.loco.gz</code> contains per-chromosome LOCO predictions</li>
 </ul>
 <blockquote>
@@ -357,12 +357,12 @@ dx cd ../../
 <p>To not require too much space, we gzip the results using the <code>--gz</code> option.</p>
 </blockquote>
 <pre><code class="language-bash">pheno=&quot;BMI&quot;
-pheno_path=&quot;/WKD_&lt;your-name&gt;/regenie_$pheno.txt&quot;
-cov_path=&quot;/WKD_&lt;your-name&gt;/covariates.txt&quot;
+pheno_path=&quot;/gwas_tutorial/regenie_$pheno.txt&quot;
+cov_path=&quot;/gwas_tutorial/covariates.txt&quot;
 cov=$(basename &quot;$cov_path&quot;)
-pred_path=&quot;/WKD_&lt;your-name&gt;/regenie_gwas_$pheno/merge/${pheno}_merged_pred.list&quot;
+pred_path=&quot;/gwas_tutorial/regenie_gwas_$pheno/merge/${pheno}_merged_pred.list&quot;
 pred=$(basename &quot;$pred_path&quot;)
-loco_path=&quot;/WKD_&lt;your-name&gt;/regenie_gwas_$pheno/merge/${pheno}_merged_1.loco.gz&quot;
+loco_path=&quot;/gwas_tutorial/regenie_gwas_$pheno/merge/${pheno}_merged_1.loco.gz&quot;
 
 instance=&quot;mem1_ssd1_v2_x16&quot;
 threads=16
@@ -375,7 +375,7 @@ dx cd regenie_gwas_$pheno
 for chr_num in $(seq 1 22); do
     prefix=&quot;/Bulk/Whole genome sequences/Population level genome variants, BGEN format - interim 200k release//ukb24306_c${chr_num}_b0_v1&quot;
     bgen=$(basename &quot;$prefix&quot;)
-    QC_path=&quot;/WKD_&lt;your-name&gt;/regenie_gwas_$pheno/QC_lists/QC_pass_c${chr_num}&quot;
+    QC_path=&quot;/gwas_tutorial/regenie_gwas_$pheno/QC_lists/QC_pass_c${chr_num}&quot;
     QC=$(basename &quot;$QC_path&quot;)
 
     regenie_command=&quot;regenie \

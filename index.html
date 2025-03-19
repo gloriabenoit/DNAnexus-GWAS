@@ -45,6 +45,16 @@
     <ul class="current">
     <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a>
     </li>
+    <li class="toctree-l2"><a class="reference internal" href="#durations-and-costs">Durations and costs</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#input-files">Input files</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#using-plink2">Using PLINK2</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#using-regenie">Using regenie</a>
+    </li>
+        </ul>
+    </li>
     <li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#final-architecture">Final architecture</a>
@@ -105,35 +115,55 @@
 <p>This tutorial provides a step-by-step guide on the use of DNAnexus to perform a GWAS on the UK Biobank data.
 We will run everything from the command line, but will monitor our jobs on the project's web page.</p>
 <p>This tutorial assumes that you already have a researcher account on the UKBiobank site, and have access to a DNAnexus project.
-If not, please create an account <a href="https://ams.ukbiobank.ac.uk/ams/signup">here</a>, and once it has been validated, create an account on <a href="https://ukbiobank.dnanexus.com/register">UKB-RAP</a> with your UK Biobank credentials to access DNAnexus.</p>
+If not, please create an account <a href="https://ams.ukbiobank.ac.uk/ams/signup">here</a>, and once it has been validated, create an account on <a href="https://ukbiobank.dnanexus.com/register">UKB-RAP</a> with your UK Biobank credentials to access DNAnexus. To setup your first project, please check the <a href="https://dnanexus.gitbook.io/uk-biobank-rap/getting-started/quickstart/creating-a-project">official documentation on the matter</a>.</p>
 <p>This tutorial will guide you through every step needed in order to perform a basic GWAS using whole genome sequences for chromosome 1 to 22 for both <a href="https://www.cog-genomics.org/plink/2.0/">PLINK2</a> and <a href="https://rgcgithub.github.io/regenie/">regenie</a>. In order to parallelize the analyses, we will perform 22 different GWAS, one for each chromosome, and combine the results locally to reduce cost.</p>
+<p>As an example, we will perform a linear regression on the <strong>BMI index</strong> (<a href="https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=21001">21001</a>) using <strong>whole genome sequencing data</strong>, specifically the <strong>interim 200k release</strong> (Path <code>/Bulk/Whole genome sequences/</code>). However, you can use any data that you need, simply keep in mind that paths need to be changed in the scripts.</p>
 <blockquote>
 <p>This tutorial is written for Linux operating systems. Commands may vary accross operating systems.</p>
 </blockquote>
+<h2 id="durations-and-costs">Durations and costs</h2>
+<p>The tutorial has three main sections: <a href="input/">Input files</a>, <a href="plink/">Using PLINK2</a> and <a href="regenie/">Using regenie</a>.</p>
+<blockquote>
+<p>Please note, when first using your account you have an initial credit of £40. Running all of this tutorial with the same instance and priority as us might go over this budget.
+If it is not done already, your project should be billed to a wallet which is different from your initial credit.</p>
+</blockquote>
+<h3 id="input-files">Input files</h3>
+<p>The <a href="input/">first section</a> is done locally and does not cost anything.</p>
+<blockquote>
+<p>Please be aware that storing files onto DNAnexus will result in a monthly cost. You may check its value in the <em>SETTINGS</em> tab on your project's web page.</p>
+</blockquote>
+<h3 id="using-plink2">Using PLINK2</h3>
+<p>The <a href="plink/">second section</a> will run 22 different jobs (one per chromosome). The cost and duration of the job depends on the instance used.
+With our chosen instance (mem2_ssd1_v2_x16), with a <code>high</code> priority, the whole GWAS will take about <strong>200 minutes</strong> (3h20) and cost around <strong>£19.41</strong> (according to the <a href="https://20779781.fs1.hubspotusercontent-na1.net/hubfs/20779781/Product%20Team%20Folder/Rate%20Cards/BiobankResearchAnalysisPlatform_Rate%20Card_Current.pdf">UKB RAP Rate Card v3.0</a>).</p>
+<blockquote>
+<p>Please note that this cost can be reduced drastically using a <code>low</code> priority. If none of the jobs are interrupted, with this instance, it will cost only <strong>£4.55</strong>.
+However it is most likely that jobs will be interrupted. In our experience, the whole GWAS using this instance on a <code>low</code> priority with some interruptions has cost <strong>£9.30</strong> altough it took almost <strong>7h30</strong> to complete.</p>
+</blockquote>
+<h3 id="using-regenie">Using regenie</h3>
+<p>The <a href="regenie/">third section</a> runs more jobs than other sections, with a total of X different jobs.</p>
 <h2 id="requirements">Requirements</h2>
 <p>To follow this tutorial, you will only need <a href="https://www.python.org/downloads/">Python 3</a>.</p>
 <h2 id="final-architecture">Final architecture</h2>
 <p>At the end of this tutorial, your DNAnexus project's architecture should look like this:</p>
-<pre><code class="language-text">├── app-id
-├── app-id.dataset
-├── Bulk
-├── metadata
-├── Showcase
-└── WKD_&lt;your-name&gt;
-    ├── covariates.txt
-    ├── plink_BMI.txt
-    ├── plink_gwas_BMI
-    │   ├── sumstat_c1.BMI.glm.linear
-    │   ├── ...
-    │   └── sumstat_c22.BMI.glm.linear
-    ├── reg_BMI.txt
-    ├── reg_gwas_BMI
-    │   ├── merge
-    │   ├── QC_lists
-    │   ├── sumstat_c1_BMI.regenie
-    │   ├── ...
-    │   └── sumstat_c22_BMI.regenie
-    └── white_british.txt
+<pre><code class="language-text">├── Bulk
+├── Showcase metadata
+├── gwas_tutorial
+│   ├── plink_gwas_BMI
+│   │   ├── sumstat_c1.BMI.glm.linear
+│   │   ├── ...
+│   │   └── sumstat_c22.BMI.glm.linear
+│   ├── reg_gwas_BMI
+│   │   ├── merge
+│   │   ├── QC_lists
+│   │   ├── sumstat_c1_BMI.regenie
+│   │   ├── ...
+│   │   └── sumstat_c22_BMI.regenie
+│   ├── covariates.txt
+│   ├── plink_BMI.txt
+│   ├── reg_BMI.txt
+│   └── white_british.txt
+├── app-id
+└── app-id.dataset
 </code></pre>
 <blockquote>
 <p>This will vary based on whether you use both PLINK2 and regenie, or only one, and if you have changed files/repertory names. Please note, if modified, files and repertory names have to be the same across all commands.</p>
@@ -190,5 +220,5 @@ If not, please create an account <a href="https://ams.ukbiobank.ac.uk/ams/signup
 
 <!--
 MkDocs version : 1.6.1
-Build Date UTC : 2025-03-18 15:01:12.394043+00:00
+Build Date UTC : 2025-03-19 10:10:10.111763+00:00
 -->

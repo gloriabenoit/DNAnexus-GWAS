@@ -61,6 +61,8 @@
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#tags">Tags</a>
     </li>
+    <li class="toctree-l3"><a class="reference internal" href="#time-and-cost-limits">Time and cost limits</a>
+    </li>
         </ul>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#monitoring">Monitoring</a>
@@ -125,7 +127,10 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="about-jobs">About jobs</h1>
-<p>This page aims to go through the basics of jobs on DNAnexus. You do not need to read it to complete the tutorial, but it can help if this is your first time using DNAnexus, or if you are unsure about how some things work.</p>
+<p>This page aims to go through the basics of jobs on DNAnexus, you do not need to read it to complete the tutorial.
+If you already know how DNAnexus jobs work, please skip this and go directly to the <a href="../input/">Input files page</a>.
+If this is your first time using DNAnexus, or if you are unsure about how some things work, please read this page.</p>
+<p>For more detailed information, you can check the <a href="https://dnanexus.gitbook.io/uk-biobank-rap">official documentation</a> for a <a href="https://dnanexus.gitbook.io/uk-biobank-rap/getting-started/quickstart">quickstart</a> or about the <a href="https://dnanexus.gitbook.io/uk-biobank-rap/getting-started/key-concepts">key concepts</a>.</p>
 <h2 id="execution">Execution</h2>
 <p>On DNAnexus, when a job is executed, a worker is spun up in the cloud, then the job's code and inputs are downloaded to that worker and executed. This is the standard behavior, but inputs can also be mounted to the worker (accessed dynamically) to avoid their downloading costs.</p>
 <h3 id="inputs">Inputs</h3>
@@ -145,24 +150,31 @@ Instances have 3 main metrics:</p>
 <p>Please note, this tutorial uses the same instance for every job. Depending on the data you want to use, you might need a bigger instance. If your goal is full optimization, then you might prefer a smaller one. All of this is up to you.</p>
 </blockquote>
 <p>To specify the instance you chose, you need to add the <code>--instance-type</code> option to your <code>dx run</code> command.</p>
-<p>For more information on instances, check the <a href="https://documentation.dnanexus.com/developer/api/running-analyses/instance-types">official doc on instance types</a>.</p>
+<p>For more information on instances, check the official documentation on <a href="https://documentation.dnanexus.com/developer/api/running-analyses/instance-types">instance types</a>.</p>
 <h3 id="priority">Priority</h3>
 <p>Jobs can have three types of priority:</p>
 <ul>
 <li><code>high</code> means your job will be completed once the ressources are available</li>
-<li><code>low</code> means your job will start once the ressources are available, but may be interrupted if <code>high</code> priority jobs need them</li>
 <li><code>normal</code> means your job will wait for 15min to run in a <code>low</code> priority, and if no ressources are availables by then, will run in a <code>high</code> priority</li>
+<li><code>low</code> means your job will start once the ressources are available, but may be interrupted if <code>high</code> priority jobs need them</li>
 </ul>
 <p>Although a <code>high</code> priority assures for job completion, it is also pricier than a <code>low</code> priority one.</p>
 <blockquote>
 <p>Please note, this tutorial will only run <code>low</code> priority jobs to reduce costs.</p>
 </blockquote>
 <p>To specify the instance you chose, you need to add the <code>--priority</code> option to your <code>dx run</code> command.</p>
-<p>For more information on priorities, check the <a href="https://dnanexus.gitbook.io/uk-biobank-rap/working-on-the-research-analysis-platform/managing-jobs/managing-job-priority">official doc on job priority</a>.</p>
+<p>For more information on priorities, check the official documentation on <a href="https://dnanexus.gitbook.io/uk-biobank-rap/working-on-the-research-analysis-platform/managing-jobs/managing-job-priority">job priority</a>.</p>
 <h3 id="tags">Tags</h3>
 <p>Tags, although optional, are very pratical when using DNAnexus regularly.
 They act as keywords associated to a job, and help if you need to navigate the <em>MONITOR</em> tab. You can find more information in the <a href="#monitoring">Monitoring section</a>.</p>
 <p>To add a tag to your job, you need to add the <code>--tag</code> option to your <code>dx run</code> command.</p>
+<h3 id="time-and-cost-limits">Time and cost limits</h3>
+<p>By default, a job will result in an error if its execution time exceeds 30 days. Please note that this value may vary across apps. 
+During this tutorial, no jobs will exceed this limit.</p>
+<p>Setting a cost limit is optional, but can be useful. For instance, when running a <code>low</code> priority job, it can ensure that possible interruptions won't add up causing the cost to rise by stopping the job early. It may also be of use if you don't know the time your job will take, and therefore can't compute the total cost.
+Either way, it is useful to avoid spending too much on a single job.</p>
+<p>To specify a cost limit, you need to add the <code>--cost-limit</code> option to your <code>dx run</code> command.</p>
+<p>For more information on priorities, check the official documentation on <a href="https://documentation.dnanexus.com/user/running-apps-and-workflows/jobs-and-cost-and-spending-limits">cost and spending limits</a> or on <a href="https://documentation.dnanexus.com/user/running-apps-and-workflows/job-time-limits">time limits</a>.</p>
 <h2 id="monitoring">Monitoring</h2>
 <p>You can monitor your jobs directly on your project's web page in the <em>MONITOR</em> tab.
 On this page, they are sorted in ascending order of departure date (the latest comes first).</p>
@@ -174,11 +186,11 @@ On this page, they are sorted in ascending order of departure date (the latest c
 <li><code>Failed</code> indicates the job has failed due to an error</li>
 </ul>
 <p>Once a job is completed (either <code>Done</code> or <code>Failed</code>), you will receive an email updating you of said completion.
-It will also appear in the <code>Notifications</code> tab (bell icon in the top right corner).</p>
+It will also appear in the <em>Notifications</em> tab (bell icon in the top right corner).</p>
 <h3 id="filtering-jobs">Filtering jobs</h3>
 <p>After running a lot of jobs, you might find your <em>MONITOR</em> page to be quite crowded. This is especially true with this tutorial where some jobs are run for each of the 22 chromosomes. To find a specific job, you can filter out the <em>MONITOR</em> page.</p>
 <p>In this tutorial, all jobs have specific <a href="#tags">tags</a> which help with filtering.
-By default, tags are not used in filtering on the <em>MONITOR</em> page, you need to add them in the <code>Filter settings</code> tab (three bars in the top right corner).</p>
+By default, tags are not used in filtering on the <em>MONITOR</em> page, you need to add them in the <em>Filter settings</em> tab (three stacked bars in the top right corner).</p>
 <blockquote>
 <p>Please note, in this tutorial, jobs are tagged with the software used (plink or regenie), the phenotype (BMI), the step of the analysis (QC, GWAS, Step 0 to 2) and lastly the chromosome number (c1 to 22) if jobs are separated per chromosome.</p>
 </blockquote>

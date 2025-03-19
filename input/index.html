@@ -156,26 +156,37 @@
 </ul>
 <p>Theses files can either be uploaded directly to your projects using <code>dx upload</code>, or created using DNAnexus data. This tutorial will guide you through the second option.</p>
 <blockquote>
-<p>All three files will be uploaded to your current <code>dx</code> repertory (<code>WKD_&lt;your-name&gt;</code> if you are closely following this tutorial).
+<p>All three files will be uploaded to your current <code>dx</code> repertory (<code>gwas_tutorial</code> if you are closely following this tutorial).
 If you want to upload them somewhere else, you can either move directory with <code>dx cd</code> before uploading, or use the <code>--path</code> or <code>--destination</code> option to specify the DNAnexus path to upload the files.</p>
 </blockquote>
 <h3 id="phenotype">Phenotype</h3>
-<p>To extract the phenotype that we want, we first need to download all available data-fields in our dataset.
-You will need the <code>record-id</code>, which is the id of the <code>.dataset</code> file at the root of your DNAnexus project. On your project's web page, you can find the id by selecting the <code>.dataset</code> file and searching for the <code>ID</code> in the info panel that appears on the right.</p>
+<p>To extract the phenotype that we want, we first need to download all available data-fields in our dataset using Python.</p>
 <blockquote>
 <p>Please note, when running the <code>extract_dataset</code> command you might encounter a <code>('Invalid JSON received from server', 200)</code> error. If this happens, you simply need to rerun the code.</p>
 </blockquote>
-<pre><code class="language-bash">dx extract_dataset &lt;record-id&gt; -ddd --delimiter &quot;,&quot;
+<pre><code class="language-python">&quot;&quot;&quot; Extract dataset. &quot;&quot;&quot;
+import dxpy
+import subprocess
+
+dispensed_dataset_id = dxpy.find_one_data_object(typename='Dataset', name='app*.dataset', folder='/', name_mode='glob')['id']
+
+# Get project ID
+project_id = dxpy.find_one_project()[&quot;id&quot;]
+dataset = (':').join([project_id, dispensed_dataset_id])
+
+cmd = [&quot;dx&quot;, &quot;extract_dataset&quot;, dataset, &quot;-ddd&quot;, &quot;--delimiter&quot;, &quot;,&quot;]
+subprocess.check_call(cmd)
 </code></pre>
-<p>This command outputs 3 files:</p>
+<p>Once completed, we want to rename the output file to a more manageable name like <code>ukbb</code>.</p>
+<pre><code class="language-bash">dataset_name=$(basename *.data_dictionary.csv | sed -e &quot;s/.data_dictionary.csv//&quot;)
+rename $dataset_name ukbb $dataset_name*
+</code></pre>
+<p>Combining these two scripts outputs 3 files:</p>
 <ul>
-<li><code>&lt;app-id&gt;.data_dictionary.csv</code> contains a table with participants as the rows and metadata along the columns, including field names (see table below for naming convention)</li>
-<li><code>&lt;app-id&gt;.codings.csv</code> contains a lookup table for the different medical codes, including ICD-10 codes that will be displayed in the diagnosis field column (p41270)</li>
-<li><code>&lt;app-id&gt;.entity_dictionary.csv</code> contains the different entities that can be queried, where participant is the main entity that corresponds to most phenotype fields</li>
+<li><code>ukbb.data_dictionary.csv</code> contains a table with participants as the rows and metadata along the columns, including field names (see table below for naming convention)</li>
+<li><code>ukbb.codings.csv</code> contains a lookup table for the different medical codes, including ICD-10 codes that will be displayed in the diagnosis field column (p41270)</li>
+<li><code>ukbb.entity_dictionary.csv</code> contains the different entities that can be queried, where participant is the main entity that corresponds to most phenotype fields</li>
 </ul>
-<p>To make it easier, you can rename theses files to a shorter name like <code>ukbb</code>.</p>
-<pre><code class="language-bash">rename &lt;app-id&gt; ukbb app*
-</code></pre>
 <p>We first need to get the field name of the phenotype(s) we want to extract. As an example, we will extract the BMI index (<a href="https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=21001">21001</a>), but you can extract any number of phenotypes.</p>
 <p>For the main participant phenotype entity, the Research Analysis Platform (UKB-RAP) uses field names with the following convention:</p>
 <p><center></p>

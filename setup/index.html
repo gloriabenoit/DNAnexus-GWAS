@@ -101,6 +101,9 @@
 <p>To enable tab completion, run the following command, or add it to your <code>.bashrc</code>:</p>
 <pre><code class="language-bash">eval &quot;$(register-python-argcomplete dx|sed 's/-o default//')&quot;
 </code></pre>
+<blockquote>
+<p>You can find the official documentation for all <code>dx</code> commands we will use <a href="https://documentation.dnanexus.com/user/helpstrings-of-sdk-command-line-utilities">here</a>.</p>
+</blockquote>
 <p>You can now enter your DNAnexus credentials to access your project remotely by using the following command:</p>
 <pre><code class="language-bash">dx login
 </code></pre>
@@ -118,15 +121,18 @@ For instance, if you want your info to expire in <b>6 months</b>, use the follow
 
 </blockquote>
 
-<p>By default, any job prompted here will output in your current DNAnexus repertory. Therefore, you can create a new folder and move into it, to help keep your project tidy (especially if multiple people use it).</p>
-<pre><code class="language-bash">dx mkdir WKD_&lt;your-name&gt;
-dx cd WKD_&lt;your-name&gt;
+<p>If you have access to multiple project on DNAnexus, you need to choose the specific one in which you want to perform your GWAS.
+Please use the <code>dx select</code> command or check the official documentation on <a href="https://documentation.dnanexus.com/user/projects/project-navigation#changing-your-current-project">Project Navigation</a> for more information.</p>
+<p>If you have access to only one project, it will be already selected and you can go on with this tutorial.</p>
+<p>By default, any job prompted here will output in your current DNAnexus repertory, meaning at the root of your project.
+To keep your project tidy, we can create a new folder and move into it, thus all jobs will output there.</p>
+<p>Therefore, you can create a new folder and move into it, to help keep your project tidy.</p>
+<pre><code class="language-bash">dx mkdir gwas_tutorial
+dx cd gwas_tutorial
 </code></pre>
 <blockquote>
-<p>It goes without saying that you can name this repertory however you want.</p>
+<p>If multiple people have access and frequently run jobs on the project chosen, we recommend having your own directory like <code>WKD_&lt;your-name&gt;</code> in which you will then create the <code>gwas_tutorial</code> directory.</p>
 </blockquote>
-<p>Now, all job will output in this repertory.</p>
-<p>You can find the documentation for all <code>dx</code> commands we will use <a href="https://documentation.dnanexus.com/user/helpstrings-of-sdk-command-line-utilities">here</a>.</p>
               
             </div>
           </div><footer>

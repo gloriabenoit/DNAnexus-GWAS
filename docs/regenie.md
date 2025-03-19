@@ -25,7 +25,7 @@ We choose to use the same instance for all GWASs, to simplify the code, but this
 
 ### Quality control
 
-Unlike with PLINK2, we cannot perform the QC at the same time as our GWAS, we must do it before hand, in preparation for running [Step 2](#step-2-linear-or-logistic-regression). The variants are filtered using following options:
+Unlike with PLINK2, we cannot perform the QC at the same time as our GWAS, we must do it before hand, in preparation for running [Step 2](#step-2-linear-regression). The variants are filtered using following options:
 
 ```text
 --maf 0.0001 --hwe 1e-50 --geno 0.1 --mind 0.1
@@ -260,7 +260,7 @@ dx cd ../../
 
 This command outputs 2 files:
 
-* `BMI_merged_pred.list` contains a list of blup files needed for [Step 2](#step-2-linear-or-logistic-regression)
+* `BMI_merged_pred.list` contains a list of blup files needed for [Step 2](#step-2-linear-regression)
 * `BMI_merged_1.loco.gz` contains per-chromosome LOCO predictions
 
 > Please note, when using a binary phenotype you need to add the `--bt` option to the regenie command.

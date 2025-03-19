@@ -1,6 +1,10 @@
 # About jobs
 
-This page aims to go through the basics of jobs on DNAnexus. You do not need to read it to complete the tutorial, but it can help if this is your first time using DNAnexus, or if you are unsure about how some things work.
+This page aims to go through the basics of jobs on DNAnexus, you do not need to read it to complete the tutorial.
+If you already know how DNAnexus jobs work, please skip this and go directly to the [Input files page](input.md).
+If this is your first time using DNAnexus, or if you are unsure about how some things work, please read this page.
+
+For more detailed information, you can check the [official documentation](https://dnanexus.gitbook.io/uk-biobank-rap) for a [quickstart](https://dnanexus.gitbook.io/uk-biobank-rap/getting-started/quickstart) or about the [key concepts](https://dnanexus.gitbook.io/uk-biobank-rap/getting-started/key-concepts).
 
 ## Execution
 
@@ -29,15 +33,15 @@ You might have no clue on what ressources your job need to run properly, the sim
 
 To specify the instance you chose, you need to add the `--instance-type` option to your `dx run` command.
 
-For more information on instances, check the [official doc on instance types](https://documentation.dnanexus.com/developer/api/running-analyses/instance-types).
+For more information on instances, check the official documentation on [instance types](https://documentation.dnanexus.com/developer/api/running-analyses/instance-types).
 
 ### Priority
 
 Jobs can have three types of priority:
 
 * `high` means your job will be completed once the ressources are available
-* `low` means your job will start once the ressources are available, but may be interrupted if `high` priority jobs need them
 * `normal` means your job will wait for 15min to run in a `low` priority, and if no ressources are availables by then, will run in a `high` priority
+* `low` means your job will start once the ressources are available, but may be interrupted if `high` priority jobs need them
 
 Although a `high` priority assures for job completion, it is also pricier than a `low` priority one.
 
@@ -45,7 +49,7 @@ Although a `high` priority assures for job completion, it is also pricier than a
 
 To specify the instance you chose, you need to add the `--priority` option to your `dx run` command.
 
-For more information on priorities, check the [official doc on job priority](https://dnanexus.gitbook.io/uk-biobank-rap/working-on-the-research-analysis-platform/managing-jobs/managing-job-priority).
+For more information on priorities, check the official documentation on [job priority](https://dnanexus.gitbook.io/uk-biobank-rap/working-on-the-research-analysis-platform/managing-jobs/managing-job-priority).
 
 ### Tags
 
@@ -53,6 +57,18 @@ Tags, although optional, are very pratical when using DNAnexus regularly.
 They act as keywords associated to a job, and help if you need to navigate the *MONITOR* tab. You can find more information in the [Monitoring section](#monitoring).
 
 To add a tag to your job, you need to add the `--tag` option to your `dx run` command.
+
+### Time and cost limits
+
+By default, a job will result in an error if its execution time exceeds 30 days. Please note that this value may vary across apps. 
+During this tutorial, no jobs will exceed this limit.
+
+Setting a cost limit is optional, but can be useful. For instance, when running a `low` priority job, it can ensure that possible interruptions won't add up causing the cost to rise by stopping the job early. It may also be of use if you don't know the time your job will take, and therefore can't compute the total cost.
+Either way, it is useful to avoid spending too much on a single job.
+
+To specify a cost limit, you need to add the `--cost-limit` option to your `dx run` command.
+
+For more information on priorities, check the official documentation on [cost and spending limits](https://documentation.dnanexus.com/user/running-apps-and-workflows/jobs-and-cost-and-spending-limits) or on [time limits](https://documentation.dnanexus.com/user/running-apps-and-workflows/job-time-limits).
 
 ## Monitoring
 
@@ -68,14 +84,14 @@ A job has 3 possible states:
 * `Failed` indicates the job has failed due to an error
 
 Once a job is completed (either `Done` or `Failed`), you will receive an email updating you of said completion.
-It will also appear in the `Notifications` tab (bell icon in the top right corner).
+It will also appear in the *Notifications* tab (bell icon in the top right corner).
 
 ### Filtering jobs
 
 After running a lot of jobs, you might find your *MONITOR* page to be quite crowded. This is especially true with this tutorial where some jobs are run for each of the 22 chromosomes. To find a specific job, you can filter out the *MONITOR* page.
 
 In this tutorial, all jobs have specific [tags](#tags) which help with filtering.
-By default, tags are not used in filtering on the *MONITOR* page, you need to add them in the `Filter settings` tab (three bars in the top right corner).
+By default, tags are not used in filtering on the *MONITOR* page, you need to add them in the *Filter settings* tab (three stacked bars in the top right corner).
 
 > Please note, in this tutorial, jobs are tagged with the software used (plink or regenie), the phenotype (BMI), the step of the analysis (QC, GWAS, Step 0 to 2) and lastly the chromosome number (c1 to 22) if jobs are separated per chromosome.
 

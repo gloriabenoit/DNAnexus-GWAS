@@ -37,10 +37,10 @@ We perform the QC at the same time as our GWAS. The variants are filtered using 
 
 ```bash
 pheno="BMI"
-pheno_path="/WKD_<your-name>/plink_$pheno.txt"
-ind_path="/WKD_<your-name>/white_british.txt"
+pheno_path="/gwas_tutorial/plink_$pheno.txt"
+ind_path="/gwas_tutorial/white_british.txt"
 ind=$(basename "$ind_path")
-cov_path="/WKD_<your-name>/covariates.txt"
+cov_path="/gwas_tutorial/covariates.txt"
 cov=$(basename "$cov_path")
 
 instance="mem2_ssd1_v2_x16"

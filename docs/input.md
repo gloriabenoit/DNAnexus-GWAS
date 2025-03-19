@@ -37,31 +37,42 @@ In order to run our GWAS, apart from the genetic and sample data, we need 3 addi
 
 Theses files can either be uploaded directly to your projects using `dx upload`, or created using DNAnexus data. This tutorial will guide you through the second option.
 
-> All three files will be uploaded to your current `dx` repertory (`WKD_<your-name>` if you are closely following this tutorial).
+> All three files will be uploaded to your current `dx` repertory (`gwas_tutorial` if you are closely following this tutorial).
 > If you want to upload them somewhere else, you can either move directory with `dx cd` before uploading, or use the `--path` or `--destination` option to specify the DNAnexus path to upload the files.
 
 ### Phenotype
 
-To extract the phenotype that we want, we first need to download all available data-fields in our dataset.
-You will need the `record-id`, which is the id of the `.dataset` file at the root of your DNAnexus project. On your project's web page, you can find the id by selecting the `.dataset` file and searching for the `ID` in the info panel that appears on the right.
+To extract the phenotype that we want, we first need to download all available data-fields in our dataset using Python.
 
 > Please note, when running the `extract_dataset` command you might encounter a `('Invalid JSON received from server', 200)` error. If this happens, you simply need to rerun the code.
 
-```bash
-dx extract_dataset <record-id> -ddd --delimiter ","
+```python
+""" Extract dataset. """
+import dxpy
+import subprocess
+
+dispensed_dataset_id = dxpy.find_one_data_object(typename='Dataset', name='app*.dataset', folder='/', name_mode='glob')['id']
+
+# Get project ID
+project_id = dxpy.find_one_project()["id"]
+dataset = (':').join([project_id, dispensed_dataset_id])
+
+cmd = ["dx", "extract_dataset", dataset, "-ddd", "--delimiter", ","]
+subprocess.check_call(cmd)
 ```
 
-This command outputs 3 files:
-
-* `<app-id>.data_dictionary.csv` contains a table with participants as the rows and metadata along the columns, including field names (see table below for naming convention)
-* `<app-id>.codings.csv` contains a lookup table for the different medical codes, including ICD-10 codes that will be displayed in the diagnosis field column (p41270)
-* `<app-id>.entity_dictionary.csv` contains the different entities that can be queried, where participant is the main entity that corresponds to most phenotype fields
-
-To make it easier, you can rename theses files to a shorter name like `ukbb`.
+Once completed, we want to rename the output file to a more manageable name like `ukbb`.
 
 ```bash
-rename <app-id> ukbb app*
+dataset_name=$(basename *.data_dictionary.csv | sed -e "s/.data_dictionary.csv//")
+rename $dataset_name ukbb $dataset_name*
 ```
+
+Combining these two scripts outputs 3 files:
+
+* `ukbb.data_dictionary.csv` contains a table with participants as the rows and metadata along the columns, including field names (see table below for naming convention)
+* `ukbb.codings.csv` contains a lookup table for the different medical codes, including ICD-10 codes that will be displayed in the diagnosis field column (p41270)
+* `ukbb.entity_dictionary.csv` contains the different entities that can be queried, where participant is the main entity that corresponds to most phenotype fields
 
 We first need to get the field name of the phenotype(s) we want to extract. As an example, we will extract the BMI index ([21001](https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=21001)), but you can extract any number of phenotypes.
 

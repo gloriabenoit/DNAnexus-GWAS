@@ -35,10 +35,10 @@ Unlike with PLINK2, we cannot perform the QC at the same time as our GWAS, we mu
 
 ```bash
 pheno="BMI"
-pheno_path="/WKD_<your-name>/regenie_$pheno.txt"
-ind_path="/WKD_<your-name>/white_british.txt"
+pheno_path="/gwas_tutorial/regenie_$pheno.txt"
+ind_path="/gwas_tutorial/white_british.txt"
 ind=$(basename "$ind_path")
-cov_path="/WKD_<your-name>/covariates.txt"
+cov_path="/gwas_tutorial/covariates.txt"
 cov=$(basename "$cov_path")
 
 instance="mem1_ssd1_v2_x16"
@@ -102,7 +102,7 @@ Before running our GWAS using regenie, we first need to merge all of the genotyp
 
 ```bash
 pheno="BMI"
-pheno_path="/WKD_<your-name>/regenie_$pheno.txt" # not strictly needed, but swiss-army-knife needs at least one input
+pheno_path="/gwas_tutorial/regenie_$pheno.txt" # not strictly needed, but swiss-army-knife needs at least one input
 geno_array="/mnt/project/Bulk/Genotype\ Results/Genotype\ calls/ukb22418_c[1-9]*"
 
 instance="mem1_ssd1_v2_x16"
@@ -143,10 +143,10 @@ The files will be stored in a new directory named `merge`.
 
 ```bash
 pheno="BMI"
-pheno_path="/WKD_<your-name>/regenie_$pheno.txt"
-ind_path="/WKD_<your-name>/white_british.txt"
+pheno_path="/gwas_tutorial/regenie_$pheno.txt"
+ind_path="/gwas_tutorial/white_british.txt"
 ind=$(basename "$ind_path")
-merge_path="/WKD_<your-name>/regenie_gwas_$pheno/merge/c1_c22_merged"
+merge_path="/gwas_tutorial/regenie_gwas_$pheno/merge/c1_c22_merged"
 merge=$(basename "$merge_path")
 
 instance="mem1_ssd1_v2_x16"
@@ -206,12 +206,12 @@ The first step of a regenie GWAS is the estimation of how background SNPs contri
 
 ```bash
 pheno="BMI"
-pheno_path="/WKD_<your-name>/regenie_$pheno.txt"
-cov_path="/WKD_<your-name>/covariates.txt"
+pheno_path="/gwas_tutorial/regenie_$pheno.txt"
+cov_path="/gwas_tutorial/covariates.txt"
 cov=$(basename "$cov_path")
-merge_path="/WKD_<your-name>/regenie_gwas_$pheno/merge/c1_c22_merged"
+merge_path="/gwas_tutorial/regenie_gwas_$pheno/merge/c1_c22_merged"
 merge=$(basename "$merge_path")
-QC_path="/WKD_<your-name>/regenie_gwas_$pheno/merge/QC_pass_geno_array"
+QC_path="/gwas_tutorial/regenie_gwas_$pheno/merge/QC_pass_geno_array"
 QC=$(basename "$QC_path")
 
 instance="mem1_ssd1_v2_x16"
@@ -273,12 +273,12 @@ The second step of a regenie GWAS is the regression. During this step, whole gen
 
 ```bash
 pheno="BMI"
-pheno_path="/WKD_<your-name>/regenie_$pheno.txt"
-cov_path="/WKD_<your-name>/covariates.txt"
+pheno_path="/gwas_tutorial/regenie_$pheno.txt"
+cov_path="/gwas_tutorial/covariates.txt"
 cov=$(basename "$cov_path")
-pred_path="/WKD_<your-name>/regenie_gwas_$pheno/merge/${pheno}_merged_pred.list"
+pred_path="/gwas_tutorial/regenie_gwas_$pheno/merge/${pheno}_merged_pred.list"
 pred=$(basename "$pred_path")
-loco_path="/WKD_<your-name>/regenie_gwas_$pheno/merge/${pheno}_merged_1.loco.gz"
+loco_path="/gwas_tutorial/regenie_gwas_$pheno/merge/${pheno}_merged_1.loco.gz"
 
 instance="mem1_ssd1_v2_x16"
 threads=16
@@ -291,7 +291,7 @@ dx cd regenie_gwas_$pheno
 for chr_num in $(seq 1 22); do
     prefix="/Bulk/Whole genome sequences/Population level genome variants, BGEN format - interim 200k release//ukb24306_c${chr_num}_b0_v1"
     bgen=$(basename "$prefix")
-    QC_path="/WKD_<your-name>/regenie_gwas_$pheno/QC_lists/QC_pass_c${chr_num}"
+    QC_path="/gwas_tutorial/regenie_gwas_$pheno/QC_lists/QC_pass_c${chr_num}"
     QC=$(basename "$QC_path")
     
     regenie_command="regenie \

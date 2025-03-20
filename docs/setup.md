@@ -1,5 +1,7 @@
 # First setup
 
+## Login
+
 In order to connect to DNAnexus remotely, you first need to install the `dxpy` package.
 
 ```bash
@@ -11,8 +13,6 @@ To enable tab completion, run the following command, or add it to your `.bashrc`
 ```bash
 eval "$(register-python-argcomplete dx|sed 's/-o default//')"
 ```
-
-> You can find the official documentation for all `dx` commands we will use [here](https://documentation.dnanexus.com/user/helpstrings-of-sdk-command-line-utilities).
 
 You can now enter your DNAnexus credentials to access your project remotely by using the following command:
 
@@ -39,11 +39,22 @@ Please use the `dx select` command or check the official documentation on [Proje
 
 If you have access to only one project, it will be already selected and you can go on with this tutorial.
 
-By default, any job prompted here will output in your current DNAnexus repertory, meaning at the root of your project.
-To keep your project tidy, we can create a new folder and move into it, thus all jobs will output there.
+## Architecture
 
+When using the command line, you have access to the architecture on DNAnexus and your own local architecture.
+The basic commands like `ls`, `cd` or `mv` all have equivalents to run on the DNAnexus architecture rather than the local one, simply add `dx` before them.
 
- Therefore, you can create a new folder and move into it, to help keep your project tidy.
+A quick way to check the difference is to run the same command on both architecture:
+
+* `ls` will lists the files in your **current directory**, as you probably already know
+* `dx ls` will lists the files in your **DNAnexus current directory**, which should be the root of your project if you are first starting (with the `Bulk` and `Showcase metadata` folders)
+
+> You can find the official documentation for all `dx` commands we will use [here](https://documentation.dnanexus.com/user/helpstrings-of-sdk-command-line-utilities).
+
+By default, any job run from the command line will output in your current DNAnexus repertory, meaning at the root of your project.
+To keep your project tidy, we can create a new folder and move into it, so that all jobs will output there.
+
+Therefore, you can create a new folder and move into it, to help keep your project tidy.
 
 ```bash
 dx mkdir gwas_tutorial

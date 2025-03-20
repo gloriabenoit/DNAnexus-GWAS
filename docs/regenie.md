@@ -353,14 +353,14 @@ Now that all of the summary statistics are computed, we can download them and co
 
 ```bash
 pheno="BMI"
-output_path="regenie_gwas_$pheno"
+results_path="regenie_gwas_$pheno"
 stat_path="statistics"
 
 mkdir -p $stat_path
 
 for chr_num in $(seq 22 22); do
     result="sumstat_c${chr_num}_$pheno.regenie"
-    dx download "$output_path/$result.gz" -o $stat_path
+    dx download "$results_path/$result.gz" -o $stat_path
     gunzip $stat_path/$result
     if [ $chr_num -eq 1 ]; then
         head -n1 "$stat_path/$result" > "sumstat_${pheno}.regenie"

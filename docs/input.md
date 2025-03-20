@@ -51,13 +51,23 @@ To extract the phenotype that we want, we first need to download all available d
 import dxpy
 import subprocess
 
-dispensed_dataset_id = dxpy.find_one_data_object(typename='Dataset', name='app*.dataset', folder='/', name_mode='glob')['id']
+def get_dataset_id():
+    """ Extract dataset id.
 
-# Get project ID
-project_id = dxpy.find_one_project()["id"]
-dataset = (':').join([project_id, dispensed_dataset_id])
+    Returns
+    -------
+    str
+        Dataset id.
+    """
+    dispensed_dataset_id = dxpy.find_one_data_object(typename='Dataset', name='app*.dataset', folder='/', name_mode='glob')['id']
 
-cmd = ["dx", "extract_dataset", dataset, "-ddd", "--delimiter", ","]
+    # Get project ID
+    project_id = dxpy.find_one_project()["id"]
+    dataset = (':').join([project_id, dispensed_dataset_id])
+    return dataset
+
+DATASET = get_dataset_id()
+cmd = ["dx", "extract_dataset", DATASET, "-ddd", "--delimiter", ","]
 subprocess.check_call(cmd)
 ```
 
@@ -102,8 +112,22 @@ import pandas as pd
 # Input
 FILENAME = "ukbb.dataset.data_dictionary.csv"
 OUTPUT = "pheno_extract.csv"
-DATASET = "<record-id>"
 FIELD_ID = [21001] # BMI id
+
+def get_dataset_id():
+    """ Extract dataset id.
+
+    Returns
+    -------
+    str
+        Dataset id.
+    """
+    dispensed_dataset_id = dxpy.find_one_data_object(typename='Dataset', name='app*.dataset', folder='/', name_mode='glob')['id']
+
+    # Get project ID
+    project_id = dxpy.find_one_project()["id"]
+    dataset = (':').join([project_id, dispensed_dataset_id])
+    return dataset
 
 def field_names_for_ids(filename, field_ids):
     """ Converts data-field id to corresponding field name.
@@ -134,6 +158,9 @@ def field_names_for_ids(filename, field_ids):
 # Convert id to names
 FIELD_NAMES = field_names_for_ids(FILENAME, FIELD_ID)
 FIELD_NAMES = ",".join(FIELD_NAMES)
+
+# Get dataset ID
+DATASET = get_dataset_id()
 
 # Extract phenotype(s)
 if os.path.exists(OUTPUT):

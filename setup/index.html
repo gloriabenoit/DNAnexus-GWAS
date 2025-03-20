@@ -47,6 +47,10 @@
               <ul class="current">
                 <li class="toctree-l1 current"><a class="reference internal current" href="#">First setup</a>
     <ul class="current">
+    <li class="toctree-l2"><a class="reference internal" href="#login">Login</a>
+    </li>
+    <li class="toctree-l2"><a class="reference internal" href="#architecture">Architecture</a>
+    </li>
     </ul>
                 </li>
               </ul>
@@ -95,15 +99,13 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="first-setup">First setup</h1>
+<h2 id="login">Login</h2>
 <p>In order to connect to DNAnexus remotely, you first need to install the <code>dxpy</code> package.</p>
 <pre><code class="language-bash">pip3 install dxpy
 </code></pre>
 <p>To enable tab completion, run the following command, or add it to your <code>.bashrc</code>:</p>
 <pre><code class="language-bash">eval &quot;$(register-python-argcomplete dx|sed 's/-o default//')&quot;
 </code></pre>
-<blockquote>
-<p>You can find the official documentation for all <code>dx</code> commands we will use <a href="https://documentation.dnanexus.com/user/helpstrings-of-sdk-command-line-utilities">here</a>.</p>
-</blockquote>
 <p>You can now enter your DNAnexus credentials to access your project remotely by using the following command:</p>
 <pre><code class="language-bash">dx login
 </code></pre>
@@ -124,8 +126,19 @@ For instance, if you want your info to expire in <b>6 months</b>, use the follow
 <p>If you have access to multiple project on DNAnexus, you need to choose the specific one in which you want to perform your GWAS.
 Please use the <code>dx select</code> command or check the official documentation on <a href="https://documentation.dnanexus.com/user/projects/project-navigation#changing-your-current-project">Project Navigation</a> for more information.</p>
 <p>If you have access to only one project, it will be already selected and you can go on with this tutorial.</p>
-<p>By default, any job prompted here will output in your current DNAnexus repertory, meaning at the root of your project.
-To keep your project tidy, we can create a new folder and move into it, thus all jobs will output there.</p>
+<h2 id="architecture">Architecture</h2>
+<p>When using the command line, you have access to the architecture on DNAnexus and your own local architecture.
+The basic commands like <code>ls</code>, <code>cd</code> or <code>mv</code> all have equivalents to run on the DNAnexus architecture rather than the local one, simply add <code>dx</code> before them.</p>
+<p>A quick way to check the difference is to run the same command on both architecture:</p>
+<ul>
+<li><code>ls</code> will lists the files in your <strong>current directory</strong>, as you probably already know</li>
+<li><code>dx ls</code> will lists the files in your <strong>DNAnexus current directory</strong>, which should be the root of your project if you are first starting (with the <code>Bulk</code> and <code>Showcase metadata</code> folders)</li>
+</ul>
+<blockquote>
+<p>You can find the official documentation for all <code>dx</code> commands we will use <a href="https://documentation.dnanexus.com/user/helpstrings-of-sdk-command-line-utilities">here</a>.</p>
+</blockquote>
+<p>By default, any job run from the command line will output in your current DNAnexus repertory, meaning at the root of your project.
+To keep your project tidy, we can create a new folder and move into it, so that all jobs will output there.</p>
 <p>Therefore, you can create a new folder and move into it, to help keep your project tidy.</p>
 <pre><code class="language-bash">dx mkdir gwas_tutorial
 dx cd gwas_tutorial

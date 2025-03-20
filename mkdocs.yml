@@ -4,7 +4,7 @@ site_author: Gloria BENOIT
 
 nav:
     - Home: index.md
-    - First setup: setup.md
+    - Getting started: start.md
     - About jobs: jobs.md
     - Input files: input.md
     - Using PLINK2: plink.md

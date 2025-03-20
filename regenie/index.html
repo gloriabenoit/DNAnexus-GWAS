@@ -434,7 +434,7 @@ dx cd ../
 <p>Now that all of the summary statistics are computed, we can download them and combine them into one single file.</p>
 <pre><code class="language-bash">pheno=&quot;BMI&quot;
 output_path=&quot;regenie_gwas_$pheno&quot;
-stat_path=&quot;$output_path/statistics&quot;
+stat_path=&quot;statistics&quot;
 
 mkdir -p $stat_path
 
@@ -443,9 +443,9 @@ for chr_num in $(seq 22 22); do
     dx download &quot;$output_path/$result.gz&quot; -o $stat_path
     gunzip $stat_path/$result
     if [ $chr_num -eq 1 ]; then
-        head -n1 &quot;$stat_path/$result&quot; &gt; &quot;$output_path/sumstat_${pheno}.regenie&quot;
+        head -n1 &quot;$stat_path/$result&quot; &gt; &quot;sumstat_${pheno}.regenie&quot;
     fi
-    tail -n +2 &quot;$stat_path/$result&quot; &gt;&gt; &quot;$output_path/sumstat_${pheno}.regenie&quot;
+    tail -n +2 &quot;$stat_path/$result&quot; &gt;&gt; &quot;sumstat_${pheno}.regenie&quot;
 done
 </code></pre>
 <p>This command outputs 23 files:</p>

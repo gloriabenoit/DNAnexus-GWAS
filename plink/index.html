@@ -137,7 +137,7 @@ ind=$(basename &quot;$ind_path&quot;)
 cov_path=&quot;/gwas_tutorial/covariates.txt&quot;
 cov=$(basename &quot;$cov_path&quot;)
 
-instance=&quot;mem2_ssd1_v2_x16&quot;
+instance=&quot;mem1_ssd1_v2_x16&quot;
 threads=16
 priority=&quot;low&quot;
 cost_limit=3
@@ -199,20 +199,20 @@ dx cd ../
 </blockquote>
 <pre><code class="language-bash">pheno=&quot;BMI&quot;
 type=&quot;linear&quot; # to change accordingly
-output_path=&quot;plink_gwas_$pheno&quot;
-stat_path=&quot;$output_path/statistics&quot;
+results_path=&quot;plink_gwas_$pheno&quot;
+stat_path=&quot;statistics&quot;
 
 mkdir -p $stat_path
 
 for chr_num in $(seq 1 22); do
     result=&quot;sumstat_c${chr_num}.$pheno.glm.$type&quot;
-    dx download &quot;$output_path/$result&quot; -o $stat_path
+    dx download &quot;$results_path/$result&quot; -o $stat_path
     if [ $chr_num -eq 1 ]; then
-        head -n1 &quot;$stat_path/$result&quot; &gt; &quot;$output_path/sumstat_${pheno}.ADD&quot;
+        head -n1 &quot;$stat_path/$result&quot; &gt; &quot;sumstat_${pheno}.ADD&quot;
     fi
     head -n1 &quot;$stat_path/$result&quot; &gt; &quot;$stat_path/sumstat_c${chr_num}.ADD&quot;
     grep &quot;ADD&quot; &quot;$stat_path/$result&quot; &gt;&gt; &quot;$stat_path/sumstat_c${chr_num}.ADD&quot;
-    grep &quot;ADD&quot; &quot;$stat_path/$result&quot; &gt;&gt; &quot;$output_path/sumstat_${pheno}.ADD&quot;
+    grep &quot;ADD&quot; &quot;$stat_path/$result&quot; &gt;&gt; &quot;sumstat_${pheno}.ADD&quot;
 done
 </code></pre>
 <p>This command outputs 23 files:</p>
@@ -220,7 +220,7 @@ done
 <li><code>sumstat_c&lt;chrom-number&gt;.ADD</code> contains the cleaned up values for the regression <em>per chromosome</em></li>
 <li><code>sumstat_BMI.ADD</code> contains the concatenated cleaned up values for the regression</li>
 </ul>
-<p>The files will be stored in a new directory named <code>plink_gwas_BMI</code>, locally this time, with inside another directory named <code>statistics</code> containing all of the summary statistics per chromosome. The combination of all of them will be located at the same level than <code>statistics</code>, making it easier to find.</p>
+<p>The files will be stored in a new directory named <code>statistics</code>, locally this time, containing all of the summary statistics per chromosome. The combination of all of them will be located at the same level as <code>statistics</code>, making it easier to find.</p>
 <p>Congratulations, you have successfully completed a GWAS using PLINK2 on DNAnexus!</p>
               
             </div>

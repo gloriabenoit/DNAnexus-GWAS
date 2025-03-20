@@ -2,30 +2,17 @@
 
 ## Genetic data
 
-On DNAnexus, whole genome sequences data are saved in multiple formats: BGEN format (`.bgen` and `.sample`), PLINK format (`.bed`, `.bim` and `.fam`) or pVCF format (`.vcf.gz.tbi`), among others. For more information on the data available, you can run the following command:
+On DNAnexus, large items, like genetic data, are stored in the `Bulk` folder at the root of your project. Among them, you can find whole exome sequencing data (`/Bulk/Exome sequences/`) or whole genome sequencing data (`/Bulk/Whole genome sequences`). We will use the latter.
+
+Whole genome sequencing data is available in multiple formats: BGEN format (`.bgen` and `.sample`), PLINK format (`.bed`, `.bim` and `.fam`) or pVCF format (`.vcf.gz.tbi`), among others. For more information on the data available, you can run the following command:
 
 ```bash
 dx ls "/Bulk/Whole genome sequences"
 ```
 
-### PLINK2
+As written on the [About jobs page](jobs.md), input files can be either downloaded or mounted to the worker. After some trial and error, we have found that using the BGEN format without mounting it was the quickest way to perform a GWAS using PLINK2. Downloading and translating BGEN files to a suitable format locally was quicker than downloading or mounting the PLINK files.
 
-PLINK2 can read both BGEN and PLINK format. Therefore, we have 4 ways of inputing genetic data:
-
-<center>
-
-| File format | Mounted |
-|-------------|---------|
-| BGEN        | No      |
-| BGEN        | Yes     |
-| PLINK       | No      |
-| PLINK       | Yes     |
-
-</center>
-
-After some trial and error, we have found that using the BGEN format without mounting it was the quickest way to perform a GWAS using PLINK2. Downloading and translating BGEN files locally was quicker than downloading or mounting the PLINK files.
-
-Therefore, in this tutorial, we will input BGEN files directly. The path to the genetic data is the following: `"/Bulk/Whole genome sequences/Population level genome variants, BGEN format - interim 200k release/"`.
+Therefore, in this tutorial, we will input BGEN files directly, for both the PLINK2 and the regenie GWASs. The path to the genetic data is the following: `"/Bulk/Whole genome sequences/Population level genome variants, BGEN format - interim 200k release/"`.
 
 ## Additional data
 
@@ -51,27 +38,15 @@ To extract the phenotype that we want, we first need to download all available d
 import dxpy
 import subprocess
 
-def get_dataset_id():
-    """ Extract dataset id.
-
-    Returns
-    -------
-    str
-        Dataset id.
-    """
-    dispensed_dataset_id = dxpy.find_one_data_object(typename='Dataset', name='app*.dataset', folder='/', name_mode='glob')['id']
-
-    # Get project ID
-    project_id = dxpy.find_one_project()["id"]
-    dataset = (':').join([project_id, dispensed_dataset_id])
-    return dataset
-
-DATASET = get_dataset_id()
+DATASET =  dxpy.find_one_data_object(typename='Dataset', name='app*.dataset', folder='/', name_mode='glob')['id']
 cmd = ["dx", "extract_dataset", DATASET, "-ddd", "--delimiter", ","]
 subprocess.check_call(cmd)
 ```
 
 Once completed, we want to rename the output file to a more manageable name like `ukbb`.
+
+> The **rename** command is a built-in tool on many Linux distributions.
+> However, if you don't have it, you can install it with `sudo apt install rename`.
 
 ```bash
 dataset_name=$(basename *.data_dictionary.csv | sed -e "s/.data_dictionary.csv//")
@@ -108,26 +83,13 @@ The following python script will extract the phenotype that you wish, and every 
 import os
 import subprocess
 import pandas as pd
+import dxpy
 
 # Input
-FILENAME = "ukbb.dataset.data_dictionary.csv"
-OUTPUT = "pheno_extract.csv"
+DATASET = dxpy.find_one_data_object(typename='Dataset', name='app*.dataset', folder='/', name_mode='glob')['id']
+FILENAME = "ukbb.data_dictionary.csv"
 FIELD_ID = [21001] # BMI id
-
-def get_dataset_id():
-    """ Extract dataset id.
-
-    Returns
-    -------
-    str
-        Dataset id.
-    """
-    dispensed_dataset_id = dxpy.find_one_data_object(typename='Dataset', name='app*.dataset', folder='/', name_mode='glob')['id']
-
-    # Get project ID
-    project_id = dxpy.find_one_project()["id"]
-    dataset = (':').join([project_id, dispensed_dataset_id])
-    return dataset
+OUTPUT = "pheno_extract.csv"
 
 def field_names_for_ids(filename, field_ids):
     """ Converts data-field id to corresponding field name.
@@ -158,9 +120,6 @@ def field_names_for_ids(filename, field_ids):
 # Convert id to names
 FIELD_NAMES = field_names_for_ids(FILENAME, FIELD_ID)
 FIELD_NAMES = ",".join(FIELD_NAMES)
-
-# Get dataset ID
-DATASET = get_dataset_id()
 
 # Extract phenotype(s)
 if os.path.exists(OUTPUT):

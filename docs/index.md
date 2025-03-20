@@ -10,7 +10,7 @@ If not, please create an account [here](https://ams.ukbiobank.ac.uk/ams/signup),
 
 This tutorial will guide you through every step needed in order to perform a basic GWAS using whole genome sequences for chromosome 1 to 22 for both [PLINK2](https://www.cog-genomics.org/plink/2.0/) and [regenie](https://rgcgithub.github.io/regenie/). In order to parallelize the analyses, we will perform 22 different GWAS, one for each chromosome, and combine the results locally to reduce cost.
 
-As an example, we will perform a linear regression on the **BMI index** ([21001](https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=21001)) using **whole genome sequencing data**, specifically the **interim 200k release** (Path `/Bulk/Whole genome sequences/`). However, you can use any data that you need, simply keep in mind that paths need to be changed in the scripts.
+As an example, we will perform a linear regression on the **BMI index** ([21001](https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=21001)) using **whole genome sequencing data**, specifically the **interim 200k release** (`"/Bulk/Whole genome sequences/Population level genome variants, BGEN format - interim 200k release/"`). However, you can use any data that you need, simply keep in mind that paths need to be changed in the scripts.
 
 > This tutorial is written for Linux operating systems. Commands may vary accross operating systems.
 
@@ -34,10 +34,10 @@ The [first section](input.md) is done locally and does not cost anything.
 ### Using PLINK2
 
 The [second section](plink.md) will run 22 different jobs (one per chromosome). The cost and duration of the job depends on the instance used.
-With our chosen instance (mem2_ssd1_v2_x16), with a `high` priority, the whole GWAS will take about **200 minutes** (3h20) and cost around **£19.41** (according to the [UKB RAP Rate Card v3.0](https://20779781.fs1.hubspotusercontent-na1.net/hubfs/20779781/Product%20Team%20Folder/Rate%20Cards/BiobankResearchAnalysisPlatform_Rate%20Card_Current.pdf)).
+With our chosen instance (mem1_ssd1_v2_x16), with a `high` priority, the whole GWAS will take about **200 minutes** (3h20) and cost around **£17.04** (according to the [UKB RAP Rate Card v3.0](https://20779781.fs1.hubspotusercontent-na1.net/hubfs/20779781/Product%20Team%20Folder/Rate%20Cards/BiobankResearchAnalysisPlatform_Rate%20Card_Current.pdf), for a total execution time of 2341 minutes).
 
-> Please note that this cost can be reduced drastically using a `low` priority. If none of the jobs are interrupted, with this instance, it will cost only **£4.55**.
-> However it is most likely that jobs will be interrupted. In our experience, the whole GWAS using this instance on a `low` priority with some interruptions has cost **£9.30** altough it took almost **7h30** to complete.
+> Please note that this cost can be reduced drastically using a `low` priority. If none of the jobs are interrupted, with this instance, it will cost only **£4.56**.
+> However it is most likely that jobs will be interrupted. In our experience, the whole GWAS using this instance on a `low` priority with some interruptions has cost around **£9.30** altough it took almost **7h30** to complete.
 
 ### Using regenie
 

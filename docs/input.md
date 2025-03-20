@@ -163,7 +163,7 @@ import pandas as pd
 # Input
 FILENAME = "pheno_extract.csv"
 PHENOTYPE = "BMI"
-SOFTWARE = 'p' # for PLINK2 or 'r' for regenie.
+SOFTWARE = 'p' # for PLINK2 or 'r' for regenie
 
 def format_phenotype(filename, phenotype, software):
     """ Save phenotype according to software format.
@@ -174,7 +174,7 @@ def format_phenotype(filename, phenotype, software):
         Phenotype file to format.
     phenotype : str
         Phenotype name.
-    format : str { 'p', 'r'}
+    software : str { 'p', 'r'}
         Either 'p' for PLINK2 or 'r' for regenie,
         to correctly format the file.
     """

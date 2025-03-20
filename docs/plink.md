@@ -43,7 +43,7 @@ ind=$(basename "$ind_path")
 cov_path="/gwas_tutorial/covariates.txt"
 cov=$(basename "$cov_path")
 
-instance="mem2_ssd1_v2_x16"
+instance="mem1_ssd1_v2_x16"
 threads=16
 priority="low"
 cost_limit=3
@@ -109,20 +109,20 @@ PLINK outputs a value for each of the covariates, in addition to the global p-va
 ```bash
 pheno="BMI"
 type="linear" # to change accordingly
-output_path="plink_gwas_$pheno"
-stat_path="$output_path/statistics"
+results_path="plink_gwas_$pheno"
+stat_path="statistics"
 
 mkdir -p $stat_path
 
 for chr_num in $(seq 1 22); do
     result="sumstat_c${chr_num}.$pheno.glm.$type"
-    dx download "$output_path/$result" -o $stat_path
+    dx download "$results_path/$result" -o $stat_path
     if [ $chr_num -eq 1 ]; then
-        head -n1 "$stat_path/$result" > "$output_path/sumstat_${pheno}.ADD"
+        head -n1 "$stat_path/$result" > "sumstat_${pheno}.ADD"
     fi
     head -n1 "$stat_path/$result" > "$stat_path/sumstat_c${chr_num}.ADD"
     grep "ADD" "$stat_path/$result" >> "$stat_path/sumstat_c${chr_num}.ADD"
-    grep "ADD" "$stat_path/$result" >> "$output_path/sumstat_${pheno}.ADD"
+    grep "ADD" "$stat_path/$result" >> "sumstat_${pheno}.ADD"
 done
 ```
 
@@ -131,6 +131,6 @@ This command outputs 23 files:
 * `sumstat_c<chrom-number>.ADD` contains the cleaned up values for the regression *per chromosome*
 * `sumstat_BMI.ADD` contains the concatenated cleaned up values for the regression
 
-The files will be stored in a new directory named `plink_gwas_BMI`, locally this time, with inside another directory named `statistics` containing all of the summary statistics per chromosome. The combination of all of them will be located at the same level than `statistics`, making it easier to find.
+The files will be stored in a new directory named `statistics`, locally this time, containing all of the summary statistics per chromosome. The combination of all of them will be located at the same level as `statistics`, making it easier to find.
 
 Congratulations, you have successfully completed a GWAS using PLINK2 on DNAnexus!

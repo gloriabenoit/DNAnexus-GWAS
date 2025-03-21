@@ -45,7 +45,7 @@
                 </li>
               </ul>
               <ul>
-                <li class="toctree-l1"><a class="reference internal" href="../setup/">First setup</a>
+                <li class="toctree-l1"><a class="reference internal" href="../start/">Getting started</a>
                 </li>
               </ul>
               <ul class="current">
@@ -127,9 +127,7 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="about-jobs">About jobs</h1>
-<p>This page aims to go through the basics of jobs on DNAnexus, you do not need to read it to complete the tutorial.
-If you already know how DNAnexus jobs work, please skip this and go directly to the <a href="../input/">Input files page</a>.
-If this is your first time using DNAnexus, or if you are unsure about how some things work, please read this page.</p>
+<p>If this is your first time using DNAnexus, or if you are unsure about how some things work, please read this page. However, be aware that it is not mandatory to complete the tutorial.</p>
 <p>For more detailed information, you can check the <a href="https://dnanexus.gitbook.io/uk-biobank-rap">official documentation</a> for a <a href="https://dnanexus.gitbook.io/uk-biobank-rap/getting-started/quickstart">quickstart</a> or about the <a href="https://dnanexus.gitbook.io/uk-biobank-rap/getting-started/key-concepts">key concepts</a>.</p>
 <h2 id="execution">Execution</h2>
 <p>On DNAnexus, when a job is executed, a worker is spun up in the cloud, then the job's code and inputs are downloaded to that worker and executed. This is the standard behavior, but inputs can also be mounted to the worker (accessed dynamically) to avoid their downloading costs.</p>
@@ -169,7 +167,7 @@ Instances have 3 main metrics:</p>
 They act as keywords associated to a job, and help if you need to navigate the <em>MONITOR</em> tab. You can find more information in the <a href="#monitoring">Monitoring section</a>.</p>
 <p>To add a tag to your job, you need to add the <code>--tag</code> option to your <code>dx run</code> command.</p>
 <h3 id="time-and-cost-limits">Time and cost limits</h3>
-<p>By default, a job will result in an error if its execution time exceeds 30 days. Please note that this value may vary across apps. 
+<p>By default, a job will result in an error if its execution time exceeds 30 days. Please note that this value may vary across apps.
 During this tutorial, no jobs will exceed this limit.</p>
 <p>Setting a cost limit is optional, but can be useful. For instance, when running a <code>low</code> priority job, it can ensure that possible interruptions won't add up causing the cost to rise by stopping the job early. It may also be of use if you don't know the time your job will take, and therefore can't compute the total cost.
 Either way, it is useful to avoid spending too much on a single job.</p>
@@ -223,7 +221,7 @@ By default, tags are not used in filtering on the <em>MONITOR</em> page, you nee
             </div>
           </div><footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="Footer Navigation">
-        <a href="../setup/" class="btn btn-neutral float-left" title="First setup"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+        <a href="../start/" class="btn btn-neutral float-left" title="Getting started"><span class="icon icon-circle-arrow-left"></span> Previous</a>
         <a href="../input/" class="btn btn-neutral float-right" title="Input files">Next <span class="icon icon-circle-arrow-right"></span></a>
     </div>
 
@@ -251,7 +249,7 @@ By default, tags are not used in filtering on the <em>MONITOR</em> page, you nee
         </span>
     
     
-      <span><a href="../setup/" style="color: #fcfcfc">&laquo; Previous</a></span>
+      <span><a href="../start/" style="color: #fcfcfc">&laquo; Previous</a></span>
     
     
       <span><a href="../input/" style="color: #fcfcfc">Next &raquo;</a></span>

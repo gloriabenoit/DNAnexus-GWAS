@@ -1,7 +1,7 @@
 site_name: Basic tutorial for performing a GWAS on DNAnexus
 repo_url: https://github.com/gloriabenoit/DNAnexus-GWAS
 site_author: Gloria BENOIT
-description: A step-by-step guide on the use of DNAnexus specifically to perform a GWAS.
+site_description: A step-by-step guide on the use of DNAnexus specifically to perform a GWAS.
 
 nav:
     - Home: index.md

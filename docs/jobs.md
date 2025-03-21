@@ -1,8 +1,6 @@
 # About jobs
 
-This page aims to go through the basics of jobs on DNAnexus, you do not need to read it to complete the tutorial.
-If you already know how DNAnexus jobs work, please skip this and go directly to the [Input files page](input.md).
-If this is your first time using DNAnexus, or if you are unsure about how some things work, please read this page.
+If this is your first time using DNAnexus, or if you are unsure about how some things work, please read this page. However, be aware that it is not mandatory to complete the tutorial.
 
 For more detailed information, you can check the [official documentation](https://dnanexus.gitbook.io/uk-biobank-rap) for a [quickstart](https://dnanexus.gitbook.io/uk-biobank-rap/getting-started/quickstart) or about the [key concepts](https://dnanexus.gitbook.io/uk-biobank-rap/getting-started/key-concepts).
 
@@ -60,7 +58,7 @@ To add a tag to your job, you need to add the `--tag` option to your `dx run` co
 
 ### Time and cost limits
 
-By default, a job will result in an error if its execution time exceeds 30 days. Please note that this value may vary across apps. 
+By default, a job will result in an error if its execution time exceeds 30 days. Please note that this value may vary across apps.
 During this tutorial, no jobs will exceed this limit.
 
 Setting a cost limit is optional, but can be useful. For instance, when running a `low` priority job, it can ensure that possible interruptions won't add up causing the cost to rise by stopping the job early. It may also be of use if you don't know the time your job will take, and therefore can't compute the total cost.

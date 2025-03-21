@@ -1,5 +1,7 @@
 # Visualizing results
 
+## Generate plots
+
 Once our GWAS is complete, we can analyze the summary results. Specifically, we want to create a [Manhattan plot](https://www.sciencedirect.com/topics/biochemistry-genetics-and-molecular-biology/manhattan-plot) and a [QQ plot](https://jnmaloof.github.io/BIS180L_web/slides/11_QQPlots.html#1). 
 
 The following code will do just that, although you can use any other software to obtain such plots.
@@ -19,8 +21,8 @@ def read_results(phenotype, software):
 
     Parameters
     ----------
-    phenotype
-        phenotypetype name.
+    phenotype : str
+        phenotype name.
     software : str { 'p', 'r'}
         Either 'p' for PLINK2 or 'r' for regenie,
         to correctly format the file.
@@ -62,7 +64,7 @@ def read_results(phenotype, software):
 
     return chroms, pvals
 
-def manhattan_plot(chroms, pvals, phenotype):
+def manhattan_plot(chroms, pvals, phenotype, software):
     """ Generate Manhattan plot.
 
     Parameters
@@ -71,8 +73,11 @@ def manhattan_plot(chroms, pvals, phenotype):
         Chromosome numbers.
     pvals : list
         Transformed p-values (-log10).
-    phenotype
-        phenotypetype name.
+    phenotype : str
+        phenotype name.
+    software : str { 'p', 'r'}
+        Either 'p' for PLINK2 or 'r' for regenie,
+        to correctly format the file.
 
     Returns
     -------
@@ -125,11 +130,14 @@ def manhattan_plot(chroms, pvals, phenotype):
     plt.ylabel("$-log_{10}(p)$")
 
     # Save
-    output = f"{phenotype}_Manhattan_plot.png"
+    if software == 'p':
+        output = f"plink_{phenotype}_Manhattan_plot.png"
+    elif software == 'r':
+        output = f"regenie_{phenotype}_Manhattan_plot.png"
     plt.savefig(output, bbox_inches="tight")
     plt.close()
 
-def qq_plot(pvals, phenotype):
+def qq_plot(pvals, phenotype, software):
     """ Generate QQ plot.
 
     Parameters
@@ -137,7 +145,10 @@ def qq_plot(pvals, phenotype):
     pvals : list
         Transformed p-values (-log10).
     phenotype : str
-        phenotypetype name.
+        phenotype name.
+    software : str { 'p', 'r'}
+        Either 'p' for PLINK2 or 'r' for regenie,
+        to correctly format the file.
 
     Returns
     -------
@@ -159,7 +170,10 @@ def qq_plot(pvals, phenotype):
     plt.ylabel("Observed $-log_{10}(p)$")
 
     # Save
-    output = f"{phenotype}_QQ_plot.png"
+    if software == 'p':
+        output = f"plink_{phenotype}_QQ_plot.png"
+    elif software == 'r':
+        output = f"regenie_{phenotype}_QQ_plot.png"
     plt.savefig(output, bbox_inches="tight")
     plt.close()
 
@@ -167,12 +181,14 @@ def qq_plot(pvals, phenotype):
 CHROMS, PVALS = read_results(PHENOTYPE, SOFTWARE)
 
 # Manhattan Plot
-manhattan_plot(CHROMS, PVALS, PHENOTYPE, OUTPUT_DIR)
+manhattan_plot(CHROMS, PVALS, PHENOTYPE, SOFTWARE)
 # QQ plot
-qq_plot(PVALS, PHENOTYPE, OUTPUT_DIR)
+qq_plot(PVALS, PHENOTYPE, SOFTWARE)
 ```
 
 This command outputs 2 files:
 
-* `BMI_Manhattan_plot.png` contains the Manhattan plot for the whole GWAS
-* `BMI_QQ_plot.png` contains the QQ plot for the whole GWAS
+* `<software>_BMI_Manhattan_plot.png` contains the Manhattan plot for the whole GWAS
+* `<software>_BMI_QQ_plot.png` contains the QQ plot for the whole GWAS
+
+## Expected plots

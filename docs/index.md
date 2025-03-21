@@ -18,34 +18,76 @@ The [official GWAS guide using Alzheimer's disease](https://dnanexus.gitbook.io/
 
 If you want to try other tools on DNAnexus, we recommend the following github page: [ukb-rap-tools](https://github.com/pjgreer/ukb-rap-tools) by [Phil Greer](https://github.com/pjgreer).
 
+## Structure
+
+The tutorial is separated into four main sections:
+
+1. Fondamentals for first-time use of DNAnexus ([Getting started](start.md), [About jobs](jobs.md))
+2. Necessary files for GWAS input ([Input files](input.md))
+3. Running a GWAS ([Using PLINK2](plink.md), [Using regenie](regenie.md))
+4. Generating plots from results ([Visualizing results](results.md))
+
+> Please note, the [PLINK2](plink.md) and [regenie](regenie.md) sections are independant of each other and can be done separately. However, you will need to follow first the [Getting started](start.md) and [Input files](input.md) pages to make sure you have everything necessary to their completion.
+
+## Requirements
+
+To follow this tutorial, you will only need [Python 3](https://www.python.org/downloads/).
+
 ## Durations and costs
 
-The tutorial has three main sections: [Input files](input.md), [Using PLINK2](plink.md) and [Using regenie](regenie.md).
+Please note, when first using your account you have an initial credit of £40. Running all of this tutorial with the same instance and priority as us might go over this budget. If it is not done already, your project should be billed to a wallet which is different from your initial credit. Please check the [official documentation](https://documentation.dnanexus.com/admin/billing-and-account-management) if you are unsure on how to proceed.
 
-> Please note, when first using your account you have an initial credit of £40. Running all of this tutorial with the same instance and priority as us might go over this budget.
-> If it is not done already, your project should be billed to a wallet which is different from your initial credit.
+Jobs cost will be computed based on the official [UKB RAP Rate Card](https://20779781.fs1.hubspotusercontent-na1.net/hubfs/20779781/Product%20Team%20Folder/Rate%20Cards/BiobankResearchAnalysisPlatform_Rate%20Card_Current.pdf) (v3.0).
+
+> Please remember the cost and duration of a job depends on the instance and priority used.
 
 ### Input files
 
-The [first section](input.md) is done locally and does not cost anything.
+The [input files extraction/upload](input.md) is done locally and does not cost anything.
 
 > Please be aware that storing files onto DNAnexus will result in a monthly cost. You may check its current value in the *SETTINGS* tab on your project's web page, or compute it using the [UKB RAP Rate Card](https://20779781.fs1.hubspotusercontent-na1.net/hubfs/20779781/Product%20Team%20Folder/Rate%20Cards/BiobankResearchAnalysisPlatform_Rate%20Card_Current.pdf).
 
 ### Using PLINK2
 
-The [second section](plink.md) will run 22 different jobs (one per chromosome). The cost and duration of the job depends on the instance used.
-With our chosen instance (mem1_ssd1_v2_x16), with a `high` priority, the whole GWAS will take about **200 minutes** (3h20) and cost around **£17.04** (according to the [UKB RAP Rate Card v3.0](https://20779781.fs1.hubspotusercontent-na1.net/hubfs/20779781/Product%20Team%20Folder/Rate%20Cards/BiobankResearchAnalysisPlatform_Rate%20Card_Current.pdf), for a total execution time of 2341 minutes).
+The [PLINK2 GWAS](plink.md) will run 22 different jobs (one per chromosome).
 
-> Please note that this cost can be reduced drastically using a `low` priority. If none of the jobs are interrupted, with this instance, it will cost only **£4.56**.
-> However it is most likely that jobs will be interrupted. In our experience, the whole GWAS using this instance on a `low` priority with some interruptions has cost around **£9.30** altough it took almost **7h30** to complete.
+With our chosen instance (mem1_ssd1_v2_x16) using a `high` priority, the whole GWAS will take about **200 minutes** (3h20) and cost around **£17.04** (for a total execution time of 2341 minutes).
+
+With the same instance (mem1_ssd1_v2_x16) using a `low` priority, if no jobs are interrupted, it will cost only **£4.56** for the same time.
+
+> Please note that it is most unlikely for jobs to be uninterrupted. In our experience, the whole GWAS using this instance (mem1_ssd1_v2_x16) with a `low` priority and some interruptions has cost around **£9.30** altough it took almost **7h30** to complete (with no failed jobs).
 
 ### Using regenie
 
-The [third section](regenie.md) runs more jobs than other sections, with a total of X different jobs.
+The [regenie GWAS](regenie.md) runs a total of 47 different jobs:
 
-## Requirements
+* 22 jobs for the quality control (one per chromosome)
+* 2 jobs for the merging and QC of merged data
+* 1 job for regenie's step 1 (SNPs contribution estimation)
+* 22 job for regenie's step 2 (regression, one per chromosome)
 
-To follow this tutorial, you will only need [Python 3](https://www.python.org/downloads/).
+> To optimize your GWAS's overall time, you can perform the QC in parallel to every other step beside step 2 (for which it is needed).
+> The rest needs to be done in order.
+
+With our chosen instance (mem1_ssd1_v2_x16) using a `high` priority, the whole GWAS will take about **X minutes** (XhY) and cost around **£Y** (for a total execution time of Z minutes).
+
+With the same instance (mem1_ssd1_v2_x16) using a `low` priority, if no jobs are interrupted, it will cost only **£Y** for the same time.
+
+You can find the details about the jobs run in the following table:
+
+<center>
+
+| Action   |  Time | Execution time | Cost (high) | Cost (low, no interruption) |
+|----------|:-----:|:--------------:|:-----------:|:---------------------------:|
+| QC       |  2h39 |                |             |                             |
+| Merge    | 51min |      51min     |             |                             |
+| Merge QC | 10min |      10min     |     0.07    |             0.02            |
+| Step 1   |  7h10 |      7h10      |     3.13    |             0.83            |
+| Step 2   | 48min |                |             |                             |
+
+</center>
+
+> Please note that it is most unlikely for jobs to be uninterrupted. In our experience, the whole GWAS using this instance (mem1_ssd1_v2_x16) with a `low` priority and some interruptions has cost around **£Y** (without accounting for failed jobs, of which there were a few). Since most steps need to be done in order, it also took a total of **X** to complete the GWAS (over multiple sessions since some jobs failed).
 
 ## Final architecture
 

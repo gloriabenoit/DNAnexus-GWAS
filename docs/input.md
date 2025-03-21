@@ -92,7 +92,7 @@ FIELD_ID = [21001] # BMI id
 OUTPUT = "pheno_extract.csv"
 
 def field_names_for_ids(filename, field_ids):
-    """ Converts data-field id to corresponding field name.
+    """ Convert data-field id to corresponding field name.
 
     Parameters
     ----------

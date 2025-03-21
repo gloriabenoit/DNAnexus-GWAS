@@ -62,3 +62,9 @@ dx cd gwas_tutorial
 ```
 
 > If multiple people have access and frequently run jobs on the project chosen, we recommend having your own directory like `WKD_<your-name>` in which you will then create the `gwas_tutorial` directory.
+
+## First job
+
+If this is your first time using DNAnexus altogether, please go to the following page titled [About jobs](jobs.md). It will take you through the the fondamentals of jobs on DNAnexus, and will help you understand how and why the code works.
+
+If you are already familiar with how DNAnexus jobs work, please skip ahead to the [Input files page](input.md), which will start the GWAS tutorial.

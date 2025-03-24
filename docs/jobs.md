@@ -2,7 +2,7 @@
 
 If this is your first time using DNAnexus, or if you are unsure about how some things work, please read this page. However, be aware that it is not mandatory to complete the tutorial.
 
-For more detailed information, you can check the [official documentation](https://dnanexus.gitbook.io/uk-biobank-rap) for a [quickstart](https://dnanexus.gitbook.io/uk-biobank-rap/getting-started/quickstart) or about the [key concepts](https://dnanexus.gitbook.io/uk-biobank-rap/getting-started/key-concepts).
+For more detailed information, you can check the [official documentation](https://dnanexus.gitbook.io/uk-biobank-rap) for a [quickstart](https://dnanexus.gitbook.io/uk-biobank-rap/getting-started/quickstart) or about the [key concepts](https://dnanexus.gitbook.io/uk-biobank-rap/getting-started/key-concepts) of the platform.
 
 ## Execution
 
@@ -14,7 +14,7 @@ Since jobs are run on workers, you need to manually specify every file used as i
 
 To add a file as input, you need to use the `-iin` option to your `dx run` command. The path to your file needs to be absolute so that there is no confusion as to where it is located.
 
-When mounting your files, you don't need to input them manually anymore. You simply need to add `/mnt/project/` before your absolute path.
+When mounting your files, you don't need to input them manually anymore. You simply need to add `/mnt/project/` before your absolute path in the code.
 
 ### Instances
 
@@ -25,7 +25,7 @@ Instances have 3 main metrics:
 * The memory capacity (components used for short-term data retention)
 * The storage capacity (components used for long-term data retention)
 
-You might have no clue on what ressources your job need to run properly, the simplest course of action is to start with a small instance and increase its capacities if you encounter any errors. Please check the [Errors when running section](#errors-when-running) if you don't know how to interpret your error message.
+You might have no clue on what ressources your job needs to run properly, the simplest course of action is to start with a small instance and increase its capacities if you encounter any errors. Please check the [Errors when running section](#errors-when-running) if you don't know how to interpret your error message.
 
 > Please note, this tutorial uses the same instance for every job. Depending on the data you want to use, you might need a bigger instance. If your goal is full optimization, then you might prefer a smaller one. All of this is up to you.
 
@@ -35,7 +35,7 @@ For more information on instances, check the official documentation on [instance
 
 ### Priority
 
-Jobs can have three types of priority:
+Jobs can have three level of priority:
 
 * `high` means your job will be completed once the ressources are available
 * `normal` means your job will wait for 15min to run in a `low` priority, and if no ressources are availables by then, will run in a `high` priority
@@ -45,7 +45,7 @@ Although a `high` priority assures for job completion, it is also pricier than a
 
 > Please note, this tutorial will only run `low` priority jobs to reduce costs.
 
-To specify the instance you chose, you need to add the `--priority` option to your `dx run` command.
+To specify the level you chose, you need to add the `--priority` option to your `dx run` command.
 
 For more information on priorities, check the official documentation on [job priority](https://dnanexus.gitbook.io/uk-biobank-rap/working-on-the-research-analysis-platform/managing-jobs/managing-job-priority). Priority costs can be found on the [UKB RAP Rate Card](https://20779781.fs1.hubspotusercontent-na1.net/hubfs/20779781/Product%20Team%20Folder/Rate%20Cards/BiobankResearchAnalysisPlatform_Rate%20Card_Current.pdf) (where `high` refers to *On-demand* prices while `low` refers to *Spot* prices).
 
@@ -66,12 +66,12 @@ Either way, it is useful to avoid spending too much on a single job.
 
 To specify a cost limit, you need to add the `--cost-limit` option to your `dx run` command.
 
-For more information on priorities, check the official documentation on [cost and spending limits](https://documentation.dnanexus.com/user/running-apps-and-workflows/jobs-and-cost-and-spending-limits) or on [time limits](https://documentation.dnanexus.com/user/running-apps-and-workflows/job-time-limits).
+For more information on limits, check the official documentation on [time limits](https://documentation.dnanexus.com/user/running-apps-and-workflows/job-time-limits) or on [cost and spending limits](https://documentation.dnanexus.com/user/running-apps-and-workflows/jobs-and-cost-and-spending-limits).
 
 ## Monitoring
 
 You can monitor your jobs directly on your project's web page in the *MONITOR* tab.
-On this page, they are sorted in ascending order of departure date (the latest comes first).
+On this page, they are sorted in ascending order of launch date (the latest comes first).
 
 Basic information about the job is displayed, like its name, duration, cost, *etc*...
 
@@ -86,16 +86,16 @@ It will also appear in the *Notifications* tab (bell icon in the top right corne
 
 ### Filtering jobs
 
-After running a lot of jobs, you might find your *MONITOR* page to be quite crowded. This is especially true with this tutorial where some jobs are run for each of the 22 chromosomes. To find a specific job, you can filter out the *MONITOR* page.
+After running a lot of jobs, you might find your *MONITOR* page to be quite crowded. This is especially true with this tutorial where some jobs are run for each of the 22 chromosomes. To find a specific job, you can filter out the *MONITOR* page using specific values like the state or the ID of the user who launched the execution, for instance.
 
 In this tutorial, all jobs have specific [tags](#tags) which help with filtering.
 By default, tags are not used in filtering on the *MONITOR* page, you need to add them in the *Filter settings* tab (three stacked bars in the top right corner).
 
-> Please note, in this tutorial, jobs are tagged with the software used (plink or regenie), the phenotype (BMI), the step of the analysis (QC, GWAS, Step 0 to 2) and lastly the chromosome number (c1 to 22) if jobs are separated per chromosome.
+> Please note, in this tutorial, jobs are tagged with the software used (plink or regenie), the phenotype (BMI), the step of the analysis (QC, GWAS, Merge, Step 1 and 2) and lastly the chromosome number (c1 to 22) if jobs are separated per chromosome.
 
 ## Errors when running
 
-A failed job running on DNAnexus has only 3 errors (apart from errors in the code):
+A failed job running on DNAnexus has only 3 main errors (apart from errors in the code):
 
 * Warning: Out of memory error occurred during this job.
 * Warning: Low disk space during this job.
@@ -125,7 +125,7 @@ You need to choose an instance with a bigger storage. The storage infix in the i
 
 ### Interruption limit (only for *low* priority)
 
-Jobs with a low priority can be interrupted if its ressources can be used for a high priority jobs. A low priority job can be interrupted at most 10 times, then it will result in the following error:
+Jobs with a low priority can be interrupted if their ressources are needed by high priority jobs. A low priority job can be interrupted at most 10 times, then it will result in the following error:
 
 ```text
 The machine running the job was terminated by the cloud provider

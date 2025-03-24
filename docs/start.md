@@ -34,10 +34,10 @@ dx login --timeout 6M
 
 </blockquote>
 
-If you have access to multiple project on DNAnexus, you need to choose the specific one in which you want to perform your GWAS.
+If you have access to several projects on DNAnexus, you need to choose the specific one in which you want to perform your GWAS.
 Please use the `dx select` command or check the official documentation on [Project Navigation](https://documentation.dnanexus.com/user/projects/project-navigation#changing-your-current-project) for more information.
 
-If you have access to only one project, it will be already selected and you can go on with this tutorial.
+If you have access to only one project, it will already be selected and you can go on with this tutorial.
 
 ## Architecture
 
@@ -65,6 +65,6 @@ dx cd gwas_tutorial
 
 ## First job
 
-If this is your first time using DNAnexus altogether, please go to the following page titled [About jobs](jobs.md). It will take you through the the fondamentals of jobs on DNAnexus, and will help you understand how and why the code works.
+If this is your first time using DNAnexus altogether, please go to the following page titled [About jobs](jobs.md). It will take you through the fondamentals of jobs on DNAnexus, and will help you understand how and why the code works.
 
 If you are already familiar with how DNAnexus jobs work, please skip ahead to the [Input files page](input.md), which will start the GWAS tutorial.

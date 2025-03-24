@@ -77,6 +77,8 @@ For the main participant phenotype entity, the Research Analysis Platform (UKB-R
 This means one phenotype ID can actually have multiple data field. For example, BMI has four instances.
 The following python script will extract the phenotype that you wish, and every array or instance associated.
 
+> Please note, the file computed is temporary, it is not necessary to rename it since it's not the final phenotype file.
+
 ```python
 """ Extract phenotype(s) from UKBB based on field ID(s). """
 
@@ -88,8 +90,8 @@ import dxpy
 # Input
 DATASET = dxpy.find_one_data_object(typename='Dataset', name='app*.dataset', folder='/', name_mode='glob')['id']
 FILENAME = "ukbb.data_dictionary.csv"
-FIELD_ID = [21001] # BMI id
 OUTPUT = "pheno_extract.csv"
+FIELD_ID = [21001] # BMI id
 
 def field_names_for_ids(filename, field_ids):
     """ Convert data-field id to corresponding field name.
@@ -136,7 +138,7 @@ This command outputs 1 file:
 > Please be aware, since `extract_dataset` has no *overwrite* option by design, we implemented ourselves.
 > Running the previous code will first delete `pheno_extract.csv` if it's present, allowing for the extraction to happen.
 
-PLINK and regenie use the same formatting for the phenotype file, with a single exception : the code for missing values.
+PLINK2 and regenie use the same formatting for the phenotype file, with a single exception : the code for missing values.
 Apart from this, both need to duplicate the individuals ids and only keep the first instance for our phenotype.
 
 More information on phenotype files formatting can be found [here](https://www.cog-genomics.org/plink/2.0/input#pheno) for PLINK2 and [here](https://rgcgithub.github.io/regenie/options/#phenotype-file-format) for regenie.

@@ -20,12 +20,12 @@ Please refer to the [Input files section](input.md) if you don't have these file
 
 ## Running a GWAS
 
-On DNAnexus, PLINK2 is available as part of the [Swiss Army Knife app](https://ukbiobank.dnanexus.com/app/swiss-army-knife).
-We choose to use the same instance for all GWASs, to simplify the code, but this can be changed to your liking. Same for the priority and the cost limit. 
+On DNAnexus, PLINK2 is available as part of the [Swiss Army Knife app](https://ukbiobank.dnanexus.com/app/swiss-army-knife) (`swiss-army-knife`).
+We choose to use the same instance for all GWASs, to simplify the code, but this can be changed to your liking. Same for the priority and the cost limit.
 
 ### Quality control
 
-We perform the QC at the same time as our GWAS. The variants are filtered using following options:
+We perform the QC at the same time as our GWAS. The variants are filtered using the following options:
 
 ```text
 --maf 0.0001 --hwe 1e-50 --geno 0.1 --mind 0.1
@@ -100,9 +100,9 @@ The files will be stored in the main directory, `plink_gwas_BMI`.
 
 ## Computing the results
 
-Now that all of the summary statistics are computed, we can download them, clean them up and combine them into one clean file.
+Now that all of the summary statistics are computed, we can download them, clean them up and combine them into one single file.
 
-PLINK outputs a value for each of the covariates, in addition to the global p-value. However, these do not interest us, we only want to keep the global p-value. The following scripts helps clean up the p-values, and concatenates them into a single file.
+PLINK2 outputs a value for each of the covariates, in addition to the global p-value. However, these do not interest us, we only want to keep the global p-value. The following scripts helps clean up the p-values, and concatenates them into a single file.
 
 > Please change the value of `type` based on the regression performed: *"linear"* or *"logistic.hybrid"*.
 
@@ -110,7 +110,7 @@ PLINK outputs a value for each of the covariates, in addition to the global p-va
 pheno="BMI"
 type="linear" # to change accordingly
 results_path="plink_gwas_$pheno"
-stat_path="statistics"
+stat_path="plink_statistics_$pheno"
 
 mkdir -p $stat_path
 
@@ -126,11 +126,11 @@ for chr_num in $(seq 1 22); do
 done
 ```
 
-This command outputs 23 files:
+This command outputs 23 files **locally**:
 
 * `sumstat_c<chrom-number>.ADD` contains the cleaned up values for the regression *per chromosome*
 * `sumstat_BMI.ADD` contains the concatenated cleaned up values for the regression
 
-The files will be stored in a new directory named `statistics`, locally this time, containing all of the summary statistics per chromosome. The combination of all of them will be located at the same level as `statistics`, making it easier to find.
+The files will be stored in a new directory named `plink_statistics_BMI`, locally this time, containing all of the summary statistics per chromosome. The combination of all of them will be located at the same level as `plink_statistics_BMI`, making it easier to find.
 
 Congratulations, you have successfully completed a GWAS using PLINK2 on DNAnexus!

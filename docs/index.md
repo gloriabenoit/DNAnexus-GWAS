@@ -39,7 +39,7 @@ Please note, when first using your account you have an initial credit of £40. R
 
 Jobs cost will be computed based on the official [UKB RAP Rate Card](https://20779781.fs1.hubspotusercontent-na1.net/hubfs/20779781/Product%20Team%20Folder/Rate%20Cards/BiobankResearchAnalysisPlatform_Rate%20Card_Current.pdf) (v3.0).
 
-> Please remember the cost and duration of a job depends on the instance and priority used.
+> Please remember the cost and duration of a job depends on the instance and priority used. Execution time may also vary for the same instance.
 
 ### Input files
 
@@ -55,7 +55,7 @@ With our chosen instance (mem1_ssd1_v2_x16) using a `high` priority, the whole G
 
 With the same instance (mem1_ssd1_v2_x16) using a `low` priority, if no jobs are interrupted, it will cost only **£4.56** for the same time.
 
-> Please note that it is most unlikely for jobs to be uninterrupted. In our experience, the whole GWAS using this instance (mem1_ssd1_v2_x16) with a `low` priority and some interruptions has cost around **£9.30** altough it took almost **7h30** to complete (with no failed jobs).
+> Please note that it is most unlikely for jobs to be uninterrupted. In our experience, the whole GWAS using this instance (mem1_ssd1_v2_x16) with a `low` priority and some interruptions has cost around **£9.30** altough it took almost **7h30** to complete from start to finish (with no failed jobs).
 
 ### Using regenie
 
@@ -69,7 +69,7 @@ The [regenie GWAS](regenie.md) runs a total of 47 different jobs:
 > To optimize your GWAS's overall time, you can perform the QC in parallel to every other step beside step 2 (for which it is needed).
 > The rest needs to be done in order.
 
-With our chosen instance (mem1_ssd1_v2_x16) using a `high` priority, the whole GWAS will take about **X minutes** (XhY) and cost around **£Y** (for a total execution time of Z minutes).
+With our chosen instance (mem1_ssd1_v2_x16) using a `high` priority, the whole GWAS will take about **550 minutes** (9h10, when running the QC at the same time as Step 1) and cost around **£Y** (for a total execution time of Z minutes).
 
 With the same instance (mem1_ssd1_v2_x16) using a `low` priority, if no jobs are interrupted, it will cost only **£Y** for the same time.
 
@@ -80,14 +80,14 @@ You can find the details about the jobs run in the following table:
 | Action   |  Time | Execution time | Cost (high) | Cost (low, no interruption) |
 |----------|:-----:|:--------------:|:-----------:|:---------------------------:|
 | QC       |  2h39 |                |             |                             |
-| Merge    | 51min |      51min     |             |                             |
+| Merge    | 51min |      51min     |     0.37    |             0.10            |
 | Merge QC | 10min |      10min     |     0.07    |             0.02            |
 | Step 1   |  7h10 |      7h10      |     3.13    |             0.83            |
-| Step 2   | 48min |                |             |                             |
+| Step 2   | 55min |                |             |                             |
 
 </center>
 
-> Please note that it is most unlikely for jobs to be uninterrupted. In our experience, the whole GWAS using this instance (mem1_ssd1_v2_x16) with a `low` priority and some interruptions has cost around **£Y** (without accounting for failed jobs, of which there were a few). Since most steps need to be done in order, it also took a total of **X** to complete the GWAS (over multiple sessions since some jobs failed).
+> Please note that it is most unlikely for jobs to be uninterrupted. In our experience, the whole GWAS using this instance (mem1_ssd1_v2_x16) with a `low` priority and some interruptions has cost around **£Y** (without accounting for failed jobs, of which there were a few). Since most steps need to be done in order, it also took a total of **X** to complete the GWAS from start to finish (over multiple sessions since some jobs failed).
 
 ## Final architecture
 

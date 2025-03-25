@@ -2,7 +2,7 @@
 
 ## Generate plots
 
-Once our GWAS is complete, we can analyze the summary results. Specifically, we want to create a [Manhattan plot](https://www.sciencedirect.com/topics/biochemistry-genetics-and-molecular-biology/manhattan-plot) and a [QQ plot](https://jnmaloof.github.io/BIS180L_web/slides/11_QQPlots.html#1). 
+Once our GWAS is complete, we can analyze the summary statistics obtained. Specifically, we want to create a [Manhattan plot](https://www.sciencedirect.com/topics/biochemistry-genetics-and-molecular-biology/manhattan-plot) and a [QQ plot](https://jnmaloof.github.io/BIS180L_web/slides/11_QQPlots.html#1).
 
 The following code will do just that, although you can use any other software to obtain such plots.
 
@@ -191,4 +191,26 @@ This command outputs 2 files:
 * `<software>_BMI_Manhattan_plot.png` contains the Manhattan plot for the whole GWAS
 * `<software>_BMI_QQ_plot.png` contains the QQ plot for the whole GWAS
 
+> Since there is quite a lot of value to go through, this step can take a while. It should last about 35 minutes.
+
 ## Expected plots
+
+### PLINK2
+
+By the end of this tutorial, when using PLINK2, you should obtain the following Manhattan plot:
+
+![image info](./img/plink_BMI_Manhattan_plot.png "PLINK2 Manhattan plot")
+
+And the following QQ plot:
+
+![image info](./img/plink_BMI_QQ_plot.png "PLINK2 QQ plot")
+
+### regenie
+
+By the end of this tutorial, when using regenie, you should obtain the following Manhattan plot:
+
+![image info](./img/regenie_BMI_Manhattan_plot.png "regenie Manhattan plot")
+
+And the following QQ plot:
+
+![image info](./img/regenie_BMI_QQ_plot.png "regenie QQ plot")

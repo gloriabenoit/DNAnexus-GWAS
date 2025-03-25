@@ -133,4 +133,6 @@ This command outputs 23 files **locally**:
 
 The files will be stored in a new directory named `plink_statistics_BMI`, locally this time, containing all of the summary statistics per chromosome. The combination of all of them will be located at the same level as `plink_statistics_BMI`, making it easier to find.
 
+> Although the result files are quite big, their download should only take around 5 minutes.
+
 Congratulations, you have successfully completed a GWAS using PLINK2 on DNAnexus!

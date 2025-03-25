@@ -360,7 +360,7 @@ stat_path="regenie_statistics_$pheno"
 
 mkdir -p $stat_path
 
-for chr_num in $(seq 22 22); do
+for chr_num in $(seq 1 22); do
     result="sumstat_c${chr_num}_$pheno.regenie"
     dx download "$results_path/$result.gz" -o $stat_path
     gunzip $stat_path/$result
@@ -377,5 +377,7 @@ This command outputs 23 files **locally**:
 * `sumstat_BMI.regenie` contains the concatenated values for the regression
 
 The files will be stored in a new directory named `regenie_statistics_BMI`, locally this time, containing all of the summary statistics per chromosome. The combination of all of them will be located at the same level as `regenie_statistics_BMI`, making it easier to find.
+
+> Although the result files are quite big, their download should only take about a minute.
 
 Congratulations, you have successfully completed a GWAS using regenie on DNAnexus!

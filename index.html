@@ -142,7 +142,7 @@ If not, please create an account <a href="https://ams.ukbiobank.ac.uk/ams/signup
 <p>Please note, when first using your account you have an initial credit of £40. Running all of this tutorial with the same instance and priority as us might go over this budget. If it is not done already, your project should be billed to a wallet which is different from your initial credit. Please check the <a href="https://documentation.dnanexus.com/admin/billing-and-account-management">official documentation</a> if you are unsure on how to proceed.</p>
 <p>Jobs cost will be computed based on the official <a href="https://20779781.fs1.hubspotusercontent-na1.net/hubfs/20779781/Product%20Team%20Folder/Rate%20Cards/BiobankResearchAnalysisPlatform_Rate%20Card_Current.pdf">UKB RAP Rate Card</a> (v3.0).</p>
 <blockquote>
-<p>Please remember the cost and duration of a job depends on the instance and priority used.</p>
+<p>Please remember the cost and duration of a job depends on the instance and priority used. Execution time may also vary for the same instance.</p>
 </blockquote>
 <h3 id="input-files">Input files</h3>
 <p>The <a href="input/">input files extraction/upload</a> is done locally and does not cost anything.</p>
@@ -154,7 +154,7 @@ If not, please create an account <a href="https://ams.ukbiobank.ac.uk/ams/signup
 <p>With our chosen instance (mem1_ssd1_v2_x16) using a <code>high</code> priority, the whole GWAS will take about <strong>200 minutes</strong> (3h20) and cost around <strong>£17.04</strong> (for a total execution time of 2341 minutes).</p>
 <p>With the same instance (mem1_ssd1_v2_x16) using a <code>low</code> priority, if no jobs are interrupted, it will cost only <strong>£4.56</strong> for the same time.</p>
 <blockquote>
-<p>Please note that it is most unlikely for jobs to be uninterrupted. In our experience, the whole GWAS using this instance (mem1_ssd1_v2_x16) with a <code>low</code> priority and some interruptions has cost around <strong>£9.30</strong> altough it took almost <strong>7h30</strong> to complete (with no failed jobs).</p>
+<p>Please note that it is most unlikely for jobs to be uninterrupted. In our experience, the whole GWAS using this instance (mem1_ssd1_v2_x16) with a <code>low</code> priority and some interruptions has cost around <strong>£9.30</strong> altough it took almost <strong>7h30</strong> to complete from start to finish (with no failed jobs).</p>
 </blockquote>
 <h3 id="using-regenie">Using regenie</h3>
 <p>The <a href="regenie/">regenie GWAS</a> runs a total of 47 different jobs:</p>
@@ -168,8 +168,8 @@ If not, please create an account <a href="https://ams.ukbiobank.ac.uk/ams/signup
 <p>To optimize your GWAS's overall time, you can perform the QC in parallel to every other step beside step 2 (for which it is needed).
 The rest needs to be done in order.</p>
 </blockquote>
-<p>With our chosen instance (mem1_ssd1_v2_x16) using a <code>high</code> priority, the whole GWAS will take about <strong>X minutes</strong> (XhY) and cost around <strong>£Y</strong> (for a total execution time of Z minutes).</p>
-<p>With the same instance (mem1_ssd1_v2_x16) using a <code>low</code> priority, if no jobs are interrupted, it will cost only <strong>£Y</strong> for the same time.</p>
+<p>With our chosen instance (mem1_ssd1_v2_x16) using a <code>high</code> priority, the whole GWAS will take about <strong>700 minutes</strong> (11h40, when running each step in order) and cost around <strong>£21.46</strong> (for a total execution time of 2948 minutes).</p>
+<p>With the same instance (mem1_ssd1_v2_x16) using a <code>low</code> priority, if no jobs are interrupted, it will cost only <strong>£5.74</strong> for the same time.</p>
 <p>You can find the details about the jobs run in the following table:</p>
 <p><center></p>
 <table>
@@ -186,16 +186,16 @@ The rest needs to be done in order.</p>
 <tr>
 <td>QC</td>
 <td style="text-align: center;">2h39</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
+<td style="text-align: center;">30h</td>
+<td style="text-align: center;">13.10</td>
+<td style="text-align: center;">3.50</td>
 </tr>
 <tr>
 <td>Merge</td>
 <td style="text-align: center;">51min</td>
 <td style="text-align: center;">51min</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
+<td style="text-align: center;">0.37</td>
+<td style="text-align: center;">0.10</td>
 </tr>
 <tr>
 <td>Merge QC</td>
@@ -214,15 +214,16 @@ The rest needs to be done in order.</p>
 <tr>
 <td>Step 2</td>
 <td style="text-align: center;">48min</td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
-<td style="text-align: center;"></td>
+<td style="text-align: center;">10h57</td>
+<td style="text-align: center;">4.78</td>
+<td style="text-align: center;">1.28</td>
 </tr>
 </tbody>
 </table>
 <p></center></p>
 <blockquote>
-<p>Please note that it is most unlikely for jobs to be uninterrupted. In our experience, the whole GWAS using this instance (mem1_ssd1_v2_x16) with a <code>low</code> priority and some interruptions has cost around <strong>£Y</strong> (without accounting for failed jobs, of which there were a few). Since most steps need to be done in order, it also took a total of <strong>X</strong> to complete the GWAS (over multiple sessions since some jobs failed).</p>
+<p>Please note that it is most unlikely for jobs to be uninterrupted. In our experience, the whole GWAS using this instance (mem1_ssd1_v2_x16) with a <code>low</code> priority and some interruptions has cost around <strong>£12.57</strong> (without accounting for failed jobs, of which there were a few). Since most steps need to be done in order, it also took a total of <strong>54h35</strong> to complete the GWAS from start to finish (over multiple sessions since some jobs failed).
+If you count the failed jobs, you can add £5.36 to the total cost, and 12h04 to the total time taken.</p>
 </blockquote>
 <h2 id="final-architecture">Final architecture</h2>
 <p>At the end of this tutorial, your DNAnexus project's architecture should look like this:</p>
@@ -301,5 +302,5 @@ The rest needs to be done in order.</p>
 
 <!--
 MkDocs version : 1.6.1
-Build Date UTC : 2025-03-21 10:03:20.654824+00:00
+Build Date UTC : 2025-03-25 14:06:22.601314+00:00
 -->

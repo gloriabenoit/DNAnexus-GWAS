@@ -69,7 +69,7 @@
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#quality-control">Quality control</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#step-0-merging-files">Step 0: Merging files</a>
+    <li class="toctree-l3"><a class="reference internal" href="#merging-files">Merging files</a>
     </li>
     <li class="toctree-l3"><a class="reference internal" href="#step-1-estimate-snps-contribution">Step 1: Estimate SNPs contribution</a>
     </li>
@@ -127,7 +127,7 @@
 <p>On DNAnexus, regenie is available either as part of the <a href="https://ukbiobank.dnanexus.com/app/swiss-army-knife">Swiss Army Knife app</a> (<code>swiss-army-knife</code>) or as its <a href="https://ukbiobank.dnanexus.com/app/regenie">own app</a> called <code>app-regenie</code>.
 We choose to use the same instance for all GWASs, to simplify the code, but this can be changed to your liking. Same for the priority and the cost limit.</p>
 <h3 id="quality-control">Quality control</h3>
-<p>Unlike with PLINK2, we cannot perform the QC at the same time as our GWAS, we must do it before hand, in preparation for running <a href="#step-2-linear-regression">Step 2</a>. The variants are filtered using following options:</p>
+<p>Unlike with PLINK2, we cannot perform the QC at the same time as our GWAS, we must do it before hand, in preparation for running <a href="#step-2-linear-regression">Step 2</a>. The variants are filtered using the following options:</p>
 <pre><code class="language-text">--maf 0.0001 --hwe 1e-50 --geno 0.1 --mind 0.1
 </code></pre>
 <blockquote>
@@ -193,7 +193,7 @@ dx cd ../../
 <li><code>QC_pass_c&lt;chrom-number&gt;.id</code> contains a list of sample IDs that pass QC <em>per chromosome</em></li>
 </ul>
 <p>They will be stored into another directory named <code>QC_lists</code> to avoid crowding the main repertory for the GWAS.</p>
-<h3 id="step-0-merging-files">Step 0: Merging files</h3>
+<h3 id="merging-files">Merging files</h3>
 <p>Before running our GWAS using regenie, we first need to merge all of the genotype call files (chromosome 1 to 22) into one file. This is in preparation for running <a href="#step-1-estimate-snps-contribution">Step 1</a>.</p>
 <pre><code class="language-bash">pheno=&quot;BMI&quot;
 pheno_path=&quot;/gwas_tutorial/regenie_$pheno.txt&quot; # not strictly needed, but swiss-army-knife needs at least one input
@@ -220,7 +220,7 @@ dx run swiss-army-knife \
     --instance-type $instance \
     --name=&quot;regenie_step0_c1_c22&quot; \
     --tag=&quot;regenie&quot; \
-    --tag=&quot;Step 0&quot; \
+    --tag=&quot;Merge&quot; \
     -iin=&quot;$pheno_path&quot; \
     -y
 
@@ -232,7 +232,7 @@ dx cd ../../
 <li><code>c1_c22_merged.bim</code> contains extended variant information for our merged array genotype data</li>
 <li><code>c1_c22_merged.fam</code> contains the sample information for our merged array genotype data</li>
 </ul>
-<p>The files will be stored in a new directory named <code>merge</code>.</p>
+<p>The files will be stored in a new directory named <code>merge</code>. Now we can perform QC on this data as well.</p>
 <pre><code class="language-bash">pheno=&quot;BMI&quot;
 pheno_path=&quot;/gwas_tutorial/regenie_$pheno.txt&quot;
 ind_path=&quot;/gwas_tutorial/white_british.txt&quot;
@@ -269,7 +269,7 @@ dx run swiss-army-knife \
     --instance-type $instance \
     --name=&quot;regenie_QC_step0_${pheno}_merged&quot; \
     --tag=&quot;regenie&quot; \
-    --tag=&quot;Step 0&quot; \
+    --tag=&quot;Merge&quot; \
     --tag=&quot;QC&quot; \
     --tag=&quot;$pheno&quot; \
     --tag=&quot;c${chr_num}&quot; \
@@ -290,7 +290,10 @@ dx cd ../../
 <p>Like in the <a href="#quality-control">QC step</a>, we need to save both the list of SNPs and the list of sample IDs that pass QC for our array genotype data.
 They are stored in the <code>merge</code> directory.</p>
 <h3 id="step-1-estimate-snps-contribution">Step 1: Estimate SNPs contribution</h3>
-<p>The first step of a regenie GWAS is the estimation of how background SNPs contribute to the phenotype. During this step, a subset of genetic markers are used to fit a whole genome regression model that captures a good fraction of the phenotype variance attributable to genetic effects (<a href="https://rgcgithub.github.io/regenie/overview/">regenie official documentation</a>).</p>
+<p>The first step of a regenie GWAS is the estimation of how background SNPs contribute to the phenotype. During this step, a subset of genetic markers are used to fit a whole genome regression model that captures a good fraction of the phenotype variance attributable to genetic effects. For more information, check the <a href="https://rgcgithub.github.io/regenie/overview/">official documentation</a>.</p>
+<blockquote>
+<p>To not require too much space, we gzip the results using the <code>--gz</code> option.</p>
+</blockquote>
 <pre><code class="language-bash">pheno=&quot;BMI&quot;
 pheno_path=&quot;/gwas_tutorial/regenie_$pheno.txt&quot;
 cov_path=&quot;/gwas_tutorial/covariates.txt&quot;
@@ -352,7 +355,7 @@ dx cd ../../
 <p>Please note, when using a binary phenotype you need to add the <code>--bt</code> option to the regenie command.</p>
 </blockquote>
 <h3 id="step-2-linear-regression">Step 2: Linear regression</h3>
-<p>The second step of a regenie GWAS is the regression. During this step, whole genome markers are tested for association with the phenotype <em>conditional upon</em> the prediction from the regression model in <a href="#step-1-estimate-snps-contribution">Step 1</a> (<a href="https://rgcgithub.github.io/regenie/overview/">regenie official documentation</a>).</p>
+<p>The second step of a regenie GWAS is the regression. During this step, whole genome markers are tested for association with the phenotype <em>conditional upon</em> the prediction from the regression model in <a href="#step-1-estimate-snps-contribution">Step 1</a>. For more information, check the <a href="https://rgcgithub.github.io/regenie/overview/">official documentation</a>.</p>
 <blockquote>
 <p>To not require too much space, we gzip the results using the <code>--gz</code> option.</p>
 </blockquote>
@@ -434,11 +437,11 @@ dx cd ../
 <p>Now that all of the summary statistics are computed, we can download them and combine them into one single file.</p>
 <pre><code class="language-bash">pheno=&quot;BMI&quot;
 results_path=&quot;regenie_gwas_$pheno&quot;
-stat_path=&quot;statistics&quot;
+stat_path=&quot;regenie_statistics_$pheno&quot;
 
 mkdir -p $stat_path
 
-for chr_num in $(seq 22 22); do
+for chr_num in $(seq 1 22); do
     result=&quot;sumstat_c${chr_num}_$pheno.regenie&quot;
     dx download &quot;$results_path/$result.gz&quot; -o $stat_path
     gunzip $stat_path/$result
@@ -448,12 +451,15 @@ for chr_num in $(seq 22 22); do
     tail -n +2 &quot;$stat_path/$result&quot; &gt;&gt; &quot;sumstat_${pheno}.regenie&quot;
 done
 </code></pre>
-<p>This command outputs 23 files:</p>
+<p>This command outputs 23 files <strong>locally</strong>:</p>
 <ul>
 <li><code>sumstat_c&lt;chrom-number&gt;.regenie</code> contains the values for the regression <em>per chromosome</em></li>
 <li><code>sumstat_BMI.regenie</code> contains the concatenated values for the regression</li>
 </ul>
-<p>The files will be stored in a new directory named <code>regenie_gwas_BMI</code>, locally this time, with inside another directory named <code>statistics</code> containing all of the summary statistics per chromosome. The combination of all of them will be located at the same level than <code>statistics</code>, making it easier to find.</p>
+<p>The files will be stored in a new directory named <code>regenie_statistics_BMI</code>, locally this time, containing all of the summary statistics per chromosome. The combination of all of them will be located at the same level as <code>regenie_statistics_BMI</code>, making it easier to find.</p>
+<blockquote>
+<p>Although the result files are quite big, their download should only take about a minute.</p>
+</blockquote>
 <p>Congratulations, you have successfully completed a GWAS using regenie on DNAnexus!</p>
               
             </div>

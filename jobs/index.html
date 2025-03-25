@@ -128,13 +128,13 @@
               
                 <h1 id="about-jobs">About jobs</h1>
 <p>If this is your first time using DNAnexus, or if you are unsure about how some things work, please read this page. However, be aware that it is not mandatory to complete the tutorial.</p>
-<p>For more detailed information, you can check the <a href="https://dnanexus.gitbook.io/uk-biobank-rap">official documentation</a> for a <a href="https://dnanexus.gitbook.io/uk-biobank-rap/getting-started/quickstart">quickstart</a> or about the <a href="https://dnanexus.gitbook.io/uk-biobank-rap/getting-started/key-concepts">key concepts</a>.</p>
+<p>For more detailed information, you can check the <a href="https://dnanexus.gitbook.io/uk-biobank-rap">official documentation</a> for a <a href="https://dnanexus.gitbook.io/uk-biobank-rap/getting-started/quickstart">quickstart</a> or about the <a href="https://dnanexus.gitbook.io/uk-biobank-rap/getting-started/key-concepts">key concepts</a> of the platform.</p>
 <h2 id="execution">Execution</h2>
 <p>On DNAnexus, when a job is executed, a worker is spun up in the cloud, then the job's code and inputs are downloaded to that worker and executed. This is the standard behavior, but inputs can also be mounted to the worker (accessed dynamically) to avoid their downloading costs.</p>
 <h3 id="inputs">Inputs</h3>
 <p>Since jobs are run on workers, you need to manually specify every file used as input.</p>
 <p>To add a file as input, you need to use the <code>-iin</code> option to your <code>dx run</code> command. The path to your file needs to be absolute so that there is no confusion as to where it is located.</p>
-<p>When mounting your files, you don't need to input them manually anymore. You simply need to add <code>/mnt/project/</code> before your absolute path.</p>
+<p>When mounting your files, you don't need to input them manually anymore. You simply need to add <code>/mnt/project/</code> before your absolute path in the code.</p>
 <h3 id="instances">Instances</h3>
 <p>To choose an instance for your job is to choose a specific worker on which your code will be executed.
 Instances have 3 main metrics:</p>
@@ -143,14 +143,14 @@ Instances have 3 main metrics:</p>
 <li>The memory capacity (components used for short-term data retention)</li>
 <li>The storage capacity (components used for long-term data retention)</li>
 </ul>
-<p>You might have no clue on what ressources your job need to run properly, the simplest course of action is to start with a small instance and increase its capacities if you encounter any errors. Please check the <a href="#errors-when-running">Errors when running section</a> if you don't know how to interpret your error message.</p>
+<p>You might have no clue on what ressources your job needs to run properly, the simplest course of action is to start with a small instance and increase its capacities if you encounter any errors. Please check the <a href="#errors-when-running">Errors when running section</a> if you don't know how to interpret your error message.</p>
 <blockquote>
 <p>Please note, this tutorial uses the same instance for every job. Depending on the data you want to use, you might need a bigger instance. If your goal is full optimization, then you might prefer a smaller one. All of this is up to you.</p>
 </blockquote>
 <p>To specify the instance you chose, you need to add the <code>--instance-type</code> option to your <code>dx run</code> command.</p>
 <p>For more information on instances, check the official documentation on <a href="https://documentation.dnanexus.com/developer/api/running-analyses/instance-types">instance types</a>. Instances costs can be found on the <a href="https://20779781.fs1.hubspotusercontent-na1.net/hubfs/20779781/Product%20Team%20Folder/Rate%20Cards/BiobankResearchAnalysisPlatform_Rate%20Card_Current.pdf">UKB RAP Rate Card</a>.</p>
 <h3 id="priority">Priority</h3>
-<p>Jobs can have three types of priority:</p>
+<p>Jobs can have three level of priority:</p>
 <ul>
 <li><code>high</code> means your job will be completed once the ressources are available</li>
 <li><code>normal</code> means your job will wait for 15min to run in a <code>low</code> priority, and if no ressources are availables by then, will run in a <code>high</code> priority</li>
@@ -160,7 +160,7 @@ Instances have 3 main metrics:</p>
 <blockquote>
 <p>Please note, this tutorial will only run <code>low</code> priority jobs to reduce costs.</p>
 </blockquote>
-<p>To specify the instance you chose, you need to add the <code>--priority</code> option to your <code>dx run</code> command.</p>
+<p>To specify the level you chose, you need to add the <code>--priority</code> option to your <code>dx run</code> command.</p>
 <p>For more information on priorities, check the official documentation on <a href="https://dnanexus.gitbook.io/uk-biobank-rap/working-on-the-research-analysis-platform/managing-jobs/managing-job-priority">job priority</a>. Priority costs can be found on the <a href="https://20779781.fs1.hubspotusercontent-na1.net/hubfs/20779781/Product%20Team%20Folder/Rate%20Cards/BiobankResearchAnalysisPlatform_Rate%20Card_Current.pdf">UKB RAP Rate Card</a> (where <code>high</code> refers to <em>On-demand</em> prices while <code>low</code> refers to <em>Spot</em> prices).</p>
 <h3 id="tags">Tags</h3>
 <p>Tags, although optional, are very pratical when using DNAnexus regularly.
@@ -172,10 +172,10 @@ During this tutorial, no jobs will exceed this limit.</p>
 <p>Setting a cost limit is optional, but can be useful. For instance, when running a <code>low</code> priority job, it can ensure that possible interruptions won't add up causing the cost to rise by stopping the job early. It may also be of use if you don't know the time your job will take, and therefore can't compute the total cost.
 Either way, it is useful to avoid spending too much on a single job.</p>
 <p>To specify a cost limit, you need to add the <code>--cost-limit</code> option to your <code>dx run</code> command.</p>
-<p>For more information on priorities, check the official documentation on <a href="https://documentation.dnanexus.com/user/running-apps-and-workflows/jobs-and-cost-and-spending-limits">cost and spending limits</a> or on <a href="https://documentation.dnanexus.com/user/running-apps-and-workflows/job-time-limits">time limits</a>.</p>
+<p>For more information on limits, check the official documentation on <a href="https://documentation.dnanexus.com/user/running-apps-and-workflows/job-time-limits">time limits</a> or on <a href="https://documentation.dnanexus.com/user/running-apps-and-workflows/jobs-and-cost-and-spending-limits">cost and spending limits</a>.</p>
 <h2 id="monitoring">Monitoring</h2>
 <p>You can monitor your jobs directly on your project's web page in the <em>MONITOR</em> tab.
-On this page, they are sorted in ascending order of departure date (the latest comes first).</p>
+On this page, they are sorted in ascending order of launch date (the latest comes first).</p>
 <p>Basic information about the job is displayed, like its name, duration, cost, <em>etc</em>...</p>
 <p>A job has 3 possible states:</p>
 <ul>
@@ -186,14 +186,14 @@ On this page, they are sorted in ascending order of departure date (the latest c
 <p>Once a job is completed (either <code>Done</code> or <code>Failed</code>), you will receive an email updating you of said completion.
 It will also appear in the <em>Notifications</em> tab (bell icon in the top right corner).</p>
 <h3 id="filtering-jobs">Filtering jobs</h3>
-<p>After running a lot of jobs, you might find your <em>MONITOR</em> page to be quite crowded. This is especially true with this tutorial where some jobs are run for each of the 22 chromosomes. To find a specific job, you can filter out the <em>MONITOR</em> page.</p>
+<p>After running a lot of jobs, you might find your <em>MONITOR</em> page to be quite crowded. This is especially true with this tutorial where some jobs are run for each of the 22 chromosomes. To find a specific job, you can filter out the <em>MONITOR</em> page using specific values like the state or the ID of the user who launched the execution, for instance.</p>
 <p>In this tutorial, all jobs have specific <a href="#tags">tags</a> which help with filtering.
 By default, tags are not used in filtering on the <em>MONITOR</em> page, you need to add them in the <em>Filter settings</em> tab (three stacked bars in the top right corner).</p>
 <blockquote>
-<p>Please note, in this tutorial, jobs are tagged with the software used (plink or regenie), the phenotype (BMI), the step of the analysis (QC, GWAS, Step 0 to 2) and lastly the chromosome number (c1 to 22) if jobs are separated per chromosome.</p>
+<p>Please note, in this tutorial, jobs are tagged with the software used (plink or regenie), the phenotype (BMI), the step of the analysis (QC, GWAS, Merge, Step 1 and 2) and lastly the chromosome number (c1 to 22) if jobs are separated per chromosome.</p>
 </blockquote>
 <h2 id="errors-when-running">Errors when running</h2>
-<p>A failed job running on DNAnexus has only 3 errors (apart from errors in the code):</p>
+<p>A failed job running on DNAnexus has only 3 main errors (apart from errors in the code):</p>
 <ul>
 <li>Warning: Out of memory error occurred during this job.</li>
 <li>Warning: Low disk space during this job.</li>
@@ -211,7 +211,7 @@ By default, tags are not used in filtering on the <em>MONITOR</em> page, you nee
 </code></pre>
 <p>You need to choose an instance with a bigger storage. The storage infix in the instance is <code>ssd</code> or <code>hdd</code>. For more information on instances, refer to the <a href="#instances">Instances section</a>.</p>
 <h3 id="interruption-limit-only-for-low-priority">Interruption limit (only for <em>low</em> priority)</h3>
-<p>Jobs with a low priority can be interrupted if its ressources can be used for a high priority jobs. A low priority job can be interrupted at most 10 times, then it will result in the following error:</p>
+<p>Jobs with a low priority can be interrupted if their ressources are needed by high priority jobs. A low priority job can be interrupted at most 10 times, then it will result in the following error:</p>
 <pre><code class="language-text">The machine running the job was terminated by the cloud provider
 </code></pre>
 <p>You simply need to restart your job, either on the same instance or another one, if the one used is too popular.</p>

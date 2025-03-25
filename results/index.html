@@ -70,6 +70,12 @@
     <li class="toctree-l2"><a class="reference internal" href="#generate-plots">Generate plots</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#expected-plots">Expected plots</a>
+        <ul>
+    <li class="toctree-l3"><a class="reference internal" href="#plink2">PLINK2</a>
+    </li>
+    <li class="toctree-l3"><a class="reference internal" href="#regenie">regenie</a>
+    </li>
+        </ul>
     </li>
     </ul>
                 </li>
@@ -100,7 +106,7 @@
               
                 <h1 id="visualizing-results">Visualizing results</h1>
 <h2 id="generate-plots">Generate plots</h2>
-<p>Once our GWAS is complete, we can analyze the summary results. Specifically, we want to create a <a href="https://www.sciencedirect.com/topics/biochemistry-genetics-and-molecular-biology/manhattan-plot">Manhattan plot</a> and a <a href="https://jnmaloof.github.io/BIS180L_web/slides/11_QQPlots.html#1">QQ plot</a>. </p>
+<p>Once our GWAS is complete, we can analyze the summary statistics obtained. Specifically, we want to create a <a href="https://www.sciencedirect.com/topics/biochemistry-genetics-and-molecular-biology/manhattan-plot">Manhattan plot</a> and a <a href="https://jnmaloof.github.io/BIS180L_web/slides/11_QQPlots.html#1">QQ plot</a>.</p>
 <p>The following code will do just that, although you can use any other software to obtain such plots.</p>
 <pre><code class="language-python">&quot;&quot;&quot; Generate Manhattan plot and QQ plot from GWAS summary statistics. &quot;&quot;&quot;
 
@@ -285,7 +291,20 @@ qq_plot(PVALS, PHENOTYPE, SOFTWARE)
 <li><code>&lt;software&gt;_BMI_Manhattan_plot.png</code> contains the Manhattan plot for the whole GWAS</li>
 <li><code>&lt;software&gt;_BMI_QQ_plot.png</code> contains the QQ plot for the whole GWAS</li>
 </ul>
+<blockquote>
+<p>Since there is quite a lot of value to go through, this step can take a while. It should last about 35 minutes.</p>
+</blockquote>
 <h2 id="expected-plots">Expected plots</h2>
+<h3 id="plink2">PLINK2</h3>
+<p>By the end of this tutorial, when using PLINK2, you should obtain the following Manhattan plot:</p>
+<p><img alt="image info" src="../img/plink_BMI_Manhattan_plot.png" title="PLINK2 Manhattan plot" /></p>
+<p>And the following QQ plot:</p>
+<p><img alt="image info" src="../img/plink_BMI_QQ_plot.png" title="PLINK2 QQ plot" /></p>
+<h3 id="regenie">regenie</h3>
+<p>By the end of this tutorial, when using regenie, you should obtain the following Manhattan plot:</p>
+<p><img alt="image info" src="../img/regenie_BMI_Manhattan_plot.png" title="regenie Manhattan plot" /></p>
+<p>And the following QQ plot:</p>
+<p><img alt="image info" src="../img/regenie_BMI_QQ_plot.png" title="regenie QQ plot" /></p>
               
             </div>
           </div><footer>

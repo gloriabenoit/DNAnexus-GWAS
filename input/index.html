@@ -107,6 +107,10 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="input-files">Input files</h1>
+<p>This section is done locally and does not cost anything.</p>
+<blockquote>
+<p>Please be aware that storing files onto DNAnexus will result in a monthly cost. You may check its current value in the <em>SETTINGS</em> tab on your project's web page, or compute it using the <a href="https://20779781.fs1.hubspotusercontent-na1.net/hubfs/20779781/Product%20Team%20Folder/Rate%20Cards/BiobankResearchAnalysisPlatform_Rate%20Card_Current.pdf">UKB RAP Rate Card</a>.</p>
+</blockquote>
 <h2 id="genetic-data">Genetic data</h2>
 <p>On DNAnexus, large items, like genetic data, are stored in the <code>Bulk</code> folder at the root of your project. Among them, you can find whole exome sequencing data (<code>/Bulk/Exome sequences/</code>) or whole genome sequencing data (<code>/Bulk/Whole genome sequences</code>). We will use the latter.</p>
 <p>Whole genome sequencing data is available in multiple formats: BGEN format (<code>.bgen</code> and <code>.sample</code>), PLINK format (<code>.bed</code>, <code>.bim</code> and <code>.fam</code>) or pVCF format (<code>.vcf.gz.tbi</code>), among others. For more information on the data available, you can run the following command:</p>
@@ -121,38 +125,33 @@
 <li>The ids of individuals we wish to keep (for instance, white british)</li>
 <li>The covariates to use (for instance, 18 genetic principal components, the sex and the age)</li>
 </ul>
-<p>Theses files can either be uploaded directly to your projects using <code>dx upload</code>, or created using DNAnexus data. This tutorial will guide you through the second option.</p>
+<p>This tutorial will guide you through the local creation of these files using DNAnexus data, and their upload to your project using <code>dx upload</code>.</p>
 <blockquote>
 <p>All three files will be uploaded to your current <code>dx</code> repertory (<code>gwas_tutorial</code> if you are closely following this tutorial).
 If you want to upload them somewhere else, you can either move directory with <code>dx cd</code> before uploading, or use the <code>--path</code> or <code>--destination</code> option to specify the DNAnexus path to upload the files.</p>
 </blockquote>
 <h3 id="phenotype">Phenotype</h3>
-<p>To extract the phenotype that we want, we first need to download all available data-fields in our dataset using Python.</p>
-<blockquote>
-<p>Please note, when running the <code>extract_dataset</code> command you might encounter a <code>('Invalid JSON received from server', 200)</code> error. If this happens, you simply need to rerun the code.</p>
-</blockquote>
-<pre><code class="language-python">&quot;&quot;&quot; Extract dataset. &quot;&quot;&quot;
-import dxpy
-import subprocess
-
-DATASET =  dxpy.find_one_data_object(typename='Dataset', name='app*.dataset', folder='/', name_mode='glob')['id']
-cmd = [&quot;dx&quot;, &quot;extract_dataset&quot;, DATASET, &quot;-ddd&quot;, &quot;--delimiter&quot;, &quot;,&quot;]
-subprocess.check_call(cmd)
-</code></pre>
-<p>Once completed, we want to rename the output file to a more manageable name like <code>ukbb</code>.</p>
+<p>To extract the phenotype that we want, we first need to download all available data-fields in our dataset.
+The files downloaded will have an incredibly long name, we want to rename it to a more manageable name like <code>ukbb</code>.</p>
 <blockquote>
 <p>The <strong>rename</strong> command is a built-in tool on many Linux distributions.
 However, if you don't have it, you can install it with <code>sudo apt install rename</code>.</p>
 </blockquote>
-<pre><code class="language-bash">dataset_name=$(basename *.data_dictionary.csv | sed -e &quot;s/.data_dictionary.csv//&quot;)
+<pre><code class="language-bash">dataset=$(dx ls /app*.dataset --brief)
+dx extract_dataset $dataset -ddd --delimiter &quot;,&quot;
+
+dataset_name=$(basename *.data_dictionary.csv | sed -e &quot;s/.data_dictionary.csv//&quot;)
 rename $dataset_name ukbb $dataset_name*
 </code></pre>
-<p>Combining these two scripts outputs 3 files:</p>
+<p>This command outputs 3 files:</p>
 <ul>
-<li><code>ukbb.data_dictionary.csv</code> contains a table with participants as the rows and metadata along the columns, including field names (see table below for naming convention)</li>
-<li><code>ukbb.codings.csv</code> contains a lookup table for the different medical codes, including ICD-10 codes that will be displayed in the diagnosis field column (p41270)</li>
-<li><code>ukbb.entity_dictionary.csv</code> contains the different entities that can be queried, where participant is the main entity that corresponds to most phenotype fields</li>
+<li><code>ukbb.data_dictionary.csv</code> (6.7 Mo) contains a table with participants as the rows and metadata along the columns, including field names (see table below for naming convention)</li>
+<li><code>ukbb.codings.csv</code> (6.2 Mo) contains a lookup table for the different medical codes, including ICD-10 codes that will be displayed in the diagnosis field column (p41270)</li>
+<li><code>ukbb.entity_dictionary.csv</code> (1.9 Ko) contains the different entities that can be queried, where participant is the main entity that corresponds to most phenotype fields</li>
 </ul>
+<blockquote>
+<p>Please note, when running the <code>extract_dataset</code> command you might encounter a <code>('Invalid JSON received from server', 200)</code> error. If this happens, you simply need to rerun the code.</p>
+</blockquote>
 <p>We first need to get the field name of the phenotype(s) we want to extract. As an example, we will extract the BMI index (<a href="https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=21001">21001</a>), but you can extract any number of phenotypes.</p>
 <p>For the main participant phenotype entity, the Research Analysis Platform (UKB-RAP) uses field names with the following convention:</p>
 <p><center></p>
@@ -245,7 +244,7 @@ subprocess.check_call(cmd)
 </code></pre>
 <p>This command outputs 1 file:</p>
 <ul>
-<li><code>pheno_extract.csv</code> contains the values for participant IDs and every single instance of all phenotypes extracted</li>
+<li><code>pheno_extract.csv</code> (10.1 Mo) contains the values for participant IDs and every single instance of all phenotypes extracted</li>
 </ul>
 <blockquote>
 <p>Please be aware, since <code>extract_dataset</code> has no <em>overwrite</em> option by design, we implemented ourselves.
@@ -301,7 +300,7 @@ format_phenotype(FILENAME, PHENOTYPE, SOFTWARE)
 </code></pre>
 <p>This command outputs 1 file:</p>
 <ul>
-<li><code>&lt;software&gt;_BMI.csv</code> contains the formatted phenotype values</li>
+<li><code>&lt;software&gt;_BMI.csv</code> (12.0 Mo) contains the formatted phenotype values</li>
 </ul>
 <blockquote>
 <p>You can modify the <code>format_phenotype</code> function to your heart's desire, depending on what you wish to do with the phenotypes.
@@ -328,17 +327,18 @@ awk -F &quot;,&quot; -v var=&quot;$pop_code&quot; '$2~var{print $1,$1}' $populat
 </code></pre>
 <p>This command outputs 1 file:</p>
 <ul>
-<li><code>white_british.txt</code> contains the participants IDs of the white british ethnic background</li>
+<li><code>white_british.txt</code> (7.1 Mo) contains the participants IDs of the white british ethnic background</li>
 </ul>
 <p>You can now upload the ids of your individuals.</p>
 <pre><code class="language-bash">dx upload white_british.txt
 </code></pre>
 <h3 id="covariates">Covariates</h3>
 <p>The genetic principal components from the UKBB individuals are stored in the <a href="https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=22009">22009</a> data field.
-We could use our phenotype extraction algorithm, but for some reason, it is not working. Therefore, we will use another script.</p>
-<p>We will use 20 variables as covariates: the first 18 PCA components, the sex (<a href="https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=31">31</a>) and the age (<a href="https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=21003">21003</a>) of individuals. However, you can extract whatever you want as covariates.</p>
+We could use our <a href="#phenotype">phenotype extraction script</a>, but it appears to constantly end in a <a href="http://autodoc.dnanexus.com/bindings/python/current/_modules/dxpy/exceptions.html"><code>BadJSONInReply</code> error</a>. We have found a <a href="https://community.dnanexus.com/s/question/0D582000000PW3bCAG/endtoendgwasphewasgwasphenotypesamplesqcipynb">community post by Alex Shemy</a> which seems to encounter the same problem as us. However, it highlights that not everyone encounters this error, and our script might work on your machine.</p>
+<p>In any case, we provide the following script which will extract exactly what we want and bypass the error.
+We will use 20 variables as covariates: the first 18 PCA components, the sex (<a href="https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=31">31</a>) and the age (<a href="https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=21003">21003</a>) of individuals. However, you can extract whatever you want as covariates.</p>
 <p>More information on covariates files formatting can be found <a href="https://www.cog-genomics.org/plink/2.0/input#covar">here</a> for PLINK2 and <a href="https://rgcgithub.github.io/regenie/options/#covariate-file-format">here</a> for regenie.</p>
-<pre><code class="language-bash">record_id=&quot;&lt;record-id&gt;&quot;
+<pre><code class="language-bash">dataset=$(dx ls /app*.dataset --brief)
 field_names=&quot;participant.eid,participant.eid,&quot;
 
 for i in {1..18}
@@ -348,7 +348,7 @@ done
 
 field_names+=&quot;participant.p31,participant.p21003_i0&quot; # Sex and age
 
-dx extract_dataset $record_id --fields $field_names --delimiter &quot;,&quot; --output covariates.txt
+dx extract_dataset $dataset --fields $field_names --delimiter &quot;,&quot; --output covariates.txt
 
 echo -e &quot;FID,IID,PC1,PC2,PC3,PC4,PC5,PC6,PC7,PC8,PC9,PC10,PC11,PC12,PC13,PC14,PC15,PC16,PC17,PC18,Sex,Age&quot; &gt; file.tmp
 tail -n+2 covariates.txt &gt;&gt; file.tmp
@@ -358,7 +358,7 @@ mv file.tmp covariates.txt
 </code></pre>
 <p>This command outputs 1 file:</p>
 <ul>
-<li><code>covariates.txt</code> contains the first 18 PCA components, the sex and the age of all participants</li>
+<li><code>covariates.txt</code> (86,8 Mo) contains the first 18 PCA components, the sex and the age of all participants</li>
 </ul>
 <p>You can now upload the covariates file.</p>
 <pre><code class="language-bash">dx upload covariates.txt

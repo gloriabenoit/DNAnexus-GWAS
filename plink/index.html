@@ -107,7 +107,13 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="using-plink2">Using PLINK2</h1>
-<p>Every file created during this analysis will be stored in a main directory called <code>plink_gwas_BMI</code>.</p>
+<p>Every file created during this analysis will be stored in a main directory called <code>plink_gwas_BMI</code>.
+This section will run 22 different jobs (one per chromosome).</p>
+<p>With our chosen instance (mem1_ssd1_v2_x16) using a <code>high</code> priority, the whole GWAS will take about <strong>200 minutes</strong> (3h20) and cost around <strong>£17.04</strong> (for a total execution time of 2341 minutes).</p>
+<p>With the same instance (mem1_ssd1_v2_x16) using a <code>low</code> priority, if no jobs are interrupted, it will cost only <strong>£4.56</strong> for the same time.</p>
+<blockquote>
+<p>Please note that it is most unlikely for jobs to be uninterrupted. In our experience, the whole GWAS using this instance (mem1_ssd1_v2_x16) with a <code>low</code> priority and some interruptions has cost around <strong>£9.30</strong> altough it took almost <strong>7h30</strong> to complete from start to finish (with no failed jobs).</p>
+</blockquote>
 <h2 id="input-files">Input files</h2>
 <p>Before running a GWAS on DNAnexus using PLINK2, you need to make sure you have these 3 files uploaded to DNAnexus:</p>
 <ul>
@@ -143,6 +149,7 @@ priority=&quot;low&quot;
 cost_limit=3
 
 dx mkdir -p plink_gwas_$pheno
+dx cd plink_gwas_$pheno
 
 for chr_num in $(seq 1 22); do
     prefix=&quot;/Bulk/Whole genome sequences/Population level genome variants, BGEN format - interim 200k release//ukb24306_c${chr_num}_b0_v1&quot;
@@ -185,7 +192,7 @@ dx cd ../
 </code></pre>
 <p>This command outputs 22 files:</p>
 <ul>
-<li><code>sumstat_c&lt;chrom-number&gt;.BMI.glm.linear</code> contains the values for the regression <em>per chromosome</em></li>
+<li><code>sumstat_c&lt;chrom-number&gt;.BMI.glm.linear</code> (59.22 Go total) contains the values for the regression <em>per chromosome</em></li>
 </ul>
 <p>The files will be stored in the main directory, <code>plink_gwas_BMI</code>.</p>
 <blockquote>
@@ -213,13 +220,17 @@ for chr_num in $(seq 1 22); do
     head -n1 &quot;$stat_path/$result&quot; &gt; &quot;$stat_path/sumstat_c${chr_num}.ADD&quot;
     grep &quot;ADD&quot; &quot;$stat_path/$result&quot; &gt;&gt; &quot;$stat_path/sumstat_c${chr_num}.ADD&quot;
     grep &quot;ADD&quot; &quot;$stat_path/$result&quot; &gt;&gt; &quot;sumstat_${pheno}.ADD&quot;
+    rm &quot;$stat_path/$result&quot;
 done
 </code></pre>
 <p>This command outputs 23 files <strong>locally</strong>:</p>
 <ul>
-<li><code>sumstat_c&lt;chrom-number&gt;.ADD</code> contains the cleaned up values for the regression <em>per chromosome</em></li>
-<li><code>sumstat_BMI.ADD</code> contains the concatenated cleaned up values for the regression</li>
+<li><code>sumstat_c&lt;chrom-number&gt;.ADD</code> (2.91 Go total) contains the cleaned up values for the regression <em>per chromosome</em></li>
+<li><code>sumstat_BMI.ADD</code> (2.71 Go) contains the concatenated cleaned up values for the regression</li>
 </ul>
+<blockquote>
+<p>We choose to delete the original <code>.BMI.glm.linear</code> files, seeing as they are quite heavy.</p>
+</blockquote>
 <p>The files will be stored in a new directory named <code>plink_statistics_BMI</code>, locally this time, containing all of the summary statistics per chromosome. The combination of all of them will be located at the same level as <code>plink_statistics_BMI</code>, making it easier to find.</p>
 <blockquote>
 <p>Although the result files are quite big, their download should only take around 5 minutes.</p>

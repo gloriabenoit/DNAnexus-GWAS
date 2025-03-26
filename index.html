@@ -49,15 +49,7 @@
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a>
     </li>
-    <li class="toctree-l2"><a class="reference internal" href="#durations-and-costs">Durations and costs</a>
-        <ul>
-    <li class="toctree-l3"><a class="reference internal" href="#input-files">Input files</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#using-plink2">Using PLINK2</a>
-    </li>
-    <li class="toctree-l3"><a class="reference internal" href="#using-regenie">Using regenie</a>
-    </li>
-        </ul>
+    <li class="toctree-l2"><a class="reference internal" href="#total-cost">Total cost</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#final-architecture">Final architecture</a>
     </li>
@@ -119,6 +111,10 @@ We will run everything from the command line, but will monitor our jobs on the p
 <p>This tutorial assumes that you already have a researcher account on the UKBiobank site, and have access to a DNAnexus project.
 If not, please create an account <a href="https://ams.ukbiobank.ac.uk/ams/signup">here</a>, and once it has been validated, create an account on <a href="https://ukbiobank.dnanexus.com/register">UKB-RAP</a> with your UK Biobank credentials to access DNAnexus. To setup your first project, please check the <a href="https://dnanexus.gitbook.io/uk-biobank-rap/getting-started/quickstart/creating-a-project">official documentation on the matter</a>.</p>
 <p>This tutorial will guide you through every step needed in order to perform a basic GWAS using whole genome sequences for chromosome 1 to 22 for both <a href="https://www.cog-genomics.org/plink/2.0/">PLINK2</a> and <a href="https://rgcgithub.github.io/regenie/">regenie</a>. In order to parallelize the analyses, we will perform 22 different GWAS, one for each chromosome, and combine the results locally to reduce cost.</p>
+<blockquote>
+<p>PLINK2 is the most basic and simple tool to perform a GWAS, while regenie is a bit more advanced.
+If you need to choose only one, please perform the <a href="plink/">PLINK2 tutorial</a>, as it is simpler and quicker to complete.</p>
+</blockquote>
 <p>As an example, we will perform a linear regression on the <strong>BMI index</strong> (<a href="https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=21001">21001</a>) using <strong>whole genome sequencing data</strong>, specifically the <strong>interim 200k release</strong> (<code>"/Bulk/Whole genome sequences/Population level genome variants, BGEN format - interim 200k release/"</code>). However, you can use any data that you need, simply keep in mind that paths need to be changed in the scripts.</p>
 <blockquote>
 <p>This tutorial is written for Linux operating systems. Commands may vary accross operating systems.</p>
@@ -137,93 +133,12 @@ If not, please create an account <a href="https://ams.ukbiobank.ac.uk/ams/signup
 <p>Please note, the <a href="plink/">PLINK2</a> and <a href="regenie/">regenie</a> sections are independant of each other and can be done separately. However, you will need to follow first the <a href="start/">Getting started</a> and <a href="input/">Input files</a> pages to make sure you have everything necessary to their completion.</p>
 </blockquote>
 <h2 id="requirements">Requirements</h2>
-<p>To follow this tutorial, you will only need <a href="https://www.python.org/downloads/">Python 3</a>.</p>
-<h2 id="durations-and-costs">Durations and costs</h2>
-<p>Please note, when first using your account you have an initial credit of £40. Running all of this tutorial with the same instance and priority as us might go over this budget. If it is not done already, your project should be billed to a wallet which is different from your initial credit. Please check the <a href="https://documentation.dnanexus.com/admin/billing-and-account-management">official documentation</a> if you are unsure on how to proceed.</p>
+<p>To follow this tutorial, you will only need <a href="https://en.wikipedia.org/wiki/Bash_(Unix_shell)">Bash</a> and <a href="https://www.python.org/downloads/">Python 3</a>.</p>
+<h2 id="total-cost">Total cost</h2>
+<p>Please note, when first using your account you have an initial credit of £40. Running all of this tutorial with the same instance and priority as us might go over this budget (if jobs are interrupted). If it is not done already, your project should be billed to a wallet which is different from your initial credit. Please check the <a href="https://documentation.dnanexus.com/admin/billing-and-account-management">official documentation</a> if you are unsure on how to proceed.</p>
 <p>Jobs cost will be computed based on the official <a href="https://20779781.fs1.hubspotusercontent-na1.net/hubfs/20779781/Product%20Team%20Folder/Rate%20Cards/BiobankResearchAnalysisPlatform_Rate%20Card_Current.pdf">UKB RAP Rate Card</a> (v3.0).</p>
 <blockquote>
 <p>Please remember the cost and duration of a job depends on the instance and priority used. Execution time may also vary for the same instance.</p>
-</blockquote>
-<h3 id="input-files">Input files</h3>
-<p>The <a href="input/">input files extraction/upload</a> is done locally and does not cost anything.</p>
-<blockquote>
-<p>Please be aware that storing files onto DNAnexus will result in a monthly cost. You may check its current value in the <em>SETTINGS</em> tab on your project's web page, or compute it using the <a href="https://20779781.fs1.hubspotusercontent-na1.net/hubfs/20779781/Product%20Team%20Folder/Rate%20Cards/BiobankResearchAnalysisPlatform_Rate%20Card_Current.pdf">UKB RAP Rate Card</a>.</p>
-</blockquote>
-<h3 id="using-plink2">Using PLINK2</h3>
-<p>The <a href="plink/">PLINK2 GWAS</a> will run 22 different jobs (one per chromosome).</p>
-<p>With our chosen instance (mem1_ssd1_v2_x16) using a <code>high</code> priority, the whole GWAS will take about <strong>200 minutes</strong> (3h20) and cost around <strong>£17.04</strong> (for a total execution time of 2341 minutes).</p>
-<p>With the same instance (mem1_ssd1_v2_x16) using a <code>low</code> priority, if no jobs are interrupted, it will cost only <strong>£4.56</strong> for the same time.</p>
-<blockquote>
-<p>Please note that it is most unlikely for jobs to be uninterrupted. In our experience, the whole GWAS using this instance (mem1_ssd1_v2_x16) with a <code>low</code> priority and some interruptions has cost around <strong>£9.30</strong> altough it took almost <strong>7h30</strong> to complete from start to finish (with no failed jobs).</p>
-</blockquote>
-<h3 id="using-regenie">Using regenie</h3>
-<p>The <a href="regenie/">regenie GWAS</a> runs a total of 47 different jobs:</p>
-<ul>
-<li>22 jobs for the quality control (one per chromosome)</li>
-<li>2 jobs for the merging and QC of merged data</li>
-<li>1 job for regenie's step 1 (SNPs contribution estimation)</li>
-<li>22 job for regenie's step 2 (regression, one per chromosome)</li>
-</ul>
-<blockquote>
-<p>To optimize your GWAS's overall time, you can perform the QC in parallel to every other step beside step 2 (for which it is needed).
-The rest needs to be done in order.</p>
-</blockquote>
-<p>With our chosen instance (mem1_ssd1_v2_x16) using a <code>high</code> priority, the whole GWAS will take about <strong>700 minutes</strong> (11h40, when running each step in order) and cost around <strong>£21.46</strong> (for a total execution time of 2948 minutes).</p>
-<p>With the same instance (mem1_ssd1_v2_x16) using a <code>low</code> priority, if no jobs are interrupted, it will cost only <strong>£5.74</strong> for the same time.</p>
-<p>You can find the details about the jobs run in the following table:</p>
-<p><center></p>
-<table>
-<thead>
-<tr>
-<th>Action</th>
-<th style="text-align: center;">Time</th>
-<th style="text-align: center;">Execution time</th>
-<th style="text-align: center;">Cost (high)</th>
-<th style="text-align: center;">Cost (low, no interruption)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>QC</td>
-<td style="text-align: center;">2h39</td>
-<td style="text-align: center;">30h</td>
-<td style="text-align: center;">13.10</td>
-<td style="text-align: center;">3.50</td>
-</tr>
-<tr>
-<td>Merge</td>
-<td style="text-align: center;">51min</td>
-<td style="text-align: center;">51min</td>
-<td style="text-align: center;">0.37</td>
-<td style="text-align: center;">0.10</td>
-</tr>
-<tr>
-<td>Merge QC</td>
-<td style="text-align: center;">10min</td>
-<td style="text-align: center;">10min</td>
-<td style="text-align: center;">0.07</td>
-<td style="text-align: center;">0.02</td>
-</tr>
-<tr>
-<td>Step 1</td>
-<td style="text-align: center;">7h10</td>
-<td style="text-align: center;">7h10</td>
-<td style="text-align: center;">3.13</td>
-<td style="text-align: center;">0.83</td>
-</tr>
-<tr>
-<td>Step 2</td>
-<td style="text-align: center;">48min</td>
-<td style="text-align: center;">10h57</td>
-<td style="text-align: center;">4.78</td>
-<td style="text-align: center;">1.28</td>
-</tr>
-</tbody>
-</table>
-<p></center></p>
-<blockquote>
-<p>Please note that it is most unlikely for jobs to be uninterrupted. In our experience, the whole GWAS using this instance (mem1_ssd1_v2_x16) with a <code>low</code> priority and some interruptions has cost around <strong>£12.57</strong> (without accounting for failed jobs, of which there were a few). Since most steps need to be done in order, it also took a total of <strong>54h35</strong> to complete the GWAS from start to finish (over multiple sessions since some jobs failed).
-If you count the failed jobs, you can add £5.36 to the total cost, and 12h04 to the total time taken.</p>
 </blockquote>
 <h2 id="final-architecture">Final architecture</h2>
 <p>At the end of this tutorial, your DNAnexus project's architecture should look like this:</p>
@@ -302,5 +217,5 @@ If you count the failed jobs, you can add £5.36 to the total cost, and 12h04 to
 
 <!--
 MkDocs version : 1.6.1
-Build Date UTC : 2025-03-25 14:06:22.601314+00:00
+Build Date UTC : 2025-03-26 10:06:05.088156+00:00
 -->

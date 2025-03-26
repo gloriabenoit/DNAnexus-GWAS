@@ -1,6 +1,13 @@
 # Using PLINK2
 
 Every file created during this analysis will be stored in a main directory called `plink_gwas_BMI`.
+This section will run 22 different jobs (one per chromosome).
+
+With our chosen instance (mem1_ssd1_v2_x16) using a `high` priority, the whole GWAS will take about **200 minutes** (3h20) and cost around **£17.04** (for a total execution time of 2341 minutes).
+
+With the same instance (mem1_ssd1_v2_x16) using a `low` priority, if no jobs are interrupted, it will cost only **£4.56** for the same time.
+
+> Please note that it is most unlikely for jobs to be uninterrupted. In our experience, the whole GWAS using this instance (mem1_ssd1_v2_x16) with a `low` priority and some interruptions has cost around **£9.30** altough it took almost **7h30** to complete from start to finish (with no failed jobs).
 
 ## Input files
 
@@ -49,6 +56,7 @@ priority="low"
 cost_limit=3
 
 dx mkdir -p plink_gwas_$pheno
+dx cd plink_gwas_$pheno
 
 for chr_num in $(seq 1 22); do
     prefix="/Bulk/Whole genome sequences/Population level genome variants, BGEN format - interim 200k release//ukb24306_c${chr_num}_b0_v1"
@@ -92,7 +100,7 @@ dx cd ../
 
 This command outputs 22 files:
 
-* `sumstat_c<chrom-number>.BMI.glm.linear` contains the values for the regression *per chromosome*
+* `sumstat_c<chrom-number>.BMI.glm.linear` (59.22 Go total) contains the values for the regression *per chromosome*
 
 The files will be stored in the main directory, `plink_gwas_BMI`.
 
@@ -123,13 +131,16 @@ for chr_num in $(seq 1 22); do
     head -n1 "$stat_path/$result" > "$stat_path/sumstat_c${chr_num}.ADD"
     grep "ADD" "$stat_path/$result" >> "$stat_path/sumstat_c${chr_num}.ADD"
     grep "ADD" "$stat_path/$result" >> "sumstat_${pheno}.ADD"
+    rm "$stat_path/$result"
 done
 ```
 
 This command outputs 23 files **locally**:
 
-* `sumstat_c<chrom-number>.ADD` contains the cleaned up values for the regression *per chromosome*
-* `sumstat_BMI.ADD` contains the concatenated cleaned up values for the regression
+* `sumstat_c<chrom-number>.ADD` (2.91 Go total) contains the cleaned up values for the regression *per chromosome*
+* `sumstat_BMI.ADD` (2.71 Go) contains the concatenated cleaned up values for the regression
+
+> We choose to delete the original `.BMI.glm.linear` files, seeing as they are quite heavy.
 
 The files will be stored in a new directory named `plink_statistics_BMI`, locally this time, containing all of the summary statistics per chromosome. The combination of all of them will be located at the same level as `plink_statistics_BMI`, making it easier to find.
 

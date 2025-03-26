@@ -10,6 +10,9 @@ If not, please create an account [here](https://ams.ukbiobank.ac.uk/ams/signup),
 
 This tutorial will guide you through every step needed in order to perform a basic GWAS using whole genome sequences for chromosome 1 to 22 for both [PLINK2](https://www.cog-genomics.org/plink/2.0/) and [regenie](https://rgcgithub.github.io/regenie/). In order to parallelize the analyses, we will perform 22 different GWAS, one for each chromosome, and combine the results locally to reduce cost.
 
+> PLINK2 is the most basic and simple tool to perform a GWAS, while regenie is a bit more advanced.
+> If you need to choose only one, please perform the [PLINK2 tutorial](plink.md), as it is simpler and quicker to complete.
+
 As an example, we will perform a linear regression on the **BMI index** ([21001](https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=21001)) using **whole genome sequencing data**, specifically the **interim 200k release** (`"/Bulk/Whole genome sequences/Population level genome variants, BGEN format - interim 200k release/"`). However, you can use any data that you need, simply keep in mind that paths need to be changed in the scripts.
 
 > This tutorial is written for Linux operating systems. Commands may vary accross operating systems.
@@ -31,64 +34,15 @@ The tutorial is separated into four main sections:
 
 ## Requirements
 
-To follow this tutorial, you will only need [Python 3](https://www.python.org/downloads/).
+To follow this tutorial, you will only need [Bash](https://en.wikipedia.org/wiki/Bash_(Unix_shell)) and [Python 3](https://www.python.org/downloads/).
 
-## Durations and costs
+## Total cost
 
-Please note, when first using your account you have an initial credit of £40. Running all of this tutorial with the same instance and priority as us might go over this budget. If it is not done already, your project should be billed to a wallet which is different from your initial credit. Please check the [official documentation](https://documentation.dnanexus.com/admin/billing-and-account-management) if you are unsure on how to proceed.
+Please note, when first using your account you have an initial credit of £40. Running all of this tutorial with the same instance and priority as us might go over this budget (if jobs are interrupted). If it is not done already, your project should be billed to a wallet which is different from your initial credit. Please check the [official documentation](https://documentation.dnanexus.com/admin/billing-and-account-management) if you are unsure on how to proceed.
 
 Jobs cost will be computed based on the official [UKB RAP Rate Card](https://20779781.fs1.hubspotusercontent-na1.net/hubfs/20779781/Product%20Team%20Folder/Rate%20Cards/BiobankResearchAnalysisPlatform_Rate%20Card_Current.pdf) (v3.0).
 
 > Please remember the cost and duration of a job depends on the instance and priority used. Execution time may also vary for the same instance.
-
-### Input files
-
-The [input files extraction/upload](input.md) is done locally and does not cost anything.
-
-> Please be aware that storing files onto DNAnexus will result in a monthly cost. You may check its current value in the *SETTINGS* tab on your project's web page, or compute it using the [UKB RAP Rate Card](https://20779781.fs1.hubspotusercontent-na1.net/hubfs/20779781/Product%20Team%20Folder/Rate%20Cards/BiobankResearchAnalysisPlatform_Rate%20Card_Current.pdf).
-
-### Using PLINK2
-
-The [PLINK2 GWAS](plink.md) will run 22 different jobs (one per chromosome).
-
-With our chosen instance (mem1_ssd1_v2_x16) using a `high` priority, the whole GWAS will take about **200 minutes** (3h20) and cost around **£17.04** (for a total execution time of 2341 minutes).
-
-With the same instance (mem1_ssd1_v2_x16) using a `low` priority, if no jobs are interrupted, it will cost only **£4.56** for the same time.
-
-> Please note that it is most unlikely for jobs to be uninterrupted. In our experience, the whole GWAS using this instance (mem1_ssd1_v2_x16) with a `low` priority and some interruptions has cost around **£9.30** altough it took almost **7h30** to complete from start to finish (with no failed jobs).
-
-### Using regenie
-
-The [regenie GWAS](regenie.md) runs a total of 47 different jobs:
-
-* 22 jobs for the quality control (one per chromosome)
-* 2 jobs for the merging and QC of merged data
-* 1 job for regenie's step 1 (SNPs contribution estimation)
-* 22 job for regenie's step 2 (regression, one per chromosome)
-
-> To optimize your GWAS's overall time, you can perform the QC in parallel to every other step beside step 2 (for which it is needed).
-> The rest needs to be done in order.
-
-With our chosen instance (mem1_ssd1_v2_x16) using a `high` priority, the whole GWAS will take about **700 minutes** (11h40, when running each step in order) and cost around **£21.46** (for a total execution time of 2948 minutes).
-
-With the same instance (mem1_ssd1_v2_x16) using a `low` priority, if no jobs are interrupted, it will cost only **£5.74** for the same time.
-
-You can find the details about the jobs run in the following table:
-
-<center>
-
-| Action   |  Time | Execution time | Cost (high) | Cost (low, no interruption) |
-|----------|:-----:|:--------------:|:-----------:|:---------------------------:|
-| QC       |  2h39 |       30h      |    13.10    |             3.50            |
-| Merge    | 51min |      51min     |     0.37    |             0.10            |
-| Merge QC | 10min |      10min     |     0.07    |             0.02            |
-| Step 1   |  7h10 |      7h10      |     3.13    |             0.83            |
-| Step 2   | 48min |      10h57     |     4.78    |             1.28            |
-
-</center>
-
-> Please note that it is most unlikely for jobs to be uninterrupted. In our experience, the whole GWAS using this instance (mem1_ssd1_v2_x16) with a `low` priority and some interruptions has cost around **£12.57** (without accounting for failed jobs, of which there were a few). Since most steps need to be done in order, it also took a total of **54h35** to complete the GWAS from start to finish (over multiple sessions since some jobs failed).
-> If you count the failed jobs, you can add £5.36 to the total cost, and 12h04 to the total time taken.
 
 ## Final architecture
 

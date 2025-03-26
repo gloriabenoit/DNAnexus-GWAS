@@ -4,7 +4,9 @@
 
 Once our GWAS is complete, we can analyze the summary statistics obtained. Specifically, we want to create a [Manhattan plot](https://www.sciencedirect.com/topics/biochemistry-genetics-and-molecular-biology/manhattan-plot) and a [QQ plot](https://jnmaloof.github.io/BIS180L_web/slides/11_QQPlots.html#1).
 
-The following code will do just that, although you can use any other software to obtain such plots.
+We propose the following code, as a way to see how such plots are made. However, please keep in mind it is not optimized whatsoever.
+This script takes about 35 minutes to compute both plots, which is quite a lot.
+We suggest using other software with which you are more familiar, or that you know are faster.
 
 ```python
 """ Generate Manhattan plot and QQ plot from GWAS summary statistics. """
@@ -188,10 +190,8 @@ qq_plot(PVALS, PHENOTYPE, SOFTWARE)
 
 This command outputs 2 files:
 
-* `<software>_BMI_Manhattan_plot.png` contains the Manhattan plot for the whole GWAS
-* `<software>_BMI_QQ_plot.png` contains the QQ plot for the whole GWAS
-
-> Since there is quite a lot of value to go through, this step can take a while. It should last about 35 minutes.
+* `<software>_BMI_Manhattan_plot.png` (~190 Ko) contains the Manhattan plot for the whole GWAS
+* `<software>_BMI_QQ_plot.png` (~ 110 Ko) contains the QQ plot for the whole GWAS
 
 ## Expected plots
 

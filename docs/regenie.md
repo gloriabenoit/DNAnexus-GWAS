@@ -1,13 +1,43 @@
 # Using regenie
 
 Every file created during this analysis will be stored in a main directory called `regenie_gwas_BMI`.
+This section runs a total of 47 different jobs, over four stages:
+
+1. [Quality control](#quality-control) runs 22 jobs (one per chromosome)
+2. [Merging files](#merging-files) runs 2 jobs, for the merge and the QC of the merged data
+3. [Step 1](#step-1-estimate-snps-contribution) runs 1 job for regenie's SNPs contribution estimation (step 1)
+4. [Step 2](#step-2-linear-regression) rusn 22 job for regenie's regression (step 2, one per chromosome)
+
+> To optimize your GWAS's overall time, you can perform the QC in parallel to every other step beside step 2 (for which it is needed).
+> The rest needs to be done in order.
+
+With our chosen instance (mem1_ssd1_v2_x16) using a `high` priority, the whole GWAS will take about **700 minutes** (11h40, when running each step in order) and cost around **£21.46** (for a total execution time of 2948 minutes).
+
+With the same instance (mem1_ssd1_v2_x16) using a `low` priority, if no jobs are interrupted, it will cost only **£5.74** for the same time.
+
+You can find the details about the jobs run in the following table:
+
+<center>
+
+| Action   |  Time | Execution time | Cost (high) | Cost (low, no interruption) |
+|----------|:-----:|:--------------:|:-----------:|:---------------------------:|
+| QC       |  2h39 |       30h      |    13.10    |             3.50            |
+| Merge    | 51min |      51min     |     0.37    |             0.10            |
+| Merge QC | 10min |      10min     |     0.07    |             0.02            |
+| Step 1   |  7h10 |      7h10      |     3.13    |             0.83            |
+| Step 2   | 48min |      10h57     |     4.78    |             1.28            |
+
+</center>
+
+> Please note that it is most unlikely for jobs to be uninterrupted. In our experience, the whole GWAS using this instance (mem1_ssd1_v2_x16) with a `low` priority and some interruptions has cost around **£12.57** (without accounting for failed jobs, of which there were a few). Since most steps need to be done in order, it also took a total of **54h35** to complete the GWAS from start to finish (over multiple sessions since some jobs failed).
+> If you count the failed jobs, you can add £5.36 to the total cost, and 12h04 to the total time taken.
 
 ## Input files
 
 Before running a GWAS on DNAnexus using PLINK2, you need to make sure you have these 3 files uploaded to DNAnexus:
 
 * The phenotype: `regenie_BMI.txt`
-* The ids of individuals we wish to keep: `white british.txt`
+* The ids of individuals we wish to keep: `white_british.txt`
 * The covariates to use: `covariates.txt`
 
 You can check their presence with the following command:
@@ -91,8 +121,8 @@ dx cd ../../
 
 This command outputs 44 files:
 
-* `QC_pass_c<chrom-number>.snplist` contains a list of SNPs that pass QC *per chromosome*
-* `QC_pass_c<chrom-number>.id` contains a list of sample IDs that pass QC *per chromosome*
+* `QC_pass_c<chrom-number>.snplist` (569.43 Mo total) contains a list of SNPs that pass QC *per chromosome*
+* `QC_pass_c<chrom-number>.id` (59.2 Mo total) contains a list of sample IDs that pass QC *per chromosome*
 
 They will be stored into another directory named `QC_lists` to avoid crowding the main repertory for the GWAS.
 
@@ -135,9 +165,9 @@ dx cd ../../
 
 This command outputs 3 files:
 
-* `c1_c22_merged.bed` contains the genotype table for our merged array genotype data
-* `c1_c22_merged.bim` contains extended variant information for our merged array genotype data
-* `c1_c22_merged.fam` contains the sample information for our merged array genotype data
+* `c1_c22_merged.bed` (89.18 Go) contains the genotype table for our merged array genotype data
+* `c1_c22_merged.bim` (21.47 Mo) contains extended variant information for our merged array genotype data
+* `c1_c22_merged.fam` (11.64 Mo) contains the sample information for our merged array genotype data
 
 The files will be stored in a new directory named `merge`. Now we can perform QC on this data as well.
 
@@ -194,8 +224,8 @@ dx cd ../../
 
 This command outputs 2 files:
 
-* `QC_pass_geno_array.snplist` contains a list of SNPs that pass QC
-* `QC_pass_geno_array.id` contains a list of sample IDs that pass QC
+* `QC_pass_geno_array.snplist` (6.92 Mo) contains a list of SNPs that pass QC
+* `QC_pass_geno_array.id` (6.58 Mo) contains a list of sample IDs that pass QC
 
 Like in the [QC step](#quality-control), we need to save both the list of SNPs and the list of sample IDs that pass QC for our array genotype data.
 They are stored in the `merge` directory.
@@ -235,7 +265,7 @@ regenie_command="regenie \
             --bed $merge \
             --phenoFile regenie_$pheno.txt \
             --phenoCol $pheno \
-            --covarFile $cov \> Please note, when using a binary phenotype you need to add the `--bt` option to the regenie command.
+            --covarFile $cov \
 
             --covarCol PC{1:18} \
             --out ${pheno}_merged"
@@ -262,8 +292,8 @@ dx cd ../../
 
 This command outputs 2 files:
 
-* `BMI_merged_pred.list` contains a list of blup files needed for [Step 2](#step-2-linear-regression)
-* `BMI_merged_1.loco.gz` contains per-chromosome LOCO predictions
+* `BMI_merged_pred.list` (46 o) contains a list of blup files needed for [Step 2](#step-2-linear-regression)
+* `BMI_merged_1.loco.gz` (38.31 Mo) contains per-chromosome LOCO predictions
 
 > Please note, when using a binary phenotype you need to add the `--bt` option to the regenie command.
 
@@ -343,7 +373,7 @@ dx cd ../
 
 This command outputs 22 files:
 
-* `sumstat_c<chrom-number>_BMI.regenie.gz` contains the values for the regression *per chromosome*
+* `sumstat_c<chrom-number>_BMI.regenie.gz` (919.87 Mo total) contains the values for the regression *per chromosome*
 
 The files will be stored in the main directory, `regenie_gwas_BMI`.
 
@@ -373,8 +403,8 @@ done
 
 This command outputs 23 files **locally**:
 
-* `sumstat_c<chrom-number>.regenie` contains the values for the regression *per chromosome*
-* `sumstat_BMI.regenie` contains the concatenated values for the regression
+* `sumstat_c<chrom-number>.regenie` (3.30 Go total) contains the values for the regression *per chromosome*
+* `sumstat_BMI.regenie` (3.08 Go) contains the concatenated values for the regression
 
 The files will be stored in a new directory named `regenie_statistics_BMI`, locally this time, containing all of the summary statistics per chromosome. The combination of all of them will be located at the same level as `regenie_statistics_BMI`, making it easier to find.
 

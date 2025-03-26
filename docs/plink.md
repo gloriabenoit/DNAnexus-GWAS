@@ -76,7 +76,7 @@ for chr_num in $(seq 1 22); do
                 --bgen $bgen.bgen ref-first \
                 --sample $bgen.sample \
                 --no-psam-pheno \
-                --out gwas_$pheno/sumstat_c${chr_num}"
+                --out sumstat_c${chr_num}"
 
     dx run swiss-army-knife \
         --priority "$priority" --cost-limit "$cost_limit" \

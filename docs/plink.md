@@ -1,5 +1,9 @@
 # Using PLINK2
 
+<blockquote id="warning">
+    Please be aware, we are currently working towards updating this tutorial for the 500k Whole Genome Sequencing Release.
+</blockquote>
+
 Every file created during this analysis will be stored in a main directory called `plink_gwas_BMI`.
 This section will run 22 different jobs (one per chromosome).
 

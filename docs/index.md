@@ -1,5 +1,9 @@
 # Home
 
+<blockquote id="warning">
+    Please be aware, we are currently working towards updating this tutorial for the 500k Whole Genome Sequencing Release.
+</blockquote>
+
 ## Overview
 
 This tutorial provides a step-by-step guide on the use of DNAnexus to perform a GWAS on the UK Biobank data.

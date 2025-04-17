@@ -1,5 +1,9 @@
 # Using regenie
 
+<blockquote id="warning">
+    Please be aware, we are currently working towards updating this tutorial for the 500k Whole Genome Sequencing Release.
+</blockquote>
+
 Every file created during this analysis will be stored in a main directory called `regenie_gwas_BMI`.
 This section runs a total of 47 different jobs, over four stages:
 

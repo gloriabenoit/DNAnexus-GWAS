@@ -1,5 +1,9 @@
 # Input files
 
+<blockquote id="warning">
+    Please be aware, we are currently working towards updating this tutorial for the 500k Whole Genome Sequencing Release.
+</blockquote>
+
 This section is done locally and does not cost anything.
 
 > Please be aware that storing files onto DNAnexus will result in a monthly cost. You may check its current value in the *SETTINGS* tab on your project's web page, or compute it using the [UKB RAP Rate Card](https://20779781.fs1.hubspotusercontent-na1.net/hubfs/20779781/Product%20Team%20Folder/Rate%20Cards/BiobankResearchAnalysisPlatform_Rate%20Card_Current.pdf).

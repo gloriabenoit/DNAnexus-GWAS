@@ -1,5 +1,9 @@
 # Visualizing results
 
+<blockquote id="warning">
+    Please be aware, we are currently working towards updating this tutorial for the 500k Whole Genome Sequencing Release.
+</blockquote>
+
 ## Generate plots
 
 Once our GWAS is complete, we can analyze the summary statistics obtained. Specifically, we want to create a [Manhattan plot](https://www.sciencedirect.com/topics/biochemistry-genetics-and-molecular-biology/manhattan-plot) and a [QQ plot](https://jnmaloof.github.io/BIS180L_web/slides/11_QQPlots.html#1).

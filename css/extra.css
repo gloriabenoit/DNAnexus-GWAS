@@ -7,10 +7,22 @@ pre code {
 }
 
 blockquote {
-    background-color: #e7f5f0   ; /* Couleur rose pâle */
-    border-top: 2px solid  #aed3c6 ; /* Bordure gauche rose plus foncée */
-    border-bottom: 2px solid #aed3c6 ; /* Bordure gauche rose plus foncée */
+    background-color: #e7f5f0;
+    border-top: 2px solid  #aed3c6;
+    border-bottom: 2px solid #aed3c6;
     padding: 15px 10px 0px;
     margin-right: 30px;
     border-radius: 5px;
+}
+
+#warning {
+    color: whitesmoke;
+    font-weight: bold;
+    font-size: 1.25em;
+    background-color: #f37e7e;
+    border: 2px solid  #a34141;
+    padding: 15px;
+    border-radius: 0;
+    width: 100%;
+    margin: 15px 0;
 }

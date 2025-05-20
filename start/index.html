@@ -103,7 +103,7 @@
                 <h1 id="getting-started">Getting started</h1>
 <h2 id="login">Login</h2>
 <p>In order to connect to DNAnexus remotely, you first need to install the <code>dxpy</code> package.</p>
-<pre><code class="language-bash">pip3 install dxpy
+<pre><code class="language-bash">pip install dxpy
 </code></pre>
 <p>To enable tab completion, run the following command, or add it to your <code>.bashrc</code>:</p>
 <pre><code class="language-bash">eval &quot;$(register-python-argcomplete dx|sed 's/-o default//')&quot;
@@ -141,7 +141,6 @@ The basic commands like <code>ls</code>, <code>cd</code> or <code>mv</code> all 
 </blockquote>
 <p>By default, any job run from the command line will output in your current DNAnexus repertory, meaning at the root of your project.
 To keep your project tidy, we can create a new folder and move into it, so that all jobs will output there.</p>
-<p>Therefore, you can create a new folder and move into it, to help keep your project tidy.</p>
 <pre><code class="language-bash">dx mkdir gwas_tutorial
 dx cd gwas_tutorial
 </code></pre>

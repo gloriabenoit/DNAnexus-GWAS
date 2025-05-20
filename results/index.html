@@ -67,7 +67,7 @@
               <ul class="current">
                 <li class="toctree-l1 current"><a class="reference internal current" href="#">Visualizing results</a>
     <ul class="current">
-    <li class="toctree-l2"><a class="reference internal" href="#generate-plots">Generate plots</a>
+    <li class="toctree-l2"><a class="reference internal" href="#generatating-plots">Generatating plots</a>
     </li>
     <li class="toctree-l2"><a class="reference internal" href="#expected-plots">Expected plots</a>
         <ul>
@@ -105,23 +105,18 @@
             <div class="section" itemprop="articleBody">
               
                 <h1 id="visualizing-results">Visualizing results</h1>
-<blockquote id="warning">
-    Please be aware, we are currently working towards updating this tutorial for the 500k Whole Genome Sequencing Release.
+<p>Once your GWAS is complete, you might want to analyze its summary statistics.
+Here, we provide code to compute a <a href="https://www.sciencedirect.com/topics/biochemistry-genetics-and-molecular-biology/manhattan-plot">Manhattan plot</a> and a <a href="https://jnmaloof.github.io/BIS180L_web/slides/11_QQPlots.html#1">QQ plot</a> from your results.</p>
+<h2 id="generatating-plots">Generatating plots</h2>
+<p>We propose the following code, as a way to see how such plots are made.</p>
+<blockquote>
+<p>Please keep in mind this code is not really optimized, but shoudl run decently quickly on big data.
+We suggest using other softwares with which you are more familiar, or that you know are faster.</p>
 </blockquote>
-
-<h2 id="generate-plots">Generate plots</h2>
-<p>Once our GWAS is complete, we can analyze the summary statistics obtained. Specifically, we want to create a <a href="https://www.sciencedirect.com/topics/biochemistry-genetics-and-molecular-biology/manhattan-plot">Manhattan plot</a> and a <a href="https://jnmaloof.github.io/BIS180L_web/slides/11_QQPlots.html#1">QQ plot</a>.</p>
-<p>We propose the following code, as a way to see how such plots are made. However, please keep in mind it is not optimized whatsoever.
-This script takes about 35 minutes to compute both plots, which is quite a lot.
-We suggest using other software with which you are more familiar, or that you know are faster.</p>
-<pre><code class="language-python">&quot;&quot;&quot; Generate Manhattan plot and QQ plot from GWAS summary statistics. &quot;&quot;&quot;
+<pre><code class="language-python">&quot;&quot;&quot;Generate Manhattan plot and QQ plot from GWAS summary statistics.&quot;&quot;&quot;
 
 import numpy as np
 import matplotlib.pyplot as plt
-
-# Input
-PHENOTYPE = &quot;BMI&quot;
-SOFTWARE = 'p' # for PLINK2 or 'r' for regenie
 
 def read_results(phenotype, software):
     &quot;&quot;&quot; Parse GWAS result file and get values.
@@ -129,7 +124,7 @@ def read_results(phenotype, software):
     Parameters
     ----------
     phenotype : str
-        phenotype name.
+        Phenotype name.
     software : str { 'p', 'r'}
         Either 'p' for PLINK2 or 'r' for regenie,
         to correctly format the file.
@@ -146,20 +141,19 @@ def read_results(phenotype, software):
 
     # Software specific format.
     if software == 'p':
-        line_start = &quot;#&quot;
         chrom_name = &quot;#CHROM&quot;
         p_name = &quot;P&quot;
-        filename = &quot;sumstat_${phenotype}.ADD&quot;
+        softname = &quot;plink&quot;
     elif software == 'r':
-        line_start = &quot;C&quot;
         chrom_name = &quot;CHROM&quot;
         p_name = &quot;LOG10P&quot;
-        filename = &quot;sumstat_${phenotype}.regenie&quot;
+        softname = &quot;regenie&quot;
+    filename = f&quot;{softname}_sumstat_{phenotype}.tsv&quot;
 
     with open(filename, 'r') as glm:
         for line in glm:
             columns = line.split()
-            if line.startswith(line_start):
+            if line.startswith(chrom_name):
                 chrom_id = columns.index(chrom_name)
                 p_id = columns.index(p_name)
             else:
@@ -181,7 +175,7 @@ def manhattan_plot(chroms, pvals, phenotype, software):
     pvals : list
         Transformed p-values (-log10).
     phenotype : str
-        phenotype name.
+        Phenotype name.
     software : str { 'p', 'r'}
         Either 'p' for PLINK2 or 'r' for regenie,
         to correctly format the file.
@@ -191,6 +185,13 @@ def manhattan_plot(chroms, pvals, phenotype, software):
     img
         Manhattan plot.
     &quot;&quot;&quot;
+    # Software specific format.
+    if software == 'p':
+        softname = &quot;plink&quot;
+    elif software == 'r':
+        softname = &quot;regenie&quot;
+    output = f&quot;{softname}_{phenotype}_Manhattan_plot.png&quot;
+
     chrom_distrib = {}
     colors = []
     for chrom in chroms:
@@ -237,10 +238,6 @@ def manhattan_plot(chroms, pvals, phenotype, software):
     plt.ylabel(&quot;$-log_{10}(p)$&quot;)
 
     # Save
-    if software == 'p':
-        output = f&quot;plink_{phenotype}_Manhattan_plot.png&quot;
-    elif software == 'r':
-        output = f&quot;regenie_{phenotype}_Manhattan_plot.png&quot;
     plt.savefig(output, bbox_inches=&quot;tight&quot;)
     plt.close()
 
@@ -252,7 +249,7 @@ def qq_plot(pvals, phenotype, software):
     pvals : list
         Transformed p-values (-log10).
     phenotype : str
-        phenotype name.
+        Phenotype name.
     software : str { 'p', 'r'}
         Either 'p' for PLINK2 or 'r' for regenie,
         to correctly format the file.
@@ -262,12 +259,19 @@ def qq_plot(pvals, phenotype, software):
     img
         QQ plot.
     &quot;&quot;&quot;
+    # Software specific format.
+    if software == 'p':
+        softname = &quot;plink&quot;
+    elif software == 'r':
+        softname = &quot;regenie&quot;
+    output = f&quot;{softname}_{phenotype}_QQ_plot.png&quot;
+
     # Sort p-values
     pvals.sort(reverse=True)
 
     # Expected values
     n = len(pvals)
-    exp = -np.log10((np.arange(n, dtype=float) - 0.5) / n)
+    exp = -np.log10(np.arange(n, dtype=float) / n)
 
     # Plot
     plt.figure(figsize=(10, 8), dpi=330)
@@ -277,12 +281,12 @@ def qq_plot(pvals, phenotype, software):
     plt.ylabel(&quot;Observed $-log_{10}(p)$&quot;)
 
     # Save
-    if software == 'p':
-        output = f&quot;plink_{phenotype}_QQ_plot.png&quot;
-    elif software == 'r':
-        output = f&quot;regenie_{phenotype}_QQ_plot.png&quot;
     plt.savefig(output, bbox_inches=&quot;tight&quot;)
     plt.close()
+
+# Input
+PHENOTYPE = &quot;BMI&quot;
+SOFTWARE = 'p' # for PLINK2 or 'r' for regenie
 
 # Read values
 CHROMS, PVALS = read_results(PHENOTYPE, SOFTWARE)
@@ -297,6 +301,9 @@ qq_plot(PVALS, PHENOTYPE, SOFTWARE)
 <li><code>&lt;software&gt;_BMI_Manhattan_plot.png</code> (~190 Ko) contains the Manhattan plot for the whole GWAS</li>
 <li><code>&lt;software&gt;_BMI_QQ_plot.png</code> (~ 110 Ko) contains the QQ plot for the whole GWAS</li>
 </ul>
+<blockquote>
+<p>This script should take between 5 and 10 minutes to compute both plots.</p>
+</blockquote>
 <h2 id="expected-plots">Expected plots</h2>
 <h3 id="plink2">PLINK2</h3>
 <p>By the end of this tutorial, when using PLINK2, you should obtain the following Manhattan plot:</p>

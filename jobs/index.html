@@ -130,7 +130,7 @@
 <p>If this is your first time using DNAnexus, or if you are unsure about how some things work, please read this page. However, be aware that it is not mandatory to complete the tutorial.</p>
 <p>For more detailed information, you can check the <a href="https://dnanexus.gitbook.io/uk-biobank-rap">official documentation</a> for a <a href="https://dnanexus.gitbook.io/uk-biobank-rap/getting-started/quickstart">quickstart</a> or about the <a href="https://dnanexus.gitbook.io/uk-biobank-rap/getting-started/key-concepts">key concepts</a> of the platform.</p>
 <h2 id="execution">Execution</h2>
-<p>On DNAnexus, when a job is executed, a worker is spun up in the cloud, then the job's code and inputs are downloaded to that worker and executed. This is the standard behavior, but inputs can also be mounted to the worker (accessed dynamically) to avoid their downloading costs.</p>
+<p>On DNAnexus, when a job is executed, a worker is spun up in the cloud, then the job's code and inputs are downloaded to that worker and executed. This is the standard behavior, but inputs can also be mounted (accessed dynamically) to the worker to avoid their downloading costs.</p>
 <h3 id="inputs">Inputs</h3>
 <p>Since jobs are run on workers, you need to manually specify every file used as input.</p>
 <p>To add a file as input, you need to use the <code>-iin</code> option to your <code>dx run</code> command. The path to your file needs to be absolute so that there is no confusion as to where it is located.</p>
@@ -156,7 +156,7 @@ Instances have 3 main metrics:</p>
 <li><code>normal</code> means your job will wait for 15min to run in a <code>low</code> priority, and if no ressources are availables by then, will run in a <code>high</code> priority</li>
 <li><code>low</code> means your job will start once the ressources are available, but may be interrupted if <code>high</code> priority jobs need them</li>
 </ul>
-<p>Although a <code>high</code> priority assures for job completion, it is also pricier than a <code>low</code> priority one.</p>
+<p>Although a <code>high</code> priority assures for job completion, it is also pricier than a <code>low</code> priority one (around x3 or x5).</p>
 <blockquote>
 <p>Please note, this tutorial will only run <code>low</code> priority jobs to reduce costs.</p>
 </blockquote>
@@ -190,10 +190,10 @@ It will also appear in the <em>Notifications</em> tab (bell icon in the top righ
 <p>In this tutorial, all jobs have specific <a href="#tags">tags</a> which help with filtering.
 By default, tags are not used in filtering on the <em>MONITOR</em> page, you need to add them in the <em>Filter settings</em> tab (three stacked bars in the top right corner).</p>
 <blockquote>
-<p>Please note, in this tutorial, jobs are tagged with the software used (plink or regenie), the phenotype (BMI), the step of the analysis (QC, GWAS, Merge, Step 1 and 2) and lastly the chromosome number (c1 to 22) if jobs are separated per chromosome.</p>
+<p>Please note, in this tutorial, jobs are tagged with the software used (plink or regenie), the phenotype (BMI), the step of the analysis (QC, GWAS, Merge, Step 1 and 2) and lastly the chromosome number (c1 to c22) if jobs are separated per chromosome.</p>
 </blockquote>
 <h2 id="errors-when-running">Errors when running</h2>
-<p>A failed job running on DNAnexus has only 3 main errors (apart from errors in the code):</p>
+<p>A failed job running on DNAnexus has 3 main errors (apart from errors in the code):</p>
 <ul>
 <li>Warning: Out of memory error occurred during this job.</li>
 <li>Warning: Low disk space during this job.</li>

@@ -1,26 +1,45 @@
 # Input files
 
-<blockquote id="warning">
-    Please be aware, we are currently working towards updating this tutorial for the 500k Whole Genome Sequencing Release.
-</blockquote>
-
 This section is done locally and does not cost anything.
 
 > Please be aware that storing files onto DNAnexus will result in a monthly cost. You may check its current value in the *SETTINGS* tab on your project's web page, or compute it using the [UKB RAP Rate Card](https://20779781.fs1.hubspotusercontent-na1.net/hubfs/20779781/Product%20Team%20Folder/Rate%20Cards/BiobankResearchAnalysisPlatform_Rate%20Card_Current.pdf).
 
 ## Genetic data
 
-On DNAnexus, large items, like genetic data, are stored in the `Bulk` folder at the root of your project. Among them, you can find whole exome sequencing data (`/Bulk/Exome sequences/`) or whole genome sequencing data (`/Bulk/Whole genome sequences`). We will use the latter.
+On DNAnexus, large items, like genetic data, are stored in the `Bulk` folder at the root of your project. Among them, you can find whole exome sequencing data (`/Bulk/Exome sequences/`) or whole genome sequencing data (`/Bulk/DRAGEN WGS/` or `/Bulk/Previous WGS releases/`).
 
-Whole genome sequencing data is available in multiple formats: BGEN format (`.bgen` and `.sample`), PLINK format (`.bed`, `.bim` and `.fam`) or pVCF format (`.vcf.gz.tbi`), among others. For more information on the data available, you can run the following command:
+Whole genome sequencing data is available in multiple formats: BGEN format (`.bgen` and `.sample`), PLINK format (`.bed`, `.bim` and `.fam`), PLINK2 format (`.pgen`, `.psam` and `.pvar`) or pVCF format (`.vcf.gz.tbi`). Feel free to browse the `Bulk` folder for more information on the data available.
 
-```bash
-dx ls "/Bulk/Whole genome sequences"
-```
+As written on the [About jobs page](jobs.md), input files can be either downloaded or mounted to the worker.
+We have tested both to see which one was quicker.
 
-As written on the [About jobs page](jobs.md), input files can be either downloaded or mounted to the worker. After some trial and error, we have found that using the BGEN format without mounting it was the quickest way to perform a GWAS using PLINK2. Downloading and translating BGEN files to a suitable format locally was quicker than downloading or mounting the PLINK files.
+### PLINK2
 
-Therefore, in this tutorial, we will input BGEN files directly, for both the PLINK2 and the regenie GWASs. The path to the genetic data is the following: `"/Bulk/Whole genome sequences/Population level genome variants, BGEN format - interim 200k release/"`.
+After some trial and error, we have found that downloading the input in the PLINK2 format was the quickest way to perform a GWAS with PLINK2.
+This makes sense seeing as the PLINK2 format is innate to PLINK2 and the most compressed of all available formats, but we were surprised to found that mounting was slower.
+
+The path to the genetic data chosen is the following: `/Bulk/DRAGEN WGS/DRAGEN population level WGS variants, PLINK format [500k release]/`.
+
+> Please be aware, when working on previous releases, we had found that using the BGEN format without mounting it was quicker than downloading or mounting the PLINK files.
+
+### regenie
+
+We first wanted to use the DRAGEN 500k data for regenie as well, but that has proven to be quite difficult for a number of reasons.
+Namely, as of writing this tutorial, the DRAGEN 500k `.psam` file **does not** have a header, which results in `ERROR: header does not have the correct format.` when using regenie ([Issue about this error](https://github.com/rgcgithub/regenie/issues/105)). Therefore, we cannot use the PLINK2 data.
+
+regenie's Step 2 is optimized for input genotype data in BGEN *v1.2* format.
+However, the BGEN data for DRAGEN 500k is **very** large: the file for chromosome 1 is bigger than a tebibyte (1.01 TiB).
+Thus, higher instances are needed, costs add up and execution time is increased (since PLINK2 is used and has to translate the format).
+
+Therefore, we choose to use previous releases, which are way less heavy (chromosome 1 is 71.49 GiB).
+
+Regarding the mount or download of the data, there seems to be an error when mounting data to regenie ([Corresponding issue](https://github.com/rgcgithub/regenie/issues/365)).
+Because of this, we confirm the download the input, which should take less time and will garantee complete results.
+
+The path to the genetic data chosen is the following: `/Bulk/Previous WGS releases/GATK and GraphTyper WGS/GraphTyper population level genome variants, BGEN format [200k release]/`.
+
+> Please be aware, we have not tested all possibilities, and specific formats might work better with specific data.
+> Therefore, if you choose to use any other data, you might want to check which is better.
 
 ## Additional data
 
@@ -28,7 +47,7 @@ In order to run our GWAS, apart from the genetic and sample data, we need 3 addi
 
 * The phenotype (for instance, BMI)
 * The ids of individuals we wish to keep (for instance, white british)
-* The covariates to use (for instance, 18 genetic principal components, the sex and the age)
+* The covariates to use (for instance, 16 genetic principal components, the sex and the age)
 
 This tutorial will guide you through the local creation of these files using DNAnexus data, and their upload to your project using `dx upload`.
 
@@ -75,23 +94,21 @@ For the main participant phenotype entity, the Research Analysis Platform (UKB-R
 </center>
 
 This means one phenotype ID can actually have multiple data field. For example, BMI has four instances.
-The following python script will extract the phenotype that you wish, and every array or instance associated.
+The following python script will first extract every array or instance associated to your phenotype (`field_names_for_ids()`), then keep only the first one for each (`select_first()`). We choose to keep only the first instance since multiple columns will be analyzed as separate phenotypes.
 
 > Please note, the file computed is temporary, it is not necessary to rename it since it's not the final phenotype file.
+> Moreover, since `extract_dataset` has no *overwrite* option by design, we implemented it ourselves.
+> Running the following code will first delete `pheno_extract.csv` if it's present, allowing for the extraction to happen.
 
 ```python
 """ Extract phenotype(s) from UKBB based on field ID(s). """
 
 import os
+import re
 import subprocess
-import pandas as pd
-import dxpy
 
-# Input
-DATASET = dxpy.find_one_data_object(typename='Dataset', name='app*.dataset', folder='/', name_mode='glob')['id']
-FILENAME = "ukbb.data_dictionary.csv"
-OUTPUT = "pheno_extract.csv"
-FIELD_ID = [21001] # BMI id
+import dxpy
+import pandas as pd
 
 def field_names_for_ids(filename, field_ids):
     """ Convert data-field id to corresponding field name.
@@ -119,8 +136,53 @@ def field_names_for_ids(filename, field_ids):
     field_names = [f"participant.{f}" for f in field_names]
     return field_names
 
+def select_first(field_names):
+    """Select only first data for a field.
+
+    Parameters
+    ----------
+    field_names : list
+        All corresponding field names.
+
+    Returns
+    -------
+    list
+        All corresponding field names."""
+    selection = []
+    for field in field_names:
+        # Not instanced nor arrayed
+        if not re.search("_", field):
+            selection.append(field)
+        else:
+            f_inst = re.search("_i", field)
+            f_arr = re.search("_a", field)
+            f_inst_0 = re.search("i0", field)
+            f_arr_0 = re.search("a0", field)
+
+            # Instanced and arrayed
+            if f_inst_0 and f_arr_0:
+                selection.append(field)
+                continue
+            # Instanced not arrayed
+            if f_inst_0 and not f_arr:
+                selection.append(field)
+            # Arrayed not instanced
+            if f_arr_0 and not f_inst:
+                selection.append(field)
+    return selection
+
+# Input
+DATASET = dxpy.find_one_data_object(typename='Dataset',
+                                    name='app*.dataset',
+                                    folder='/',
+                                    name_mode='glob')['id']
+FILENAME = "ukbb.data_dictionary.csv"
+OUTPUT = "pheno_extract.csv"
+FIELD_ID = [21001] # BMI id
+
 # Convert id to names
 FIELD_NAMES = field_names_for_ids(FILENAME, FIELD_ID)
+FIELD_NAMES = select_first(FIELD_NAMES)
 FIELD_NAMES = ",".join(FIELD_NAMES)
 
 # Extract phenotype(s)
@@ -133,13 +195,21 @@ subprocess.check_call(cmd)
 
 This command outputs 1 file:
 
-* `pheno_extract.csv` (10.1 Mo) contains the values for participant IDs and every single instance of all phenotypes extracted
+* `pheno_extract.csv` (8.0 Mo) contains the values for participant IDs and the first instance of BMI values.
 
-> Please be aware, since `extract_dataset` has no *overwrite* option by design, we implemented ourselves.
-> Running the previous code will first delete `pheno_extract.csv` if it's present, allowing for the extraction to happen.
+<blockquote>
 
-PLINK2 and regenie use the same formatting for the phenotype file, with a single exception : the code for missing values.
-Apart from this, both need to duplicate the individuals ids and only keep the first instance for our phenotype.
+Please be aware, extracting a huge quantity of phenotypes may consistently run into a <code>('Invalid JSON received from server', 200)</code> error.
+If so, we suggest extracting multiple files, and combining them into one. You can use the following command to do so:
+
+```bash
+paste -d',' file1.csv file2.csv > merged.csv
+```
+
+</blockquote>
+
+PLINK2 and regenie use the **same formatting** for the phenotype file, thus we can use the same file for both.
+We first need to duplicate the individuals ID, mark missing values as 'NA' (which is recognized by both regenie and PLINK2 with the necessary options) and name our phenotype.
 
 More information on phenotype files formatting can be found [here](https://www.cog-genomics.org/plink/2.0/input#pheno) for PLINK2 and [here](https://rgcgithub.github.io/regenie/options/#phenotype-file-format) for regenie.
 
@@ -151,10 +221,9 @@ import pandas as pd
 # Input
 FILENAME = "pheno_extract.csv"
 PHENOTYPE = "BMI"
-SOFTWARE = 'p' # for PLINK2 or 'r' for regenie
 
-def format_phenotype(filename, phenotype, software):
-    """ Save phenotype according to software format.
+def format_phenotype(filename, phenotype):
+    """ Save phenotype to correct format.
 
     Parameters
     ----------
@@ -162,57 +231,38 @@ def format_phenotype(filename, phenotype, software):
         Phenotype file to format.
     phenotype : str
         Phenotype name.
-    software : str { 'p', 'r'}
-        Either 'p' for PLINK2 or 'r' for regenie,
-        to correctly format the file.
     """
-    # Software specific format.
-    if software == 'p':
-        na_val = -9
-        output = f"plink_{phenotype}.txt"
-    elif software == 'r':
-        na_val = 'NA'
-        output = f"regenie_{phenotype}.txt"
+    output = f"{phenotype}.txt"
 
-    # Data
-    data = pd.read_csv(filename, sep=',')
+    # Format file
+    data = pd.read_csv(filename, sep=',', skiprows=1, names=["IID", phenotype])
+    fid = data["IID"].rename("FID")
+    merged = pd.concat([fid, data], axis=1)
 
-    # To be changed accordingly
-    pheno = data.iloc[:,[0,1]]
-    pheno = pheno.rename(columns={pheno.columns[0]: "IID", pheno.columns[1]: phenotype})
-    data = data.rename(columns={data.columns[0]: "FID"})
-    merged = pd.concat([data.iloc[:, 0], pheno], axis=1)
-
-    # Save output
-    merged.to_csv(output, sep='\t', index=False, header=True, na_rep=na_val)
+    merged.to_csv(output, sep='\t', index=False, header=True, na_rep='NA')
 
 # Save phenotype
-format_phenotype(FILENAME, PHENOTYPE, SOFTWARE)
+format_phenotype(FILENAME, PHENOTYPE)
 ```
 
 This command outputs 1 file:
 
-* `<software>_BMI.csv` (12.0 Mo) contains the formatted phenotype values
-
-> You can modify the `format_phenotype` function to your heart's desire, depending on what you wish to do with the phenotypes.
-> This is only a suggestion, and might not work for more specific phenotypes.
+* `BMI.txt` (11.42 MiB) contains the formatted phenotype values
 
 You can now upload the formated phenotype file.
 
 ```bash
-dx upload plink_BMI.txt
-dx upload regenie_BMI.txt
+dx upload BMI.txt
 ```
-
-> For the sake of this tutorial, we upload two files: one for each type of formatting.
 
 ### Individual ids
 
 Running a GWAS on a specific population helps reduce the bias caused by population stratification. It is therefore an important step.
 
-To filter out individuals based on their ethnic background, we can use the [*phenotype extraction script*](#phenotype) and the data-field [21000](https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=21000). You simply need to replace the following line:
+To filter out individuals based on their ethnic background, we can use the [*phenotype extraction script*](#phenotype) and the data-field [21000](https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=21000). You simply need to **change the value** of `FIELD_ID`:
 
 ```python
+# FIELD_ID = [21001] # BMI id
 FIELD_ID = [21000] # ethnic background id
 ```
 
@@ -228,7 +278,7 @@ awk -F "," -v var="$pop_code" '$2~var{print $1,$1}' $population > $pop_name.txt
 
 This command outputs 1 file:
 
-* `white_british.txt` (7.1 Mo) contains the participants IDs of the white british ethnic background
+* `white_british.txt` (6.75 MiB) contains the participants IDs of the white british ethnic background
 
 You can now upload the ids of your individuals.
 
@@ -242,7 +292,9 @@ The genetic principal components from the UKBB individuals are stored in the [22
 We could use our [phenotype extraction script](#phenotype), but it appears to constantly end in a [`BadJSONInReply` error](http://autodoc.dnanexus.com/bindings/python/current/_modules/dxpy/exceptions.html). We have found a [community post by Alex Shemy](https://community.dnanexus.com/s/question/0D582000000PW3bCAG/endtoendgwasphewasgwasphenotypesamplesqcipynb) which seems to encounter the same problem as us. However, it highlights that not everyone encounters this error, and our script might work on your machine.
 
 In any case, we provide the following script which will extract exactly what we want and bypass the error.
-We will use 20 variables as covariates: the first 18 PCA components, the sex ([31](https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=31)) and the age ([21003](https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=21003)) of individuals. However, you can extract whatever you want as covariates.
+We will use 18 variables as covariates: the first 16 PCA components, the sex (data field [31](https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=31)) and the age (data field [21003](https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=21003)) of individuals.
+
+You can extract whatever you want as covariates. However, we have chosen to keep only the first 16 PCA components, following a [study by Privé *et al.* in 2020](https://academic.oup.com/bioinformatics/article/36/16/4449/5838185) which indicates other components capture complex LD structure rather than population structure.
 
 More information on covariates files formatting can be found [here](https://www.cog-genomics.org/plink/2.0/input#covar) for PLINK2 and [here](https://rgcgithub.github.io/regenie/options/#covariate-file-format) for regenie.
 
@@ -250,7 +302,7 @@ More information on covariates files formatting can be found [here](https://www.
 dataset=$(dx ls /app*.dataset --brief)
 field_names="participant.eid,participant.eid,"
 
-for i in {1..18}
+for i in {1..16}
 do
   field_names+="participant.p22009_a$i,"
 done
@@ -259,7 +311,7 @@ field_names+="participant.p31,participant.p21003_i0" # Sex and age
 
 dx extract_dataset $dataset --fields $field_names --delimiter "," --output covariates.txt
 
-echo -e "FID,IID,PC1,PC2,PC3,PC4,PC5,PC6,PC7,PC8,PC9,PC10,PC11,PC12,PC13,PC14,PC15,PC16,PC17,PC18,Sex,Age" > file.tmp
+echo -e "FID,IID,PC1,PC2,PC3,PC4,PC5,PC6,PC7,PC8,PC9,PC10,PC11,PC12,PC13,PC14,PC15,PC16,Sex,Age" > file.tmp
 tail -n+2 covariates.txt >> file.tmp
 awk -F , '$3!=""' file.tmp > covariates.txt # Remove ind with no PC data
 sed 's/,/\t/g' covariates.txt > file.tmp
@@ -268,7 +320,7 @@ mv file.tmp covariates.txt
 
 This command outputs 1 file:
 
-* `covariates.txt` (86,8 Mo) contains the first 18 PCA components, the sex and the age of all participants
+* `covariates.txt` (74.59 MiB) contains the first 16 PCA components, the sex and the age of all participants
 
 You can now upload the covariates file.
 

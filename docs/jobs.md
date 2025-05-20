@@ -6,7 +6,7 @@ For more detailed information, you can check the [official documentation](https:
 
 ## Execution
 
-On DNAnexus, when a job is executed, a worker is spun up in the cloud, then the job's code and inputs are downloaded to that worker and executed. This is the standard behavior, but inputs can also be mounted to the worker (accessed dynamically) to avoid their downloading costs.
+On DNAnexus, when a job is executed, a worker is spun up in the cloud, then the job's code and inputs are downloaded to that worker and executed. This is the standard behavior, but inputs can also be mounted (accessed dynamically) to the worker to avoid their downloading costs.
 
 ### Inputs
 
@@ -41,7 +41,7 @@ Jobs can have three level of priority:
 * `normal` means your job will wait for 15min to run in a `low` priority, and if no ressources are availables by then, will run in a `high` priority
 * `low` means your job will start once the ressources are available, but may be interrupted if `high` priority jobs need them
 
-Although a `high` priority assures for job completion, it is also pricier than a `low` priority one.
+Although a `high` priority assures for job completion, it is also pricier than a `low` priority one (around x3 or x5).
 
 > Please note, this tutorial will only run `low` priority jobs to reduce costs.
 
@@ -91,11 +91,11 @@ After running a lot of jobs, you might find your *MONITOR* page to be quite crow
 In this tutorial, all jobs have specific [tags](#tags) which help with filtering.
 By default, tags are not used in filtering on the *MONITOR* page, you need to add them in the *Filter settings* tab (three stacked bars in the top right corner).
 
-> Please note, in this tutorial, jobs are tagged with the software used (plink or regenie), the phenotype (BMI), the step of the analysis (QC, GWAS, Merge, Step 1 and 2) and lastly the chromosome number (c1 to 22) if jobs are separated per chromosome.
+> Please note, in this tutorial, jobs are tagged with the software used (plink or regenie), the phenotype (BMI), the step of the analysis (QC, GWAS, Merge, Step 1 and 2) and lastly the chromosome number (c1 to c22) if jobs are separated per chromosome.
 
 ## Errors when running
 
-A failed job running on DNAnexus has only 3 main errors (apart from errors in the code):
+A failed job running on DNAnexus has 3 main errors (apart from errors in the code):
 
 * Warning: Out of memory error occurred during this job.
 * Warning: Low disk space during this job.

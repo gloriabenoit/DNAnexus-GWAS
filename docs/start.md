@@ -5,7 +5,7 @@
 In order to connect to DNAnexus remotely, you first need to install the `dxpy` package.
 
 ```bash
-pip3 install dxpy
+pip install dxpy
 ```
 
 To enable tab completion, run the following command, or add it to your `.bashrc`:
@@ -53,8 +53,6 @@ A quick way to check the difference is to run the same command on both architect
 
 By default, any job run from the command line will output in your current DNAnexus repertory, meaning at the root of your project.
 To keep your project tidy, we can create a new folder and move into it, so that all jobs will output there.
-
-Therefore, you can create a new folder and move into it, to help keep your project tidy.
 
 ```bash
 dx mkdir gwas_tutorial

@@ -1,6 +1,12 @@
 # Input files
 
-This section is done locally and does not cost anything.
+This section is done on [**DXJupyterLab**](https://documentation.dnanexus.com/user/jupyter-notebooks), launched via the *TOOLS* tab on DNAnexus's web page, with the following configuration:
+
+* Cluster configuration: **Single Node**
+* Instance type: **mem1_ssd1_v2_x4**
+* Duration (in hours): **1**
+
+The estimated price is around **£0.1136**. However, since we don't need the full hour to run the code (only a few minutes) the final cost will be reduced.
 
 > Please be aware that storing files onto DNAnexus will result in a monthly cost. You may check its current value in the *SETTINGS* tab on your project's web page, or compute it using the [UKB RAP Rate Card](https://20779781.fs1.hubspotusercontent-na1.net/hubfs/20779781/Product%20Team%20Folder/Rate%20Cards/BiobankResearchAnalysisPlatform_Rate%20Card_Current.pdf).
 
@@ -51,23 +57,32 @@ In order to run our GWAS, apart from the genetic and sample data, we need 3 addi
 
 This tutorial will guide you through the local creation of these files using DNAnexus data, and their upload to your project using `dx upload`.
 
-> All three files will be uploaded to your current `dx` repertory (`gwas_tutorial` if you are closely following this tutorial).
-> If you want to upload them somewhere else, you can either move directory with `dx cd` before uploading, or use the `--path` or `--destination` option to specify the DNAnexus path to upload the files.
-
 ### Phenotype
 
 To extract the phenotype that we want, we first need to download all available data-fields in our dataset.
 The files downloaded will have an incredibly long name, we want to rename it to a more manageable name like `ukbb`.
 
-> The **rename** command is a built-in tool on many Linux distributions.
-> However, if you don't have it, you can install it with `sudo apt install rename`.
+```python
+"""Extract dataset information."""
+import os
+import subprocess
 
-```bash
-dataset=$(dx ls /app*.dataset --brief)
-dx extract_dataset $dataset -ddd --delimiter ","
+import dxpy
 
-dataset_name=$(basename *.data_dictionary.csv | sed -e "s/.data_dictionary.csv//")
-rename $dataset_name ukbb $dataset_name*
+# Extraction
+dispensed_dataset_id = dxpy.find_one_data_object(typename='Dataset', name='app*.dataset', folder='/', name_mode='glob')['id']
+project_id = dxpy.find_one_project()["id"]
+dataset = (':').join([project_id, dispensed_dataset_id])
+
+cmd = ["dx", "extract_dataset", dataset, "-ddd", "--delimiter", ","]
+subprocess.check_call(cmd)
+
+# Renaming the files
+for filename in os.listdir("."):
+    if filename.startswith("app"):
+        separated = filename.split('.')
+        newname = f"ukbb.{'.'.join(separated[2:])}"
+        os.rename(filename, newname)
 ```
 
 This command outputs 3 files:
@@ -101,7 +116,7 @@ The following python script will first extract every array or instance associate
 > Running the following code will first delete `pheno_extract.csv` if it's present, allowing for the extraction to happen.
 
 ```python
-""" Extract phenotype(s) from UKBB based on field ID(s). """
+"""Extract phenotype(s) based on field ID(s)."""
 
 import os
 import re
@@ -147,7 +162,8 @@ def select_first(field_names):
     Returns
     -------
     list
-        All corresponding field names."""
+        All corresponding field names.
+    """
     selection = []
     for field in field_names:
         # Not instanced nor arrayed
@@ -187,7 +203,7 @@ FIELD_NAMES = ",".join(FIELD_NAMES)
 
 # Extract phenotype(s)
 if os.path.exists(OUTPUT):
-  os.remove(OUTPUT)
+    os.remove(OUTPUT)
 cmd = ["dx", "extract_dataset", DATASET, "--fields", FIELD_NAMES,
         "--delimiter", ",", "--output", OUTPUT]
 subprocess.check_call(cmd)
@@ -202,7 +218,8 @@ This command outputs 1 file:
 Please be aware, extracting a huge quantity of phenotypes may consistently run into a <code>('Invalid JSON received from server', 200)</code> error.
 If so, we suggest extracting multiple files, and combining them into one. You can use the following command to do so:
 
-```bash
+```python
+%%bash
 paste -d',' file1.csv file2.csv > merged.csv
 ```
 
@@ -214,7 +231,7 @@ We first need to duplicate the individuals ID, mark missing values as 'NA' (whic
 More information on phenotype files formatting can be found [here](https://www.cog-genomics.org/plink/2.0/input#pheno) for PLINK2 and [here](https://rgcgithub.github.io/regenie/options/#phenotype-file-format) for regenie.
 
 ```python
-""" Format phenotype file. """
+"""Format phenotype file."""
 
 import pandas as pd
 
@@ -252,7 +269,8 @@ This command outputs 1 file:
 You can now upload the formated phenotype file.
 
 ```bash
-dx upload BMI.txt
+%%bash 
+dx upload BMI.txt -p --path /gwas_tutorial/
 ```
 
 ### Individual ids
@@ -262,13 +280,27 @@ Running a GWAS on a specific population helps reduce the bias caused by populati
 To filter out individuals based on their ethnic background, we can use the [*phenotype extraction script*](#phenotype) and the data-field [21000](https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=21000). You simply need to **change the value** of `FIELD_ID`:
 
 ```python
-# FIELD_ID = [21001] # BMI id
-FIELD_ID = [21000] # ethnic background id
+# Input
+FILENAME = "ukbb.data_dictionary.csv"
+FIELD_ID = [21000] # Ethnic background id
+
+# Convert id to names
+FIELD_NAMES = field_names_for_ids(FILENAME, FIELD_ID)
+FIELD_NAMES = select_first(FIELD_NAMES)
+FIELD_NAMES = ",".join(FIELD_NAMES)
+
+# Extract population(s)
+if os.path.exists(OUTPUT):
+    os.remove(OUTPUT)
+cmd = ["dx", "extract_dataset", DATASET, "--fields", FIELD_NAMES,
+        "--delimiter", ",", "--output", OUTPUT]
+subprocess.check_call(cmd)
 ```
 
 This field uses the [1001 data encoding](https://biobank.ndph.ox.ac.uk/ukb/coding.cgi?id=1001). In this code, *1001* means *white british* which is the main ethnic group, and the one we want to select.
 
 ```bash
+%%bash
 pop_code=1001
 pop_name="white_british"
 population="pheno_extract.csv"
@@ -283,7 +315,8 @@ This command outputs 1 file:
 You can now upload the ids of your individuals.
 
 ```bash
-dx upload white_british.txt
+%%bash 
+dx upload white_british.txt -p --path /gwas_tutorial/
 ```
 
 ### Covariates
@@ -299,6 +332,7 @@ You can extract whatever you want as covariates. However, we have chosen to keep
 More information on covariates files formatting can be found [here](https://www.cog-genomics.org/plink/2.0/input#covar) for PLINK2 and [here](https://rgcgithub.github.io/regenie/options/#covariate-file-format) for regenie.
 
 ```bash
+%%bash
 dataset=$(dx ls /app*.dataset --brief)
 field_names="participant.eid,participant.eid,"
 
@@ -325,5 +359,9 @@ This command outputs 1 file:
 You can now upload the covariates file.
 
 ```bash
-dx upload covariates.txt
+%%bash 
+dx upload covariates.txt -p --path /gwas_tutorial/
 ```
+
+> Once all of theses steps are complete, make sure all 3 files are correctly uploaded and end the session to cut costs.
+> You can do so by selecting *End Session* from the *DNAnexus* tab of the notebook.

@@ -1,7 +1,8 @@
 # Using PLINK2
 
+This section is done from **your bash terminal**.
 Every file created during this analysis will be stored in a main directory called `plink_gwas_BMI`.
-This section will run 22 different jobs (one per chromosome).
+You will run 22 different jobs (one per chromosome).
 
 With our chosen instance (mem1_ssd1_v2_x16) using a `high` priority, the whole GWAS will take about **40 minutes** and cost around **£3.84** (for a total execution time of 528 minutes).
 

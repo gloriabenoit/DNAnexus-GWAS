@@ -1,7 +1,8 @@
 # Using regenie
 
+This section is done from **your bash terminal**.
 Every file created during this analysis will be stored in a main directory called `regenie_gwas_BMI`.
-This section runs a total of 47 different jobs, over four stages:
+You will run a total of 47 different jobs, over four stages:
 
 1. [Quality control](#quality-control) runs 22 jobs (one per chromosome)
 2. [Merging files](#merging-files) runs 2 jobs, for the merge and the QC of the merged data

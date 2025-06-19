@@ -127,56 +127,18 @@ The rest needs to be done in order.</p>
 <p>With our chosen instance (mem1_ssd1_v2_x16) using a <code>high</code> priority, the whole GWAS will take about <strong>830 minutes</strong> (13h50, when running each step in order) and cost around <strong>£15.89</strong> (for a total execution time of 2183 minutes).</p>
 <p>With the same instance (mem1_ssd1_v2_x16) using a <code>low</code> priority, if no jobs are interrupted, it will cost only <strong>£4.25</strong> for the same time.</p>
 <p>You can find the details about the jobs run in the following table:</p>
-<p><center></p>
-<table>
-<thead>
-<tr>
-<th>Action</th>
-<th style="text-align: center;">Time</th>
-<th style="text-align: center;">Execution time</th>
-<th style="text-align: center;">Cost (high)</th>
-<th style="text-align: center;">Cost (low, no interruption)</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>QC</td>
-<td style="text-align: center;">1h41</td>
-<td style="text-align: center;">20h</td>
-<td style="text-align: center;">8.77</td>
-<td style="text-align: center;">2.35</td>
-</tr>
-<tr>
-<td>Merge</td>
-<td style="text-align: center;">46min</td>
-<td style="text-align: center;">46min</td>
-<td style="text-align: center;">0.33</td>
-<td style="text-align: center;">0.09</td>
-</tr>
-<tr>
-<td>Merge QC</td>
-<td style="text-align: center;">12min</td>
-<td style="text-align: center;">12min</td>
-<td style="text-align: center;">0.09</td>
-<td style="text-align: center;">0.02</td>
-</tr>
-<tr>
-<td>Step 1</td>
-<td style="text-align: center;">10h55</td>
-<td style="text-align: center;">10h55</td>
-<td style="text-align: center;">4.77</td>
-<td style="text-align: center;">1.28</td>
-</tr>
-<tr>
-<td>Step 2</td>
-<td style="text-align: center;">20min</td>
-<td style="text-align: center;">4h25</td>
-<td style="text-align: center;">1.93</td>
-<td style="text-align: center;">0.52</td>
-</tr>
-</tbody>
-</table>
-<p></center></p>
+<center>
+
+| Action   |  Time | Execution time | Cost (high) | Cost (low, no interruption) |
+|----------|:-----:|:--------------:|:-----------:|:---------------------------:|
+| QC       |  1h41 |       20h      |     8.77    |             2.35            |
+| Merge    | 46min |      46min     |     0.33    |             0.09            |
+| Merge QC | 12min |      12min     |     0.09    |             0.02            |
+| Step 1   | 10h55 |      10h55     |     4.77    |             1.28            |
+| Step 2   | 20min |      4h25      |     1.93    |             0.52            |
+
+</center>
+
 <blockquote>
 <p>Please note that it is most unlikely for jobs to be uninterrupted.
 In our experience, when accounting for interrupted/failed jobs, the total cost is around one to two times higher than the <em>low</em> cost, but still lower than the <em>high</em> cost. Although please keep in mind that the total time needed can be two to five times higher, depending on the interrupted/failed jobs.</p>

@@ -3,7 +3,8 @@
 ## Overview
 
 This tutorial provides a step-by-step guide on the use of DNAnexus to perform a GWAS on the UK Biobank data.
-We will run everything from the command line, but will monitor our jobs on the project's web page.
+We will run everything from the command line, but will monitor our jobs on the project's web page. 
+If you'd rather use the terminal, we've also built a package, named [dxlog](https://pypi.org/project/dxlog/), which does mostly the same as the web page but directly from the command line.
 
 This tutorial assumes that you already have a researcher account on the UKBiobank site, and have access to a DNAnexus project.
 If not, please [create an account](https://ams.ukbiobank.ac.uk/ams/signup), and once it has been validated, create an account on [UKB-RAP](https://ukbiobank.dnanexus.com/register) with your UK Biobank credentials to access DNAnexus. To setup your first project, please check the [official documentation on the matter](https://dnanexus.gitbook.io/uk-biobank-rap/getting-started/quickstart/creating-a-project).

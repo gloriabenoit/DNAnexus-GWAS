@@ -97,16 +97,12 @@ We first need to get the field name of the phenotype(s) we want to extract. As a
 
 For the main participant phenotype entity, the Research Analysis Platform (UKB-RAP) uses field names with the following convention:
 
-<center>
-
 | Type of field                 | Syntax for field name           | Example     |
 |-------------------------------|---------------------------------|-------------|
 | Neither instanced nor arrayed | `p<FIELD>`                      | `p31`       |
 | Instanced but not arrayed     | `p<FIELD>_i<INSTANCE>`          | `p40005_i0` |
 | Arrayed but not instanced     | `p<FIELD>_a<ARRAY>`             | `p41262_a0` |
 | Instanced and arrayed         | `p<FIELD>_i<INSTANCE>_a<ARRAY>` | `p93_i0_a0` |
-
-</center>
 
 This means one phenotype ID can actually have multiple data field. For example, BMI has four instances.
 The following python script will first extract every array or instance associated to your phenotype (`field_names_for_ids()`), then keep only the first one for each (`select_first()`). We choose to keep only the first instance since multiple columns will be analyzed as separate phenotypes.

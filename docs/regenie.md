@@ -1,4 +1,4 @@
-# Using regenie
+# Using Regenie
 
 This section is done from **your bash terminal**.
 Every file created during this analysis will be stored in a main directory called `regenie_gwas_BMI`.
@@ -6,19 +6,17 @@ You will run a total of 47 different jobs, over four stages:
 
 1. [Quality control](#quality-control) runs 22 jobs (one per chromosome)
 2. [Merging files](#merging-files) runs 2 jobs, for the merge and the QC of the merged data
-3. [Step 1](#step-1-estimate-snps-contribution) runs 1 job for regenie's SNPs contribution estimation (step 1)
-4. [Step 2](#step-2-linear-regression) runs 22 job for regenie's regression (step 2, one per chromosome)
+3. [Step 1](#step-1-estimate-snps-contribution) runs 1 job for Regenie's SNPs contribution estimation (step 1)
+4. [Step 2](#step-2-linear-regression) runs 22 job for Regenie's regression (step 2, one per chromosome)
 
 > To optimize your GWAS's overall time, you can perform the QC in parallel to every other step beside step 2 (for which it is needed).
 > The rest needs to be done in order.
 
-With our chosen instance (mem1_ssd1_v2_x16) using a `high` priority, the whole GWAS will take about **830 minutes** (13h50, when running each step in order) and cost around **£15.89** (for a total execution time of 2183 minutes).
+With our chosen instance (mem1_ssd1_v2_x16) using a `high` priority, the whole GWAS will take about **830 minutes** (13h50, when running each step in order) and cost around **£15.89** (for a total execution time of 2183 minutes, corresponding to the rates as of June 2025, they may have changed).
 
-With the same instance (mem1_ssd1_v2_x16) using a `low` priority, if no jobs are interrupted, it will cost only **£4.25** for the same time.
+With the same instance (mem1_ssd1_v2_x16) using a `low` priority, if no jobs are interrupted, it will cost only **£4.25** for the same time (corresponding to the rates as of June 2025, they may have changed).
 
 You can find the details about the jobs run in the following table:
-
-<center>
 
 | Action   |  Time | Execution time | Cost (high) | Cost (low, no interruption) |
 |----------|:-----:|:--------------:|:-----------:|:---------------------------:|
@@ -28,8 +26,6 @@ You can find the details about the jobs run in the following table:
 | Step 1   | 10h55 |      10h55     |     4.77    |             1.28            |
 | Step 2   | 20min |      4h25      |     1.93    |             0.52            |
 
-</center>
-
 > Please note that it is most unlikely for jobs to be uninterrupted.
 > In our experience, when accounting for interrupted/failed jobs, the total cost is around one to two times higher than the *low* cost, but still lower than the *high* cost. Although please keep in mind that the total time needed can be two to five times higher, depending on the interrupted/failed jobs.
 
@@ -37,7 +33,7 @@ You can find the details about the jobs run in the following table:
 
 The path to the genetic data chosen is the following: `/Bulk/Previous WGS releases/GATK and GraphTyper WGS/GraphTyper population level genome variants, BGEN format [200k release]/`.
 
-Before running a GWAS on DNAnexus using regenie, you need to make sure you have these 3 files uploaded to DNAnexus:
+Before running a GWAS on DNAnexus using Regenie, you need to make sure you have these 3 files uploaded to DNAnexus:
 
 * The phenotype: `BMI.txt`
 * The ids of individuals we wish to keep: `white_british.txt`
@@ -53,7 +49,7 @@ Please refer to the [Input files section](input.md) if you don't have these file
 
 ## Running a GWAS
 
-On DNAnexus, regenie is available either as part of the [Swiss Army Knife app](https://ukbiobank.dnanexus.com/app/swiss-army-knife) (`swiss-army-knife`) or as its [own app](https://ukbiobank.dnanexus.com/app/regenie) called `regenie`. We will use the former.
+On DNAnexus, Regenie is available either as part of the [Swiss Army Knife app](https://ukbiobank.dnanexus.com/app/swiss-army-knife) (`swiss-army-knife`) or as its [own app](https://ukbiobank.dnanexus.com/app/regenie) called `regenie`. We will use the former.
 
 We choose to use the same instance for all GWASs, to simplify the code, but this can be changed to your liking. Same for the priority and the cost limit.
 There is one exception: Step 1 for which we recommend using a high priority.
@@ -132,7 +128,7 @@ They will be stored into another directory named `QC_lists` to avoid crowding th
 
 ### Merging files
 
-Before running our GWAS using regenie, we first need to merge all of the genotype call files (chromosome 1 to 22) into one file. This is in preparation for running [Step 1](#step-1-estimate-snps-contribution).
+Before running our GWAS using Regenie, we first need to merge all of the genotype call files (chromosome 1 to 22) into one file. This is in preparation for running [Step 1](#step-1-estimate-snps-contribution).
 
 ```bash
 pheno="BMI"
@@ -240,7 +236,7 @@ They are stored in the `merge` directory.
 
 ### Step 1: Estimate SNPs contribution
 
-The first step of a regenie GWAS is the estimation of how background SNPs contribute to the phenotype. During this step, a subset of genetic markers are used to fit a whole genome regression model that captures a good fraction of the phenotype variance attributable to genetic effects. For more information, check the [official documentation](https://rgcgithub.github.io/regenie/overview/).
+The first step of a Regenie GWAS is the estimation of how background SNPs contribute to the phenotype. During this step, a subset of genetic markers are used to fit a whole genome regression model that captures a good fraction of the phenotype variance attributable to genetic effects. For more information, check the [official documentation](https://rgcgithub.github.io/regenie/overview/).
 
 We expect this step to take around 10h, which is quite a lot to be uninterrupted (although it is possible). Therefore, we choose to use a `high` priority, to ensure the job's completion. Please be aware that this step can be common to all GWAS you run with the same QC for the merging step.
 
@@ -306,11 +302,11 @@ This command outputs 2 files:
 * `BMI_merged_pred.list` (48 B) contains a list of blup files needed for [Step 2](#step-2-linear-regression)
 * `BMI_merged_1.loco.gz` (38.29 MiB) contains per-chromosome LOCO predictions
 
-> Please note, when using a binary phenotype you need to add the `--bt` option to the regenie command.
+> Please note, when using a binary phenotype you need to add the `--bt` option to the Regenie command.
 
 ### Step 2: Linear regression
 
-The second step of a regenie GWAS is the regression. During this step, whole genome markers are tested for association with the phenotype *conditional upon* the prediction from the regression model in [Step 1](#step-1-estimate-snps-contribution). For more information, check the [official documentation](https://rgcgithub.github.io/regenie/overview/).
+The second step of a Regenie GWAS is the regression. During this step, whole genome markers are tested for association with the phenotype *conditional upon* the prediction from the regression model in [Step 1](#step-1-estimate-snps-contribution). For more information, check the [official documentation](https://rgcgithub.github.io/regenie/overview/).
 
 > To not require too much space, we gzip the results using the `--gz` option.
 
@@ -387,7 +383,7 @@ This command outputs 22 files:
 
 The files will be stored in the main directory, `regenie_gwas_BMI`.
 
-> Please note, when using a binary phenotype you need to add the `--bt` option to the regenie command to perform a logistic regression rather than a linear one.
+> Please note, when using a binary phenotype you need to add the `--bt` option to the Regenie command to perform a logistic regression rather than a linear one.
 
 ## Computing the results
 
@@ -420,4 +416,4 @@ The files will be stored in a new directory named `regenie_statistics_BMI`, loca
 
 > Although the result files are quite big, their download should only take about a minute.
 
-Congratulations, you have successfully completed a GWAS using regenie on DNAnexus!
+Congratulations, you have successfully completed a GWAS using Regenie on DNAnexus!

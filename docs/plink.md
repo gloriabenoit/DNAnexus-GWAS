@@ -4,9 +4,9 @@ This section is done from **your bash terminal**.
 Every file created during this analysis will be stored in a main directory called `plink_gwas_BMI`.
 You will run 22 different jobs (one per chromosome).
 
-With our chosen instance (mem1_ssd1_v2_x16) using a `high` priority, the whole GWAS will take about **40 minutes** and cost around **£3.84** (for a total execution time of 528 minutes).
+With our chosen instance (mem1_ssd1_v2_x16) using a `high` priority, the whole GWAS will take about **40 minutes** and cost around **£3.84** (for a total execution time of 528 minutes, corresponding to the rates as of June 2025, they may have changed).
 
-With the same instance (mem1_ssd1_v2_x16) using a `low` priority, if no jobs are interrupted, it will cost only **£1.03** for the same time.
+With the same instance (mem1_ssd1_v2_x16) using a `low` priority, if no jobs are interrupted, it will cost only **£1.03** for the same time (corresponding to the rates as of June 2025, they may have changed).
 
 > Please note that it is most unlikely for jobs to be uninterrupted.
 > In our experience, when accounting for interrupted/failed jobs, the total cost is around one to two times higher than the *low* cost, but still lower than the *high* cost. Although please keep in mind that the total time needed can be two to five times higher, depending on the interrupted/failed jobs.

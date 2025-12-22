@@ -9,9 +9,9 @@ If you'd rather use the terminal, we've also built a package, named [dxlog](http
 This tutorial assumes that you already have a researcher account on the UKBiobank site, and have access to a DNAnexus project.
 If not, please [create an account](https://ams.ukbiobank.ac.uk/ams/signup), and once it has been validated, create an account on [UKB-RAP](https://ukbiobank.dnanexus.com/register) with your UK Biobank credentials to access DNAnexus. To setup your first project, please check the [official documentation on the matter](https://dnanexus.gitbook.io/uk-biobank-rap/getting-started/quickstart/creating-a-project).
 
-This tutorial will guide you through every step needed in order to perform a basic GWAS using whole genome sequences for chromosome 1 to 22 for both [PLINK2](https://www.cog-genomics.org/plink/2.0/) and [regenie](https://rgcgithub.github.io/regenie/). In order to parallelize the analyses, we will perform 22 different GWAS, one for each chromosome, and combine the results locally to reduce cost.
+This tutorial will guide you through every step needed in order to perform a basic GWAS using whole genome sequences for chromosome 1 to 22 for both [PLINK2](https://www.cog-genomics.org/plink/2.0/) and [Regenie](https://rgcgithub.github.io/regenie/). In order to parallelize the analyses, we will perform 22 different GWAS, one for each chromosome, and combine the results locally to reduce cost.
 
-> PLINK2 is the most basic and simple tool to perform a GWAS, while regenie is a bit more advanced.
+> PLINK2 is the most basic and simple tool to perform a GWAS, while Regenie is a bit more advanced.
 > If you need to choose only one, please perform the [PLINK2 tutorial](plink.md), as it is simpler, quicker and way cheaper to complete.
 
 As an example, we will perform a linear regression on the **BMI index** ([21001](https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=21001)) using **whole genome sequencing data**, specifically the **DRAGEN WGS 500k release** (`/Bulk/DRAGEN WGS/`, data release *v19.1*) and the **GraphTyper WGS 200k release** (`/Bulk/Previous WGS releases/GATK and GraphTyper WGS/`, data release *v15.1*).
@@ -19,7 +19,7 @@ However, you can use any data that you need, simply keep in mind that paths need
 
 > This tutorial is written for Linux operating systems. Commands may vary accross operating systems.
 
-The [official "GWAS guide using Alzheimer's disease"](https://dnanexus.gitbook.io/uk-biobank-rap/science-corner/gwas-using-alzheimers-disease) and the [official github page for a "GWAS on the Research Analysis Platform using regenie"](https://github.com/dnanexus/UKB_RAP/tree/main/GWAS) were useful material when writing the [regenie section](regenie.md).
+The [official "GWAS guide using Alzheimer's disease"](https://dnanexus.gitbook.io/uk-biobank-rap/science-corner/gwas-using-alzheimers-disease) and the [official github page for a "GWAS on the Research Analysis Platform using Regenie"](https://github.com/dnanexus/UKB_RAP/tree/main/GWAS) were useful material when writing the [Regenie section](regenie.md).
 
 If you want to try other tools on DNAnexus, we recommend the following github page: [ukb-rap-tools](https://github.com/pjgreer/ukb-rap-tools) by [Phil Greer](https://github.com/pjgreer).
 
@@ -29,10 +29,10 @@ The tutorial is separated into four main sections:
 
 1. Fondamentals for first-time use of DNAnexus ([Getting started](start.md), [About jobs](jobs.md))
 2. Necessary files for GWAS input ([Input files](input.md))
-3. Running a GWAS ([Using PLINK2](plink.md), [Using regenie](regenie.md))
+3. Running a GWAS ([Using PLINK2](plink.md), [Using Regenie](regenie.md))
 4. Generating plots from results ([Visualizing results](results.md))
 
-> Please note, the [PLINK2](plink.md) and [regenie](regenie.md) sections are independant of each other and can be done separately. However, you will need to follow first the [Getting started](start.md) and [Input files](input.md) pages to make sure you have everything necessary to their completion.
+> Please note, the [PLINK2](plink.md) and [Regenie](regenie.md) sections are independant of each other and can be done separately. However, you will need to follow first the [Getting started](start.md) and [Input files](input.md) pages to make sure you have everything necessary to their completion.
 
 ## Requirements
 
@@ -45,7 +45,7 @@ Running all of this tutorial with the same instance and priority as us should no
 However, if it is not done already, your project should be billed to a wallet which is different from your initial credit.
 Please check the [official documentation](https://documentation.dnanexus.com/admin/billing-and-account-management) if you are unsure on how to proceed.
 
-Jobs cost will be computed based on the official [UKB RAP Rate Card](https://20779781.fs1.hubspotusercontent-na1.net/hubfs/20779781/Product%20Team%20Folder/Rate%20Cards/BiobankResearchAnalysisPlatform_Rate%20Card_Current.pdf) (v3.0).
+Jobs cost will be computed based on the official [UKB RAP Rate Card](https://20779781.fs1.hubspotusercontent-na1.net/hubfs/20779781/Product%20Team%20Folder/Rate%20Cards/BiobankResearchAnalysisPlatform_Rate%20Card_Current.pdf) (corresponding to the rates as of June 2025, they may have changed).
 
 > Please remember the cost and duration of a job depends on the instance and priority used. Execution time may also vary for the same instance.
 
@@ -74,4 +74,4 @@ At the end of this tutorial, your DNAnexus project's architecture should look li
 └── app-id.dataset
 ```
 
-> This will vary based on whether you use both PLINK2 and regenie, or only one, and if you have changed files/repertory names. Please note, if modified, files and repertory names have to be the same across all commands.
+> This will vary based on whether you use both PLINK2 and Regenie, or only one, and if you have changed files/repertory names. Please note, if modified, files and repertory names have to be the same across all commands.

@@ -6,7 +6,7 @@ This section is done on [**DXJupyterLab**](https://documentation.dnanexus.com/us
 * Instance type: **mem1_ssd1_v2_x4**
 * Duration (in hours): **1**
 
-The estimated price is around **£0.1136**. However, since we don't need the full hour to run the code (only a few minutes) the final cost will be reduced.
+The estimated price is around **£0.1136** (corresponding to the rates as of June 2025, they may have changed). However, since we don't need the full hour to run the code (only a few minutes) the final cost will be reduced.
 
 > Please be aware that storing files onto DNAnexus will result in a monthly cost. You may check its current value in the *SETTINGS* tab on your project's web page, or compute it using the [UKB RAP Rate Card](https://20779781.fs1.hubspotusercontent-na1.net/hubfs/20779781/Product%20Team%20Folder/Rate%20Cards/BiobankResearchAnalysisPlatform_Rate%20Card_Current.pdf).
 
@@ -28,18 +28,18 @@ The path to the genetic data chosen is the following: `/Bulk/DRAGEN WGS/DRAGEN p
 
 > Please be aware, when working on previous releases, we had found that using the BGEN format without mounting it was quicker than downloading or mounting the PLINK files.
 
-### regenie
+### Regenie
 
-We first wanted to use the DRAGEN 500k data for regenie as well, but that has proven to be quite difficult for a number of reasons.
-Namely, as of writing this tutorial, the DRAGEN 500k `.psam` file **does not** have a header, which results in `ERROR: header does not have the correct format.` when using regenie ([Issue about this error](https://github.com/rgcgithub/regenie/issues/105)). Therefore, we cannot use the PLINK2 data.
+We first wanted to use the DRAGEN 500k data for Regenie as well, but that has proven to be quite difficult for a number of reasons.
+Namely, as June 2025, the DRAGEN 500k `.psam` file **does not** have a header, which results in `ERROR: header does not have the correct format.` when using Regenie ([Issue about this error](https://github.com/rgcgithub/regenie/issues/105)). Therefore, we cannot use the PLINK2 data.
 
-regenie's Step 2 is optimized for input genotype data in BGEN *v1.2* format.
+Regenie's Step 2 is optimized for input genotype data in BGEN *v1.2* format.
 However, the BGEN data for DRAGEN 500k is **very** large: the file for chromosome 1 is bigger than a tebibyte (1.01 TiB).
 Thus, higher instances are needed, costs add up and execution time is increased (since PLINK2 is used and has to translate the format).
 
 Therefore, we choose to use previous releases, which are way less heavy (chromosome 1 is 71.49 GiB).
 
-Regarding the mount or download of the data, there seems to be an error when mounting data to regenie ([Corresponding issue](https://github.com/rgcgithub/regenie/issues/365)).
+Regarding the mount or download of the data, there seems to be an error when mounting data to Regenie ([Corresponding issue](https://github.com/rgcgithub/regenie/issues/365)).
 Because of this, we confirm the download the input, which should take less time and will garantee complete results.
 
 The path to the genetic data chosen is the following: `/Bulk/Previous WGS releases/GATK and GraphTyper WGS/GraphTyper population level genome variants, BGEN format [200k release]/`.
@@ -221,10 +221,10 @@ paste -d',' file1.csv file2.csv > merged.csv
 
 </blockquote>
 
-PLINK2 and regenie use the **same formatting** for the phenotype file, thus we can use the same file for both.
-We first need to duplicate the individuals ID, mark missing values as 'NA' (which is recognized by both regenie and PLINK2 with the necessary options) and name our phenotype.
+PLINK2 and Regenie use the **same formatting** for the phenotype file, thus we can use the same file for both.
+We first need to duplicate the individuals ID, mark missing values as 'NA' (which is recognized by both Regenie and PLINK2 with the necessary options) and name our phenotype.
 
-More information on phenotype files formatting can be found [here](https://www.cog-genomics.org/plink/2.0/input#pheno) for PLINK2 and [here](https://rgcgithub.github.io/regenie/options/#phenotype-file-format) for regenie.
+More information on phenotype files formatting can be found [here](https://www.cog-genomics.org/plink/2.0/input#pheno) for PLINK2 and [here](https://rgcgithub.github.io/regenie/options/#phenotype-file-format) for Regenie.
 
 ```python
 """Format phenotype file."""
@@ -325,7 +325,7 @@ We will use 18 variables as covariates: the first 16 PCA components, the sex (da
 
 You can extract whatever you want as covariates. However, we have chosen to keep only the first 16 PCA components, following a [study by Privé *et al.* in 2020](https://academic.oup.com/bioinformatics/article/36/16/4449/5838185) which indicates other components capture complex LD structure rather than population structure.
 
-More information on covariates files formatting can be found [here](https://www.cog-genomics.org/plink/2.0/input#covar) for PLINK2 and [here](https://rgcgithub.github.io/regenie/options/#covariate-file-format) for regenie.
+More information on covariates files formatting can be found [here](https://www.cog-genomics.org/plink/2.0/input#covar) for PLINK2 and [here](https://rgcgithub.github.io/regenie/options/#covariate-file-format) for Regenie.
 
 ```bash
 %%bash

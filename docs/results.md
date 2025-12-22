@@ -24,7 +24,7 @@ def read_results(phenotype, software):
     phenotype : str
         Phenotype name.
     software : str { 'p', 'r'}
-        Either 'p' for PLINK2 or 'r' for regenie,
+        Either 'p' for PLINK2 or 'r' for Regenie,
         to correctly format the file.
 
     Returns
@@ -75,7 +75,7 @@ def manhattan_plot(chroms, pvals, phenotype, software):
     phenotype : str
         Phenotype name.
     software : str { 'p', 'r'}
-        Either 'p' for PLINK2 or 'r' for regenie,
+        Either 'p' for PLINK2 or 'r' for Regenie,
         to correctly format the file.
 
     Returns
@@ -149,7 +149,7 @@ def qq_plot(pvals, phenotype, software):
     phenotype : str
         Phenotype name.
     software : str { 'p', 'r'}
-        Either 'p' for PLINK2 or 'r' for regenie,
+        Either 'p' for PLINK2 or 'r' for Regenie,
         to correctly format the file.
 
     Returns
@@ -184,7 +184,7 @@ def qq_plot(pvals, phenotype, software):
 
 # Input
 PHENOTYPE = "BMI"
-SOFTWARE = 'p' # for PLINK2 or 'r' for regenie
+SOFTWARE = 'p' # for PLINK2 or 'r' for Regenie
 
 # Read values
 CHROMS, PVALS = read_results(PHENOTYPE, SOFTWARE)
@@ -214,12 +214,12 @@ And the following QQ plot:
 
 ![image info](./img/plink_BMI_QQ_plot.png "PLINK2 QQ plot")
 
-### regenie
+### Regenie
 
-By the end of this tutorial, when using regenie, you should obtain the following Manhattan plot:
+By the end of this tutorial, when using Regenie, you should obtain the following Manhattan plot:
 
-![image info](./img/regenie_BMI_Manhattan_plot.png "regenie Manhattan plot")
+![image info](./img/regenie_BMI_Manhattan_plot.png "Regenie Manhattan plot")
 
 And the following QQ plot:
 
-![image info](./img/regenie_BMI_QQ_plot.png "regenie QQ plot")
+![image info](./img/regenie_BMI_QQ_plot.png "Regenie QQ plot")

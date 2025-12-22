@@ -9,7 +9,7 @@ nav:
     - About jobs: jobs.md
     - Input files: input.md
     - Using PLINK2: plink.md
-    - Using regenie: regenie.md
+    - Using Regenie: regenie.md
     - Visualizing results: results.md
 
 theme:

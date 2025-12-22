@@ -73,7 +73,7 @@
         <ul>
     <li class="toctree-l3"><a class="reference internal" href="#plink2">PLINK2</a>
     </li>
-    <li class="toctree-l3"><a class="reference internal" href="#regenie">regenie</a>
+    <li class="toctree-l3"><a class="reference internal" href="#regenie">Regenie</a>
     </li>
         </ul>
     </li>
@@ -126,7 +126,7 @@ def read_results(phenotype, software):
     phenotype : str
         Phenotype name.
     software : str { 'p', 'r'}
-        Either 'p' for PLINK2 or 'r' for regenie,
+        Either 'p' for PLINK2 or 'r' for Regenie,
         to correctly format the file.
 
     Returns
@@ -177,7 +177,7 @@ def manhattan_plot(chroms, pvals, phenotype, software):
     phenotype : str
         Phenotype name.
     software : str { 'p', 'r'}
-        Either 'p' for PLINK2 or 'r' for regenie,
+        Either 'p' for PLINK2 or 'r' for Regenie,
         to correctly format the file.
 
     Returns
@@ -251,7 +251,7 @@ def qq_plot(pvals, phenotype, software):
     phenotype : str
         Phenotype name.
     software : str { 'p', 'r'}
-        Either 'p' for PLINK2 or 'r' for regenie,
+        Either 'p' for PLINK2 or 'r' for Regenie,
         to correctly format the file.
 
     Returns
@@ -286,7 +286,7 @@ def qq_plot(pvals, phenotype, software):
 
 # Input
 PHENOTYPE = &quot;BMI&quot;
-SOFTWARE = 'p' # for PLINK2 or 'r' for regenie
+SOFTWARE = 'p' # for PLINK2 or 'r' for Regenie
 
 # Read values
 CHROMS, PVALS = read_results(PHENOTYPE, SOFTWARE)
@@ -310,11 +310,11 @@ qq_plot(PVALS, PHENOTYPE, SOFTWARE)
 <p><img alt="image info" src="../img/plink_BMI_Manhattan_plot.png" title="PLINK2 Manhattan plot" /></p>
 <p>And the following QQ plot:</p>
 <p><img alt="image info" src="../img/plink_BMI_QQ_plot.png" title="PLINK2 QQ plot" /></p>
-<h3 id="regenie">regenie</h3>
-<p>By the end of this tutorial, when using regenie, you should obtain the following Manhattan plot:</p>
-<p><img alt="image info" src="../img/regenie_BMI_Manhattan_plot.png" title="regenie Manhattan plot" /></p>
+<h3 id="regenie">Regenie</h3>
+<p>By the end of this tutorial, when using Regenie, you should obtain the following Manhattan plot:</p>
+<p><img alt="image info" src="../img/regenie_BMI_Manhattan_plot.png" title="Regenie Manhattan plot" /></p>
 <p>And the following QQ plot:</p>
-<p><img alt="image info" src="../img/regenie_BMI_QQ_plot.png" title="regenie QQ plot" /></p>
+<p><img alt="image info" src="../img/regenie_BMI_QQ_plot.png" title="Regenie QQ plot" /></p>
               
             </div>
           </div><footer>

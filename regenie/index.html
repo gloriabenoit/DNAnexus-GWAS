@@ -110,42 +110,78 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
             <div class="section" itemprop="articleBody">
               
-                <h1 id="using-regenie">Using regenie</h1>
+                <h1 id="using-regenie">Using Regenie</h1>
 <p>This section is done from <strong>your bash terminal</strong>.
 Every file created during this analysis will be stored in a main directory called <code>regenie_gwas_BMI</code>.
 You will run a total of 47 different jobs, over four stages:</p>
 <ol>
 <li><a href="#quality-control">Quality control</a> runs 22 jobs (one per chromosome)</li>
 <li><a href="#merging-files">Merging files</a> runs 2 jobs, for the merge and the QC of the merged data</li>
-<li><a href="#step-1-estimate-snps-contribution">Step 1</a> runs 1 job for regenie's SNPs contribution estimation (step 1)</li>
-<li><a href="#step-2-linear-regression">Step 2</a> runs 22 job for regenie's regression (step 2, one per chromosome)</li>
+<li><a href="#step-1-estimate-snps-contribution">Step 1</a> runs 1 job for Regenie's SNPs contribution estimation (step 1)</li>
+<li><a href="#step-2-linear-regression">Step 2</a> runs 22 job for Regenie's regression (step 2, one per chromosome)</li>
 </ol>
 <blockquote>
 <p>To optimize your GWAS's overall time, you can perform the QC in parallel to every other step beside step 2 (for which it is needed).
 The rest needs to be done in order.</p>
 </blockquote>
-<p>With our chosen instance (mem1_ssd1_v2_x16) using a <code>high</code> priority, the whole GWAS will take about <strong>830 minutes</strong> (13h50, when running each step in order) and cost around <strong>£15.89</strong> (for a total execution time of 2183 minutes).</p>
-<p>With the same instance (mem1_ssd1_v2_x16) using a <code>low</code> priority, if no jobs are interrupted, it will cost only <strong>£4.25</strong> for the same time.</p>
+<p>With our chosen instance (mem1_ssd1_v2_x16) using a <code>high</code> priority, the whole GWAS will take about <strong>830 minutes</strong> (13h50, when running each step in order) and cost around <strong>£15.89</strong> (for a total execution time of 2183 minutes, corresponding to the rates as of June 2025, they may have changed).</p>
+<p>With the same instance (mem1_ssd1_v2_x16) using a <code>low</code> priority, if no jobs are interrupted, it will cost only <strong>£4.25</strong> for the same time (corresponding to the rates as of June 2025, they may have changed).</p>
 <p>You can find the details about the jobs run in the following table:</p>
-<center>
-
-| Action   |  Time | Execution time | Cost (high) | Cost (low, no interruption) |
-|----------|:-----:|:--------------:|:-----------:|:---------------------------:|
-| QC       |  1h41 |       20h      |     8.77    |             2.35            |
-| Merge    | 46min |      46min     |     0.33    |             0.09            |
-| Merge QC | 12min |      12min     |     0.09    |             0.02            |
-| Step 1   | 10h55 |      10h55     |     4.77    |             1.28            |
-| Step 2   | 20min |      4h25      |     1.93    |             0.52            |
-
-</center>
-
+<table>
+<thead>
+<tr>
+<th>Action</th>
+<th style="text-align: center;">Time</th>
+<th style="text-align: center;">Execution time</th>
+<th style="text-align: center;">Cost (high)</th>
+<th style="text-align: center;">Cost (low, no interruption)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>QC</td>
+<td style="text-align: center;">1h41</td>
+<td style="text-align: center;">20h</td>
+<td style="text-align: center;">8.77</td>
+<td style="text-align: center;">2.35</td>
+</tr>
+<tr>
+<td>Merge</td>
+<td style="text-align: center;">46min</td>
+<td style="text-align: center;">46min</td>
+<td style="text-align: center;">0.33</td>
+<td style="text-align: center;">0.09</td>
+</tr>
+<tr>
+<td>Merge QC</td>
+<td style="text-align: center;">12min</td>
+<td style="text-align: center;">12min</td>
+<td style="text-align: center;">0.09</td>
+<td style="text-align: center;">0.02</td>
+</tr>
+<tr>
+<td>Step 1</td>
+<td style="text-align: center;">10h55</td>
+<td style="text-align: center;">10h55</td>
+<td style="text-align: center;">4.77</td>
+<td style="text-align: center;">1.28</td>
+</tr>
+<tr>
+<td>Step 2</td>
+<td style="text-align: center;">20min</td>
+<td style="text-align: center;">4h25</td>
+<td style="text-align: center;">1.93</td>
+<td style="text-align: center;">0.52</td>
+</tr>
+</tbody>
+</table>
 <blockquote>
 <p>Please note that it is most unlikely for jobs to be uninterrupted.
 In our experience, when accounting for interrupted/failed jobs, the total cost is around one to two times higher than the <em>low</em> cost, but still lower than the <em>high</em> cost. Although please keep in mind that the total time needed can be two to five times higher, depending on the interrupted/failed jobs.</p>
 </blockquote>
 <h2 id="input-files">Input files</h2>
 <p>The path to the genetic data chosen is the following: <code>/Bulk/Previous WGS releases/GATK and GraphTyper WGS/GraphTyper population level genome variants, BGEN format [200k release]/</code>.</p>
-<p>Before running a GWAS on DNAnexus using regenie, you need to make sure you have these 3 files uploaded to DNAnexus:</p>
+<p>Before running a GWAS on DNAnexus using Regenie, you need to make sure you have these 3 files uploaded to DNAnexus:</p>
 <ul>
 <li>The phenotype: <code>BMI.txt</code></li>
 <li>The ids of individuals we wish to keep: <code>white_british.txt</code></li>
@@ -156,7 +192,7 @@ In our experience, when accounting for interrupted/failed jobs, the total cost i
 </code></pre>
 <p>Please refer to the <a href="../input/">Input files section</a> if you don't have these files.</p>
 <h2 id="running-a-gwas">Running a GWAS</h2>
-<p>On DNAnexus, regenie is available either as part of the <a href="https://ukbiobank.dnanexus.com/app/swiss-army-knife">Swiss Army Knife app</a> (<code>swiss-army-knife</code>) or as its <a href="https://ukbiobank.dnanexus.com/app/regenie">own app</a> called <code>regenie</code>. We will use the former.</p>
+<p>On DNAnexus, Regenie is available either as part of the <a href="https://ukbiobank.dnanexus.com/app/swiss-army-knife">Swiss Army Knife app</a> (<code>swiss-army-knife</code>) or as its <a href="https://ukbiobank.dnanexus.com/app/regenie">own app</a> called <code>regenie</code>. We will use the former.</p>
 <p>We choose to use the same instance for all GWASs, to simplify the code, but this can be changed to your liking. Same for the priority and the cost limit.
 There is one exception: Step 1 for which we recommend using a high priority.</p>
 <h3 id="quality-control">Quality control</h3>
@@ -226,7 +262,7 @@ dx cd ../../
 </ul>
 <p>They will be stored into another directory named <code>QC_lists</code> to avoid crowding the main repertory for the GWAS.</p>
 <h3 id="merging-files">Merging files</h3>
-<p>Before running our GWAS using regenie, we first need to merge all of the genotype call files (chromosome 1 to 22) into one file. This is in preparation for running <a href="#step-1-estimate-snps-contribution">Step 1</a>.</p>
+<p>Before running our GWAS using Regenie, we first need to merge all of the genotype call files (chromosome 1 to 22) into one file. This is in preparation for running <a href="#step-1-estimate-snps-contribution">Step 1</a>.</p>
 <pre><code class="language-bash">pheno=&quot;BMI&quot;
 pheno_path=&quot;/gwas_tutorial/$pheno.txt&quot; # not strictly needed, but swiss-army-knife needs at least one input
 prefix=&quot;/mnt/project/Bulk/Genotype\ Results/Genotype\ calls/&quot;
@@ -326,7 +362,7 @@ dx cd ../../
 <p>Like in the <a href="#quality-control">QC step</a>, we need to save both the list of SNPs and the list of sample IDs that pass QC for our array genotype data.
 They are stored in the <code>merge</code> directory.</p>
 <h3 id="step-1-estimate-snps-contribution">Step 1: Estimate SNPs contribution</h3>
-<p>The first step of a regenie GWAS is the estimation of how background SNPs contribute to the phenotype. During this step, a subset of genetic markers are used to fit a whole genome regression model that captures a good fraction of the phenotype variance attributable to genetic effects. For more information, check the <a href="https://rgcgithub.github.io/regenie/overview/">official documentation</a>.</p>
+<p>The first step of a Regenie GWAS is the estimation of how background SNPs contribute to the phenotype. During this step, a subset of genetic markers are used to fit a whole genome regression model that captures a good fraction of the phenotype variance attributable to genetic effects. For more information, check the <a href="https://rgcgithub.github.io/regenie/overview/">official documentation</a>.</p>
 <p>We expect this step to take around 10h, which is quite a lot to be uninterrupted (although it is possible). Therefore, we choose to use a <code>high</code> priority, to ensure the job's completion. Please be aware that this step can be common to all GWAS you run with the same QC for the merging step.</p>
 <blockquote>
 <p>To not require too much space, we gzip the results using the <code>--gz</code> option.</p>
@@ -390,10 +426,10 @@ dx cd ../../
 <li><code>BMI_merged_1.loco.gz</code> (38.29 MiB) contains per-chromosome LOCO predictions</li>
 </ul>
 <blockquote>
-<p>Please note, when using a binary phenotype you need to add the <code>--bt</code> option to the regenie command.</p>
+<p>Please note, when using a binary phenotype you need to add the <code>--bt</code> option to the Regenie command.</p>
 </blockquote>
 <h3 id="step-2-linear-regression">Step 2: Linear regression</h3>
-<p>The second step of a regenie GWAS is the regression. During this step, whole genome markers are tested for association with the phenotype <em>conditional upon</em> the prediction from the regression model in <a href="#step-1-estimate-snps-contribution">Step 1</a>. For more information, check the <a href="https://rgcgithub.github.io/regenie/overview/">official documentation</a>.</p>
+<p>The second step of a Regenie GWAS is the regression. During this step, whole genome markers are tested for association with the phenotype <em>conditional upon</em> the prediction from the regression model in <a href="#step-1-estimate-snps-contribution">Step 1</a>. For more information, check the <a href="https://rgcgithub.github.io/regenie/overview/">official documentation</a>.</p>
 <blockquote>
 <p>To not require too much space, we gzip the results using the <code>--gz</code> option.</p>
 </blockquote>
@@ -468,7 +504,7 @@ dx cd ../
 </ul>
 <p>The files will be stored in the main directory, <code>regenie_gwas_BMI</code>.</p>
 <blockquote>
-<p>Please note, when using a binary phenotype you need to add the <code>--bt</code> option to the regenie command to perform a logistic regression rather than a linear one.</p>
+<p>Please note, when using a binary phenotype you need to add the <code>--bt</code> option to the Regenie command to perform a logistic regression rather than a linear one.</p>
 </blockquote>
 <h2 id="computing-the-results">Computing the results</h2>
 <p>Now that all of the summary statistics are computed, we can download them and combine them into one single file.</p>
@@ -497,7 +533,7 @@ done
 <blockquote>
 <p>Although the result files are quite big, their download should only take about a minute.</p>
 </blockquote>
-<p>Congratulations, you have successfully completed a GWAS using regenie on DNAnexus!</p>
+<p>Congratulations, you have successfully completed a GWAS using Regenie on DNAnexus!</p>
               
             </div>
           </div><footer>

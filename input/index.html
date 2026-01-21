@@ -190,7 +190,7 @@ for filename in os.listdir(&quot;.&quot;):
 <blockquote>
 <p>Please note, when running the <code>extract_dataset</code> command you might encounter a <code>('Invalid JSON received from server', 200)</code> error. If this happens, you simply need to rerun the code.</p>
 </blockquote>
-<p>We first need to get the field name of the phenotype(s) we want to extract. As an example, we will extract the BMI index (<a href="https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=21001">21001</a>), but you can extract any number of phenotypes.</p>
+<p>We first need to get the field name of the phenotype(s) we want to extract. As an example, we will extract the BMI index (<a href="https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=21001">21001</a>), but you can extract any number of phenotypes simply by adding the corresponding index to the <code>FIELD_ID</code> list.</p>
 <p>For the main participant phenotype entity, the Research Analysis Platform (UKB-RAP) uses field names with the following convention:</p>
 <table>
 <thead>
@@ -340,34 +340,39 @@ paste -d',' file1.csv file2.csv &gt; merged.csv
 </blockquote>
 
 <p>PLINK2 and Regenie use the <strong>same formatting</strong> for the phenotype file, thus we can use the same file for both.
-We first need to duplicate the individuals ID, mark missing values as 'NA' (which is recognized by both Regenie and PLINK2 with the necessary options) and name our phenotype.</p>
+We first need to duplicate the individuals ID, mark missing values as 'NA' (which is recognized by both Regenie and PLINK2 with the necessary options) and name our phenotype. We will output one file per phenotype.</p>
 <p>More information on phenotype files formatting can be found <a href="https://www.cog-genomics.org/plink/2.0/input#pheno">here</a> for PLINK2 and <a href="https://rgcgithub.github.io/regenie/options/#phenotype-file-format">here</a> for Regenie.</p>
+<blockquote>
+<p>Please note, the <code>PHENOTYPE</code> list needs to be in the same order as the <code>FIELD_ID</code> list to correctly extract and rename the phenotypes.</p>
+</blockquote>
 <pre><code class="language-python">&quot;&quot;&quot;Format phenotype file.&quot;&quot;&quot;
 
 import pandas as pd
 
 # Input
 FILENAME = &quot;pheno_extract.csv&quot;
-PHENOTYPE = &quot;BMI&quot;
+PHENOTYPE = [&quot;BMI&quot;]
 
-def format_phenotype(filename, phenotype):
+def format_phenotype(filename, phenotypes):
     &quot;&quot;&quot; Save phenotype to correct format.
 
     Parameters
     ----------
     filename : str
         Phenotype file to format.
-    phenotype : str
-        Phenotype name.
+    phenotypes : str
+        List of phenotypes names.
     &quot;&quot;&quot;
-    output = f&quot;{phenotype}.txt&quot;
+    for phenotype in phenotypes:
+        output = f&quot;{phenotype}.txt&quot;
 
-    # Format file
-    data = pd.read_csv(filename, sep=',', skiprows=1, names=[&quot;IID&quot;, phenotype])
-    fid = data[&quot;IID&quot;].rename(&quot;FID&quot;)
-    merged = pd.concat([fid, data], axis=1)
+        # Format file
+        idx = phenotypes.index(phenotype)
+        data = pd.read_csv(filename, sep=',', skiprows=1,names=[&quot;IID&quot;, phenotype], usecols=[0, idx+1])
+        fid = data[&quot;IID&quot;].rename(&quot;FID&quot;)
+        merged = pd.concat([fid, data], axis=1)
 
-    merged.to_csv(output, sep='\t', index=False, header=True, na_rep='NA')
+        merged.to_csv(output, sep='\t', index=False, header=True, na_rep='NA')
 
 # Save phenotype
 format_phenotype(FILENAME, PHENOTYPE)
@@ -380,11 +385,19 @@ format_phenotype(FILENAME, PHENOTYPE)
 <pre><code class="language-bash">%%bash 
 dx upload BMI.txt -p --path /gwas_tutorial/
 </code></pre>
+<blockquote>
+<p>When uploading multiple files, you can simply separate the names by spaces.</p>
+</blockquote>
 <h3 id="individual-ids">Individual ids</h3>
 <p>Running a GWAS on a specific population helps reduce the bias caused by population stratification. It is therefore an important step.</p>
 <p>To filter out individuals based on their ethnic background, we can use the <a href="#phenotype"><em>phenotype extraction script</em></a> and the data-field <a href="https://biobank.ndph.ox.ac.uk/ukb/field.cgi?id=21000">21000</a>. You simply need to <strong>change the value</strong> of <code>FIELD_ID</code>:</p>
 <pre><code class="language-python"># Input
+DATASET = dxpy.find_one_data_object(typename='Dataset',
+                                    name='app*.dataset',
+                                    folder='/',
+                                    name_mode='glob')['id']
 FILENAME = &quot;ukbb.data_dictionary.csv&quot;
+OUTPUT = &quot;pheno_extract.csv&quot;
 FIELD_ID = [21000] # Ethnic background id
 
 # Convert id to names
